@@ -25,15 +25,17 @@ const ministers = [
 
 export default function MinistersSidebar() {
   return (
-    <div className="hidden lg:flex flex-col w-[100px] xl:w-[200px] shrink-0 gap-0 border border-gray-200 bg-white shadow-sm self-start">
+    /* Always visible — w-[80px] on small, w-[110px] on md, w-[170px] on xl */
+    <div className="flex flex-col w-[80px] md:w-[110px] xl:w-[220px] shrink-0 bg-white border-l border-gray-200 self-start">
       {ministers.map((m, i) => (
         <div
           key={i}
-          className={`flex flex-col items-center text-center px-3 py-4 cursor-pointer hover:bg-gray-50 transition-colors ${
+          className={`flex flex-col items-center text-center px-1 md:px-2 py-2 md:py-4 cursor-pointer hover:bg-gray-50 transition-colors ${
             i !== ministers.length - 1 ? "border-b border-gray-200" : ""
           }`}
         >
-          <div className="relative w-full aspect-[4/3] overflow-hidden">
+          {/* Photo */}
+           <div className="relative w-full aspect-[4/3] overflow-hidden">
             <Image
               src={m.img}
               fill
@@ -41,10 +43,12 @@ export default function MinistersSidebar() {
               className="object-contain object-top"
             />
           </div>
-          <h3 className="font-semibold text-[12px] xl:text-[13px] mt-2 text-gray-800 leading-tight">
+          {/* Name */}
+          <h3 className="font-semibold text-[8px] md:text-[11px] xl:text-[13px] mt-1 text-gray-800 leading-tight">
             {m.name}
           </h3>
-          <p className="text-[11px] xl:text-[12px] text-gray-500 mt-0.5 leading-tight">
+          {/* Role */}
+          <p className="text-[7px] md:text-[10px] xl:text-[11px] text-gray-500 mt-0.5 leading-tight">
             {m.role}
           </p>
         </div>

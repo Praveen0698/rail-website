@@ -3,10 +3,7 @@ import Header from "@/components/Header";
 import Navbar from "@/components/Navbar";
 import HeroSection from "@/components/HeroSection";
 import MinistersSidebar from "@/components/MinistersSidebar";
-import WhatsNew from "@/components/WhatsNew";
-import QuickLinks from "@/components/QuickLinks";
-import ImportantInfo from "@/components/ImportantInfo";
-import SocialSection from "@/components/SocialSection";
+import SocialSection from "@/components/ImportantInfo"
 import Footer from "@/components/Footer";
 
 export default function Home() {
@@ -16,14 +13,15 @@ export default function Home() {
       <Header />
       <Navbar />
 
-      <div className="flex gap-0 md:gap-4 px-0 md:px-4 mt-2 md:mt-4 items-start">
+      {/* Main content + sidebar always side by side */}
+      <div className="flex gap-0 items-start w-full">
         <div className="flex-1 min-w-0">
           <HeroSection />
         </div>
+        {/* Sidebar: visible at all sizes, narrow on mobile */}
         <MinistersSidebar />
       </div>
 
-      <ImportantInfo />
       <SocialSection />
       <Footer />
     </>
