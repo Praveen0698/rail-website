@@ -2,7 +2,7 @@ import Image from "next/image";
 
 export default function Header() {
   return (
-    <div className="bg-white border-b border-gray-200">
+       <div className="bg-white border-b border-gray-200">
       <div className="min-w-full px-3 md:px-6 py-3 md:py-1 flex flex-row justify-between items-center">
 
         {/* Left Section */}

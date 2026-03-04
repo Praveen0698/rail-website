@@ -1,12 +1,12 @@
 import Image from "next/image";
 
 const footerLinks = [
-  { label: "Disclaimer", href: "#" },
-  { label: "Terms & Conditions", href: "#" },
-  { label: "Privacy Policy", href: "#" },
-  { label: "Sitemap", href: "#" },
-  { label: "Contact Us", href: "#" },
-  { label: "Facilities for Person with Disability Users", href: "#" },
+  { label: "Disclaimer", href: "https://indianrailways.gov.in/disclaimer.html" },
+  { label: "Terms & Conditions", href: "https://indianrailways.gov.in/terms.html" },
+  { label: "Privacy Policy", href: "https://indianrailways.gov.in/privacyPoli.html" },
+  { label: "Sitemap", href: "https://indianrailways.gov.in/sitemap.html" },
+  { label: "Contact Us", href: "https://indianrailways.gov.in/contactUs.html" },
+  { label: "Facilities for Person with Disability Users", href: "https://indianrailways.gov.in/FacilitiesPWD.pdf" },
 ];
 
 export default function Footer() {
@@ -21,17 +21,17 @@ export default function Footer() {
 
           {/* 2×2 Logo Grid */}
           <div className="grid grid-cols-2 gap-x-3 gap-y-2">
-            <a href="#">
-              <Image src="/india.gov.gif" width={120} height={44} alt="India Gov" className="h-10 w-auto object-contain" />
+            <a href="http://india.gov.in/" title="india.govern.in" target="_blank" rel="nofollow noopener">
+              <Image src="/india.gov.gif" width={120} height={44} alt="India.govern.in" className="h-10 w-auto object-contain" />
             </a>
-            <a href="#">
-              <Image src="/makeinindia.png" width={120} height={44} alt="Make in India" className="h-10 w-auto object-contain" />
+            <a href="http://makeinindia.com" title="makeinindia.com" target="_blank" rel="nofollow noopener">
+              <Image src="/makeinindia.png" width={120} height={44} alt="makeinindia.com" className="h-10 w-auto object-contain" />
             </a>
-            <a href="#">
-              <Image src="/incredible.png" width={120} height={44} alt="Incredible India" className="h-10 w-auto object-contain" />
+            <a href="http://incredibleindia.org" title="incredibleindia" target="_blank" rel="nofollow noopener">
+              <Image src="/incredible.png" width={120} height={44} alt="incredibleindia" className="h-10 w-auto object-contain" />
             </a>
-            <a href="#">
-              <Image src="/thumbnail.jpg" width={64} height={64} alt="Swachh Bharat" className="h-10 w-auto object-contain" />
+            <a href="https://innovate.mygov.in" title="incredibleindia" target="_blank" rel="nofollow noopener">
+              <Image src="/thumbnail.jpg" width={64} height={64} alt="Innovate MyGov" className="h-10 w-auto object-contain" />
             </a>
           </div>
 
@@ -47,7 +47,7 @@ export default function Footer() {
           <div className="flex flex-wrap md:justify-end gap-x-1 gap-y-1 mb-1">
             {footerLinks.map((link, i) => (
               <span key={i} className="flex items-center">
-                <a href={link.href} className="text-white font-semibold hover:underline whitespace-nowrap">
+                <a href={link.href} target="_blank" rel="nofollow noopener" className="text-white font-semibold hover:underline whitespace-nowrap">
                   {link.label}
                 </a>
                 {i < footerLinks.length - 1 && (
