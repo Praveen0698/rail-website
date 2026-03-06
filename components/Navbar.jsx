@@ -99,8 +99,8 @@ const navItems = [
   },
   {
     label: "RECRUITMENT",
-    href: "https://indianrailways.gov.in/railwayboard/view_section.jsp?lang=0&id=0,7,1281",
-    target: "_blank",
+    href: "/recruitment",
+    
     options: [],
   },
   {

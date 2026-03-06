@@ -114,13 +114,13 @@ export default function HeroSection() {
       {/* ── Social Icons ── */}
       <div className="flex items-center gap-2 mt-2 px-1 py-1 md:py-3">
         <a href="#" aria-label="Facebook">
-          <Image src="/facebook.jpg" width={28} height={28} alt="Facebook" className="w-6 h-6 md:w-7 md:h-7" />
+          <Image src="/facebook.jpg" width={28} height={28} alt="Facebook" className="w-4 h-4 md:w-7 md:h-7" />
         </a>
         <a href="#" aria-label="Twitter">
-          <Image src="/twitter.jpg" width={28} height={28} alt="Twitter" className="w-6 h-6 md:w-7 md:h-7" />
+          <Image src="/twitter.jpg" width={28} height={28} alt="Twitter" className="w-4 h-4 md:w-7 md:h-7" />
         </a>
         <a href="#" aria-label="YouTube">
-          <Image src="/youtube.jpg" width={56} height={28} alt="YouTube" className="h-6 md:h-7 w-auto" />
+          <Image src="/youtube.jpg" width={56} height={28} alt="YouTube" className="h-4 md:h-7 w-auto" />
         </a>
       </div>
 

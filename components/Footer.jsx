@@ -9,6 +9,7 @@ const footerLinks = [
   { label: "Facilities for Person with Disability Users", href: "https://indianrailways.gov.in/FacilitiesPWD.pdf" },
 ];
 
+
 export default function Footer() {
   return (
     <footer className="bg-[#1a5f8a] text-white mt-6">
@@ -56,7 +57,7 @@ export default function Footer() {
               </span>
             ))}
           </div>
-          <p className="text-[11px] md:text-[12px] font-semibold text-white/90">
+          <p className="text-[11px] md:text-[12px] xl:text-[13px] font-semibold text-white/90">
             Copyright @ 2011 Centre For Railway Information Systems. All Rights Reserved.
           </p>
         </div>

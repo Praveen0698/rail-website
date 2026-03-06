@@ -54,7 +54,7 @@ export default function SocialSection() {
 
         {/* Column 2: Important Information — white card, border, shadow */}
         <div
-          className="flex-1 bg-white"
+          className="flex-1 bg-white rounded-lg"
           style={{
             border: "1px solid #cfd9de",
             boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
@@ -131,13 +131,13 @@ export default function SocialSection() {
             rel="noreferrer"
             style={{
               position: "absolute",
-              bottom: "200px",
-              // right: "50px",
+              bottom: "50%",
+              right: "5%",
               textAlign: "center",
               display: "inline-block",
               border: "1px solid #e5e7eb",
               borderRadius: "20px",
-              padding: "6px 16px",
+              padding: "3px 16px",
               color: "#4b0082",
               fontWeight: "700",
               fontSize: "13px",
@@ -145,7 +145,8 @@ export default function SocialSection() {
               textDecoration: "none",
               boxShadow: "0 1px 4px rgba(0,0,0,0.08)",
               whiteSpace: "nowrap",
-              width: "100%",
+              width: "90%",
+
             }}
           >
             Tweets by RailMinIndia
