@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { MdLocalPrintshop } from "react-icons/md";
+import Select from "react-select";
 
 const zones = [
   "Ahmedabad",
@@ -107,7 +109,7 @@ export default function RRBsTable() {
       {/* Banner */}
       <div
         style={{
-          width: 420,
+          width: 450,
           margin: "0 auto 20px auto",
           border: "1px solid transparent",
           backgroundColor: BLUE,
@@ -125,8 +127,8 @@ export default function RRBsTable() {
       {/* Form */}
       <div
         style={{
-          width: "min(55%, 420px)",
-          minWidth: 280,
+          width: "min(55%, 450px)",
+          minWidth: 300,
           margin: "0 auto",
           backgroundColor: "transparent",
           border: "1px solid transparent",
@@ -151,6 +153,7 @@ export default function RRBsTable() {
                 color: "#000000",
                 backgroundColor: "#ffffff",
               }}
+              className="rounded-sm"
             />
           </div>
         </div>
@@ -158,28 +161,85 @@ export default function RRBsTable() {
         {/* Zone row */}
         <div style={rowStyle}>
           <div style={labelStyle}>Zone</div>
+
           <div style={valueStyle}>
-            <select
-              value={zone}
-              onChange={(e) => setZone(e.target.value)}
-              style={{
-                width: "100%",
-                fontSize: 14,
-                padding: "4px 6px",
-                border: "1px solid #aaaaaa",
-                boxSizing: "border-box",
-                color: "#000000",
-                backgroundColor: "#ffffff",
-                height: 30,
+            <Select
+              value={zone ? { value: zone, label: zone } : null}
+              onChange={(selected) => setZone(selected ? selected.value : "")}
+              options={zones.map((z) => ({ value: z, label: z }))}
+              placeholder="----Select Zone----"
+              menuPlacement="auto"
+              styles={{
+                container: (base) => ({
+                  ...base,
+                  width: "100%",
+                }),
+
+                control: (base) => ({
+                  ...base,
+                  width: "100%",
+                  minHeight: 30,
+                  height: 30,
+                  border: "1px solid #aaaaaa",
+                  boxShadow: "none",
+                  fontSize: 14,
+                  backgroundColor: "#ffffff",
+                  color: "#000000",
+                }),
+
+                valueContainer: (base) => ({
+                  ...base,
+                  height: 30,
+                  padding: "0 6px",
+                  display: "flex",
+                  alignItems: "center",
+                  color: "#000000",
+                }),
+
+                indicatorsContainer: (base) => ({
+                  ...base,
+                  height: 30,
+                }),
+
+                dropdownIndicator: (base) => ({
+                  ...base,
+                  padding: 4,
+                }),
+
+                menu: (base) => ({
+                  ...base,
+                  marginTop: 2,
+                  width: "100%",
+                }),
+
+                menuList: (base) => ({
+                  ...base,
+                  maxHeight: 250,
+                  padding: 0,
+                  scrollbarWidth: "thin",
+                }),
+
+                option: (base, state) => ({
+                  ...base,
+                  textAlign: "left", // left aligned options
+                  padding: "8px 10px",
+                  fontSize: 14,
+                  backgroundColor: state.isFocused ? "#f2f2f2" : "#ffffff",
+                  color: "#000",
+                }),
+
+                singleValue: (base) => ({
+                  ...base,
+                  textAlign: "left",
+                  color: "#000000",
+                }),
+
+                placeholder: (base) => ({
+                  ...base,
+                  color: "#666",
+                }),
               }}
-            >
-              <option value="">----Select Zone----</option>
-              {zones.map((z) => (
-                <option key={z} value={z}>
-                  {z}
-                </option>
-              ))}
-            </select>
+            />
           </div>
         </div>
 
@@ -190,6 +250,7 @@ export default function RRBsTable() {
             textAlign: "center",
             padding: "8px",
           }}
+          className="mt-1 lg:mt-4"
         >
           <button
             onClick={handleSubmit}
@@ -219,14 +280,29 @@ export default function RRBsTable() {
 
       {/* Result */}
       {resultData && (
-        <div id="ss" style={{ width: "75%", margin: "0 auto" }}>
-          {/* Print icon */}
-          <div style={{ textAlign: "right", marginBottom: 4 }}>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="images/printing-icon.png"
-              alt="Print"
-              style={{ width: 40, cursor: "pointer" }}
+        <div
+          id="ss"
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            width: "100%",
+          }}
+        >
+          {/* Icon row - same width as card, icon on far right */}
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "end",
+              justifyContent: "flex-end",
+              marginBottom: 2,
+            }}
+            className="min-w-[99%] md:min-w-[90%] lg:min-w-[80%] xl:min-w-[70%]"
+          >
+            <MdLocalPrintshop
+              size={40}
+              style={{ cursor: "pointer", color: "#2e6da4" }}
               onClick={() => window.print()}
             />
           </div>
@@ -234,12 +310,12 @@ export default function RRBsTable() {
           {/* Result card */}
           <div
             style={{
-              width: 420,
-              margin: "0 auto",
+              width: "min(450px, 90vw)",
               border: "3px solid #111111",
               backgroundColor: "#ffffff",
               boxSizing: "border-box",
             }}
+            className="rounded-sm"
           >
             {(
               [
@@ -248,7 +324,16 @@ export default function RRBsTable() {
                 { label: "Post Applied", value: resultData.postApplied },
                 { label: "Roll No", value: resultData.roll },
                 { label: "Control No", value: resultData.controlNo },
-                { label: "Date of Birth", value: resultData.dob.split("T")[0] },
+                {
+                  label: "Date of Birth",
+                  value: (() => {
+                    const d = new Date(resultData.dob);
+                    const dd = String(d.getDate()).padStart(2, "0");
+                    const mm = String(d.getMonth() + 1).padStart(2, "0");
+                    const yyyy = d.getFullYear();
+                    return `${dd}/${mm}/${yyyy}`;
+                  })(),
+                },
                 { label: "Zone", value: resultData.zone },
               ] as { label: string; value: string }[]
             ).map(({ label, value }) => (
@@ -256,18 +341,22 @@ export default function RRBsTable() {
                 key={label}
                 style={{
                   display: "flex",
-                  borderBottom: "3px solid #111111",
+                  borderBottom: "1px solid #111111",
                 }}
               >
                 <div
                   style={{
-                    width: 160,
-                    minWidth: 160,
-                    padding: "5px",
+                    width: "38%",
+                    minWidth: 0,
+                    padding: "6px 8px",
                     color: "#000000",
-                    fontSize: 13,
-                    borderRight: "3px solid #111111",
+                    fontSize: 14,
+                    textAlign: "center",
+                    borderRight: "1px solid #111111",
                     boxSizing: "border-box",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
                   }}
                 >
                   {label}
@@ -275,11 +364,14 @@ export default function RRBsTable() {
                 <div
                   style={{
                     flex: 1,
-                    padding: "5px",
+                    padding: "6px 8px",
                     color: "#000000",
-                    fontSize: 13,
+                    fontSize: 14,
                     textTransform: "uppercase",
                     boxSizing: "border-box",
+                    display: "flex",
+                    alignItems: "center",
+                    wordBreak: "break-word",
                   }}
                 >
                   {value}
@@ -291,17 +383,17 @@ export default function RRBsTable() {
             <div style={{ display: "flex" }}>
               <div
                 style={{
-                  width: 160,
-                  minWidth: 160,
-                  padding: "5px",
+                  width: "38%",
+                  minWidth: 0,
+                  padding: "8px",
                   color: "#000000",
-                  fontSize: 16,
+                  fontSize: 15,
                   textAlign: "center",
-                  borderRight: "3px solid #111111",
+                  borderRight: "1px solid #111111",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  minHeight: 40,
+                  minHeight: 44,
                   boxSizing: "border-box",
                 }}
               >
@@ -310,9 +402,9 @@ export default function RRBsTable() {
               <div
                 style={{
                   flex: 1,
-                  padding: "5px",
+                  padding: "8px",
                   color: "#000000",
-                  fontSize: 16,
+                  fontSize: 15,
                   textAlign: "center",
                   display: "flex",
                   alignItems: "center",
