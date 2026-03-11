@@ -3,17 +3,34 @@
 import { useState } from "react";
 
 const zones = [
-  "Ahmedabad", "Ajmer", "Allahabad", "Bangalore", "Bhopal",
-  "Bhubaneshwar", "Bilaspur", "Chandigarh", "Delhi", "Gorakhpur",
-  "Guwahati", "Jammu", "Kolkata", "Hajipur", "Mumbai",
-  "Muzaffarpur", "Patna", "Ranchi", "Secunderabad", "Siliguri", "Trivendrum",
+  "Ahmedabad",
+  "Ajmer",
+  "Allahabad",
+  "Bangalore",
+  "Bhopal",
+  "Bhubaneshwar",
+  "Bilaspur",
+  "Chandigarh",
+  "Delhi",
+  "Gorakhpur",
+  "Guwahati",
+  "Jammu",
+  "Kolkata",
+  "Hajipur",
+  "Mumbai",
+  "Muzaffarpur",
+  "Patna",
+  "Ranchi",
+  "Secunderabad",
+  "Siliguri",
+  "Trivendrum",
 ];
 
 interface ResultData {
-  candidateName: string;
+  name: string;
   fatherName: string;
   postApplied: string;
-  rollNo: string;
+  roll: string;
   controlNo: string;
   dob: string;
   zone: string;
@@ -65,18 +82,19 @@ export default function RRBsTable() {
       setError("Please enter Roll No and select a Zone.");
       return;
     }
+
     setError("");
     setLoading(true);
+
     try {
-      const res = await fetch("/api/showdet", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ roll_no: rollNo, zone }),
-      });
+      const res = await fetch(`/api/user/search?roll=${rollNo}&zone=${zone}`);
+
       if (!res.ok) throw new Error("Failed to fetch");
+
       const data = await res.json();
-      setResultData(data);
-    } catch {
+
+      setResultData(data.data);
+    } catch (error) {
       setError("Could not fetch result. Please try again.");
       setResultData(null);
     } finally {
@@ -86,7 +104,6 @@ export default function RRBsTable() {
 
   return (
     <div style={{ textAlign: "center", minHeight: "100vh" }}>
-
       {/* Banner */}
       <div
         style={{
@@ -158,7 +175,9 @@ export default function RRBsTable() {
             >
               <option value="">----Select Zone----</option>
               {zones.map((z) => (
-                <option key={z} value={z}>{z}</option>
+                <option key={z} value={z}>
+                  {z}
+                </option>
               ))}
             </select>
           </div>
@@ -201,7 +220,6 @@ export default function RRBsTable() {
       {/* Result */}
       {resultData && (
         <div id="ss" style={{ width: "75%", margin: "0 auto" }}>
-
           {/* Print icon */}
           <div style={{ textAlign: "right", marginBottom: 4 }}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -225,13 +243,13 @@ export default function RRBsTable() {
           >
             {(
               [
-                { label: "Candidate's Name", value: resultData.candidateName },
-                { label: "Father's Name",    value: resultData.fatherName },
-                { label: "Post Applied",     value: resultData.postApplied },
-                { label: "Roll No",          value: resultData.rollNo },
-                { label: "Control No",       value: resultData.controlNo },
-                { label: "Date of Birth",    value: resultData.dob },
-                { label: "Zone",             value: resultData.zone },
+                { label: "Candidate's Name", value: resultData.name },
+                { label: "Father's Name", value: resultData.fatherName },
+                { label: "Post Applied", value: resultData.postApplied },
+                { label: "Roll No", value: resultData.roll },
+                { label: "Control No", value: resultData.controlNo },
+                { label: "Date of Birth", value: resultData.dob.split("T")[0] },
+                { label: "Zone", value: resultData.zone },
               ] as { label: string; value: string }[]
             ).map(({ label, value }) => (
               <div
