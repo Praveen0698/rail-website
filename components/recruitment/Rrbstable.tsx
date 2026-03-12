@@ -663,7 +663,7 @@ INDIAN RAILWAYS <span class="p-english-sub">Lifeline to the Nation...</span>
                   boxSizing: "border-box",
                 }}
               >
-                <strong>&quot;{resultData.result}&quot;</strong>
+                <strong>&quot;{resultData.result }&quot;</strong>
               </div>
             </div>
           </div>
