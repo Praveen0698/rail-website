@@ -104,39 +104,39 @@ export default function RRBsTable() {
     }
   };
 
-const handlePrint = () => {
-if (!resultData) return;
+  const handlePrint = () => {
+    if (!resultData) return;
 
-const dob = (() => {
-const d = new Date(resultData.dob);
-const dd = String(d.getDate()).padStart(2, "0");
-const mm = String(d.getMonth() + 1).padStart(2, "0");
-const yyyy = d.getFullYear();
-return `${dd}/${mm}/${yyyy}`;
-})();
+    const dob = (() => {
+      const d = new Date(resultData.dob);
+      const dd = String(d.getDate()).padStart(2, "0");
+      const mm = String(d.getMonth() + 1).padStart(2, "0");
+      const yyyy = d.getFullYear();
+      return `${dd}/${mm}/${yyyy}`;
+    })();
 
-const now = new Date();
-const dateStr = `${String(now.getDate()).padStart(2, "0")}/${String(
-    now.getMonth() + 1
-  ).padStart(2, "0")}/${now.getFullYear()}`;
+    const now = new Date();
+    const dateStr = `${String(now.getDate()).padStart(2, "0")}/${String(
+      now.getMonth() + 1,
+    ).padStart(2, "0")}/${now.getFullYear()}`;
 
-const timeStr = `${String(now.getHours()).padStart(2, "0")}:${String(
-    now.getMinutes()
-  ).padStart(2, "0")}`;
+    const timeStr = `${String(now.getHours()).padStart(2, "0")}:${String(
+      now.getMinutes(),
+    ).padStart(2, "0")}`;
 
-const dateTimeStr = `${dateStr}, ${timeStr}`;
-const pageUrl = window.location.href;
+    const dateTimeStr = `${dateStr}, ${timeStr}`;
+    const pageUrl = window.location.href;
 
-const STYLE_ID = "rrb-print-style";
-const SECTION_ID = "rrb-print-section";
+    const STYLE_ID = "rrb-print-style";
+    const SECTION_ID = "rrb-print-section";
 
-document.getElementById(STYLE_ID)?.remove();
-document.getElementById(SECTION_ID)?.remove();
+    document.getElementById(STYLE_ID)?.remove();
+    document.getElementById(SECTION_ID)?.remove();
 
-const style = document.createElement("style");
-style.id = STYLE_ID;
+    const style = document.createElement("style");
+    style.id = STYLE_ID;
 
-style.innerHTML = `
+    style.innerHTML = `
 @media print {
 
 body > *:not(#${SECTION_ID}) {
@@ -264,12 +264,12 @@ font-size:9px;
 }
 `;
 
-document.head.appendChild(style);
+    document.head.appendChild(style);
 
-const section = document.createElement("div");
-section.id = SECTION_ID;
+    const section = document.createElement("div");
+    section.id = SECTION_ID;
 
-section.innerHTML = `
+    section.innerHTML = `
 
 <div class="p-meta">
 <span>${dateTimeStr}</span>
@@ -312,16 +312,15 @@ section.innerHTML = `
 </div>
 `;
 
-document.body.appendChild(section);
+    document.body.appendChild(section);
 
-window.print();
+    window.print();
 
-setTimeout(() => {
-document.getElementById(STYLE_ID)?.remove();
-document.getElementById(SECTION_ID)?.remove();
-}, 1500);
-};
-
+    setTimeout(() => {
+      document.getElementById(STYLE_ID)?.remove();
+      document.getElementById(SECTION_ID)?.remove();
+    }, 1500);
+  };
 
   return (
     <div style={{ textAlign: "center", minHeight: "100vh" }}>
@@ -379,86 +378,42 @@ document.getElementById(SECTION_ID)?.remove();
 
         {/* Zone row */}
         <div style={rowStyle}>
-          <div style={labelStyle}>Zone</div>
-
-          <div style={valueStyle}>
-            <Select
-              value={zone ? { value: zone, label: zone } : null}
-              onChange={(selected) => setZone(selected ? selected.value : "")}
-              options={zones.map((z) => ({ value: z, label: z }))}
-              placeholder="----Select Zone----"
-              menuPlacement="auto"
-              styles={{
-                container: (base) => ({
-                  ...base,
-                  width: "100%",
-                }),
-
-                control: (base) => ({
-                  ...base,
-                  width: "100%",
-                  minHeight: 30,
-                  height: 30,
-                  border: "1px solid #aaaaaa",
-                  boxShadow: "none",
-                  fontSize: 14,
-                  backgroundColor: "#ffffff",
-                  color: "#000000",
-                }),
-
-                valueContainer: (base) => ({
-                  ...base,
-                  height: 30,
-                  padding: "0 6px",
-                  display: "flex",
-                  alignItems: "center",
-                  color: "#000000",
-                }),
-
-                indicatorsContainer: (base) => ({
-                  ...base,
-                  height: 30,
-                }),
-
-                dropdownIndicator: (base) => ({
-                  ...base,
-                  padding: 4,
-                }),
-
-                menu: (base) => ({
-                  ...base,
-                  marginTop: 2,
-                  width: "100%",
-                }),
-
-                menuList: (base) => ({
-                  ...base,
-                  maxHeight: 250,
-                  padding: 0,
-                  scrollbarWidth: "thin",
-                }),
-
-                option: (base, state) => ({
-                  ...base,
-                  textAlign: "left",
-                  padding: "8px 10px",
-                  fontSize: 14,
-                  backgroundColor: state.isFocused ? "#f2f2f2" : "#ffffff",
-                  color: "#000",
-                }),
-
-                singleValue: (base) => ({
-                  ...base,
-                  textAlign: "left",
-                  color: "#000000",
-                }),
-
-                placeholder: (base) => ({
-                  ...base,
-                  color: "#666",
-                }),
+          <div
+            style={{
+              width: 450,
+              margin: "20px auto",
+              border: "1px solid #888",
+            }}
+          >
+            <div
+              style={{
+                backgroundColor: "#8b0000",
+                color: "#fff",
+                fontWeight: "bold",
+                padding: "6px",
+                borderBottom: "1px solid #888",
               }}
-            />
+            >
+              Name of RRBs
+            </div>
+
+            {zones.map((z) => (
+              <div
+                key={z}
+                onClick={() => setZone(z)}
+                style={{
+                  padding: "6px",
+                  borderBottom: "1px solid #bbb",
+                  backgroundColor: zone === z ? "#dce8ff" : "#f5f5f5",
+                  cursor: "pointer",
+                  color: "#0033cc",
+                  textDecoration: "underline",
+                  fontWeight: "bold",
+                }}
+              >
+                {z}
+              </div>
+            ))}
           </div>
         </div>
 
@@ -490,6 +445,7 @@ document.getElementById(SECTION_ID)?.remove();
         </div>
       </div>
 
+      <p className="mt-10">Source : Ministry of Railways (Railway Board) CMS Team</p>
       {/* Error */}
       {error && (
         <p style={{ color: "red", fontSize: 14, marginTop: 10 }}>{error}</p>
