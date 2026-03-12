@@ -21,7 +21,6 @@ export async function GET() {
   }
 }
 
-// CREATE USER
 export async function POST(req: Request) {
   try {
     await connectDB();
