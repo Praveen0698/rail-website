@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { MdLocalPrintshop } from "react-icons/md";
-import Select from "react-select";
+// import Select from "react-select";
 
 const zones = [
   "Ahmedabad",
@@ -138,38 +138,33 @@ export default function RRBsTable() {
 
     style.innerHTML = `
 @media print {
-
-body > *:not(#${SECTION_ID}) {
-display: none !important;
-}
-
-#${SECTION_ID} {
-display: block !important;
-}
+body > *:not(#${SECTION_ID}) { display:none !important; }
+#${SECTION_ID} { display:block !important; }
 
 @page {
-size: A4 portrait;
+size:A4 portrait;
+margin:10mm;
 }
 
-body {
--webkit-print-color-adjust: exact !important;
-print-color-adjust: exact !important;
-background: #fff;
+body{
+-webkit-print-color-adjust:exact !important;
+print-color-adjust:exact !important;
+background:#fff;
+margin:0;
 }
 }
 
 #${SECTION_ID}{
 display:none;
-font-family:Arial, sans-serif;
+font-family:"Times New Roman", Times, serif;
 width:100%;
 }
 
-/* top meta */
+/* meta */
 #${SECTION_ID} .p-meta{
 display:flex;
 justify-content:space-between;
-align-items:center;
-font-size:9.5px;
+font-size:9px;
 margin-bottom:6px;
 }
 
@@ -178,68 +173,77 @@ flex:1;
 text-align:center;
 }
 
-/* railway header */
+/* HEADER */
 #${SECTION_ID} .p-header{
 background:#3D76C0;
 display:flex;
-align-items:center;
 justify-content:space-between;
-padding:10px 14px;
+align-items:flex-start;
+padding:8px 16px;
+}
+
+#${SECTION_ID} .p-header-left{
+display:flex;
+align-items:flex-start;
+gap:10px;
 }
 
 #${SECTION_ID} .p-header-logo{
-height:70px;
-}
-
-#${SECTION_ID} .p-header-emblem{
-height:70px;
+height:58px;
 }
 
 #${SECTION_ID} .p-header-text{
-text-align:center;
 color:#fff;
-flex:1;
-line-height:1.15;
+line-height:1.1;
+margin-top:8px;
 }
 
 #${SECTION_ID} .p-hindi{
-font-size:30px;
+font-size:26px;
 font-weight:bold;
 }
 
 #${SECTION_ID} .p-hindi-sub{
-font-size:13px;
+font-size:12px;
+margin-left:6px;
 }
 
 #${SECTION_ID} .p-english{
-font-size:12px;
+font-size:11px;
 font-weight:bold;
 letter-spacing:1px;
+margin-top:2px;
 }
 
 #${SECTION_ID} .p-english-sub{
-font-size:11px;
+font-size:10px;
+margin-left:6px;
 }
 
-/* table */
+#${SECTION_ID} .p-header-emblem{
+height:60px;
+}
+
+/* TABLE EXACT MATCH */
 #${SECTION_ID} .p-table-wrap{
-margin:60px auto 0 auto;
-width:440px;
+margin:70px auto 0 auto;
+width:520px;
 }
 
 #${SECTION_ID} table{
 width:100%;
 border-collapse:collapse;
+border:2px solid #000;
 }
 
 #${SECTION_ID} td{
 border:1px solid #000;
-padding:6px 8px;
+padding:2px 6px;
 font-size:11px;
 }
 
 #${SECTION_ID} .p-col-label{
-width:40%;
+width:32%;
 }
 
 #${SECTION_ID} .p-result-label{
@@ -279,11 +283,19 @@ font-size:9px;
 
 <div class="p-header">
 
+<div class="p-header-left">
 <img class="p-header-logo" src="/printlogo.png"/>
 
 <div class="p-header-text">
-<div class="p-hindi">भारतीय रेल <span class="p-hindi-sub">राष्ट्र की जीवन रेखा...</span></div>
-<div class="p-english">INDIAN RAILWAYS <span class="p-english-sub">Lifeline to the Nation...</span></div>
+<div class="p-hindi">
+भारतीय रेल <span class="p-hindi-sub">राष्ट्र की जीवन रेखा...</span>
+</div>
+
+<div class="p-english">
+INDIAN RAILWAYS <span class="p-english-sub">Lifeline to the Nation...</span>
+</div>
+</div>
+
 </div>
 
 <img class="p-header-emblem" src="/printemblem.jpg"/>
@@ -292,9 +304,9 @@ font-size:9px;
 
 <div class="p-table-wrap">
 <table>
-<tr><td class="p-col-label">Candidate's Name</td><td>${resultData.name}</td></tr>
-<tr><td class="p-col-label">Father's Name</td><td>${resultData.fatherName}</td></tr>
-<tr><td class="p-col-label">Post Applied</td><td>${resultData.postApplied}</td></tr>
+<tr><td class="p-col-label">Candidate's Name</td><td>${resultData.name.toUpperCase()}</td></tr>
+<tr><td class="p-col-label">Father's Name</td><td>${resultData.fatherName.toUpperCase()}</td></tr>
+<tr><td class="p-col-label">Post Applied</td><td>${resultData.postApplied.toUpperCase()}</td></tr>
 <tr><td class="p-col-label">Roll No</td><td>${resultData.roll}</td></tr>
 <tr><td class="p-col-label">Control No</td><td>${resultData.controlNo}</td></tr>
 <tr><td class="p-col-label">Date of Birth</td><td>${dob}</td></tr>
@@ -445,7 +457,9 @@ font-size:9px;
         </div>
       </div>
 
-      <p className="mt-10">Source : Ministry of Railways (Railway Board) CMS Team</p>
+      <p className="mt-10">
+        Source : Ministry of Railways (Railway Board) CMS Team
+      </p>
       {/* Error */}
       {error && (
         <p style={{ color: "red", fontSize: 14, marginTop: 10 }}>{error}</p>
