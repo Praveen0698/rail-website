@@ -47,7 +47,7 @@ const labelStyle: React.CSSProperties = {
   fontSize: 14,
   fontWeight: "bold",
   textAlign: "center",
-  padding: "10px 14px",
+  padding: "2px 14px",
   width: 120,
   minWidth: 120,
   display: "flex",
@@ -340,7 +340,7 @@ INDIAN RAILWAYS <span class="p-english-sub">Lifeline to the Nation...</span>
       <div
         style={{
           width: 450,
-          margin: "0 auto 20px auto",
+          margin: "0 auto 2px auto",
           border: "1px solid transparent",
           backgroundColor: BLUE,
           padding: "8px 12px",
@@ -367,25 +367,49 @@ INDIAN RAILWAYS <span class="p-english-sub">Lifeline to the Nation...</span>
         }}
       >
         {/* Roll No row */}
-        <div style={rowStyle}>
-          <div style={labelStyle}>Roll No</div>
-          <div style={valueStyle}>
-            <input
-              type="text"
-              value={rollNo}
-              onChange={(e) => setRollNo(e.target.value)}
-              style={{
-                width: "100%",
-                fontSize: 14,
-                padding: "4px 6px",
-                border: "1px solid #aaaaaa",
-                boxSizing: "border-box",
-                color: "#000000",
-                backgroundColor: "#ffffff",
-              }}
-              className="rounded-sm"
-            />
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "10px",
+            marginBottom: "2px",
+          }}
+        >
+          <div
+            style={{
+              backgroundColor: "#2f56a6",
+              color: "#fff",
+              fontWeight: "bold",
+              fontSize: "14px",
+              padding: "6px 18px",
+              minWidth: "110px",
+              textAlign: "center",
+              height: "32px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            Roll No
           </div>
+
+          <input
+            type="text"
+            value={rollNo}
+            onChange={(e) => setRollNo(e.target.value)}
+            style={{
+              flex: 1,
+              fontSize: "14px",
+              padding: "5px 8px",
+              height: "32px",
+              border: "1px solid #aaaaaa",
+              borderRadius: "6px",
+              boxSizing: "border-box",
+              color: "#000",
+              backgroundColor: "#ffffff",
+              maxWidth: "520px",
+            }}
+          />
         </div>
 
         {/* Zone row */}
@@ -394,38 +418,76 @@ INDIAN RAILWAYS <span class="p-english-sub">Lifeline to the Nation...</span>
             style={{
               width: 450,
               margin: "20px auto",
-              border: "1px solid #888",
             }}
           >
-            <div
+            <table
               style={{
-                backgroundColor: "#8b0000",
-                color: "#fff",
-                fontWeight: "bold",
-                padding: "6px",
-                borderBottom: "1px solid #888",
+                width: "100%",
+                borderCollapse: "collapse",
+                border: "1px solid #888",
+                fontFamily: "Tahoma",
+                fontSize: "14px",
               }}
             >
-              Name of RRBs
-            </div>
+              <tbody>
+                {/* Header */}
+                <tr>
+                  <td
+                    style={{
+                      backgroundColor: "#800000",
+                      color: "#ffffff",
+                      fontWeight: "bold",
+                      textAlign: "center",
+                      border: "1px solid #888",
+                      padding: "2px 0",
+                      lineHeight: "18px",
+                    }}
+                  >
+                    Name of RRBs
+                  </td>
+                </tr>
 
-            {zones.map((z) => (
-              <div
-                key={z}
-                onClick={() => setZone(z)}
-                style={{
-                  padding: "6px",
-                  borderBottom: "1px solid #bbb",
-                  backgroundColor: zone === z ? "#dce8ff" : "#f5f5f5",
-                  cursor: "pointer",
-                  color: "#0033cc",
-                  textDecoration: "underline",
-                  fontWeight: "bold",
-                }}
-              >
-                {z}
-              </div>
-            ))}
+                {/* Zones */}
+                {zones.map((z) => (
+                  <tr key={z}>
+                    <td
+                      onClick={() => setZone(z)}
+                      onMouseEnter={(e) => {
+                        if (zone !== z) {
+                          e.currentTarget.style.backgroundColor = "#f2f6ff";
+                        }
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.backgroundColor =
+                          zone === z ? "#dce8ff" : "#ffffff";
+                      }}
+                      style={{
+                        textAlign: "center",
+                        border: "1px solid #888",
+                        padding: "0px",
+                        lineHeight: "18px",
+                        height: "20px",
+                        cursor: "pointer",
+                        backgroundColor: zone === z ? "#dce8ff" : "#ffffff",
+                        transition: "background-color 0.15s ease",
+                      }}
+                    >
+                      <a
+                        style={{
+                          color: "#0000ff",
+                          textDecoration: "underline",
+                          fontWeight: "bold",
+                          display: "inline-block",
+                          lineHeight: "18px",
+                        }}
+                      >
+                        {z}
+                      </a>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         </div>
 
