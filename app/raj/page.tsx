@@ -27,7 +27,7 @@ export default function LoginPage() {
         }),
       );
 
-      router.replace("/admin/home");
+      router.replace("/raj/home");
     } else {
       setError("Invalid Credentials");
     }

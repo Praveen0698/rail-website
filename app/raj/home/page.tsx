@@ -137,7 +137,7 @@ const HomePage = () => {
 
   const handleLogout = () => {
     localStorage.removeItem("auth");
-    router.replace("/admin");
+    router.replace("/raj");
   };
 
   const handleChange = (
