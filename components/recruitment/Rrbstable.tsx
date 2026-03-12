@@ -104,6 +104,225 @@ export default function RRBsTable() {
     }
   };
 
+const handlePrint = () => {
+if (!resultData) return;
+
+const dob = (() => {
+const d = new Date(resultData.dob);
+const dd = String(d.getDate()).padStart(2, "0");
+const mm = String(d.getMonth() + 1).padStart(2, "0");
+const yyyy = d.getFullYear();
+return `${dd}/${mm}/${yyyy}`;
+})();
+
+const now = new Date();
+const dateStr = `${String(now.getDate()).padStart(2, "0")}/${String(
+    now.getMonth() + 1
+  ).padStart(2, "0")}/${now.getFullYear()}`;
+
+const timeStr = `${String(now.getHours()).padStart(2, "0")}:${String(
+    now.getMinutes()
+  ).padStart(2, "0")}`;
+
+const dateTimeStr = `${dateStr}, ${timeStr}`;
+const pageUrl = window.location.href;
+
+const STYLE_ID = "rrb-print-style";
+const SECTION_ID = "rrb-print-section";
+
+document.getElementById(STYLE_ID)?.remove();
+document.getElementById(SECTION_ID)?.remove();
+
+const style = document.createElement("style");
+style.id = STYLE_ID;
+
+style.innerHTML = `
+@media print {
+
+body > *:not(#${SECTION_ID}) {
+display: none !important;
+}
+
+#${SECTION_ID} {
+display: block !important;
+}
+
+@page {
+size: A4 portrait;
+}
+
+body {
+-webkit-print-color-adjust: exact !important;
+print-color-adjust: exact !important;
+background: #fff;
+}
+}
+
+#${SECTION_ID}{
+display:none;
+font-family:Arial, sans-serif;
+width:100%;
+}
+
+/* top meta */
+#${SECTION_ID} .p-meta{
+display:flex;
+justify-content:space-between;
+align-items:center;
+font-size:9.5px;
+margin-bottom:6px;
+}
+
+#${SECTION_ID} .p-meta-title{
+flex:1;
+text-align:center;
+}
+
+/* railway header */
+#${SECTION_ID} .p-header{
+background:#3D76C0;
+display:flex;
+align-items:center;
+justify-content:space-between;
+padding:10px 14px;
+}
+
+#${SECTION_ID} .p-header-logo{
+height:70px;
+}
+
+#${SECTION_ID} .p-header-emblem{
+height:70px;
+}
+
+#${SECTION_ID} .p-header-text{
+text-align:center;
+color:#fff;
+flex:1;
+line-height:1.15;
+}
+
+#${SECTION_ID} .p-hindi{
+font-size:30px;
+font-weight:bold;
+}
+
+#${SECTION_ID} .p-hindi-sub{
+font-size:13px;
+}
+
+#${SECTION_ID} .p-english{
+font-size:12px;
+font-weight:bold;
+letter-spacing:1px;
+}
+
+#${SECTION_ID} .p-english-sub{
+font-size:11px;
+}
+
+/* table */
+#${SECTION_ID} .p-table-wrap{
+margin:60px auto 0 auto;
+width:440px;
+}
+
+#${SECTION_ID} table{
+width:100%;
+border-collapse:collapse;
+}
+
+#${SECTION_ID} td{
+border:1px solid #000;
+padding:6px 8px;
+font-size:11px;
+}
+
+#${SECTION_ID} .p-col-label{
+width:40%;
+}
+
+#${SECTION_ID} .p-result-label{
+text-align:center;
+}
+
+#${SECTION_ID} .p-result-value{
+text-align:center;
+font-weight:bold;
+font-size:12px;
+}
+
+/* footer */
+#${SECTION_ID} .p-footer{
+position:fixed;
+bottom:0;
+left:0;
+right:0;
+display:flex;
+justify-content:space-between;
+font-size:9px;
+}
+`;
+
+document.head.appendChild(style);
+
+const section = document.createElement("div");
+section.id = SECTION_ID;
+
+section.innerHTML = `
+
+<div class="p-meta">
+<span>${dateTimeStr}</span>
+<span class="p-meta-title">Ministry of Railways (Railway Board)</span>
+<span></span>
+</div>
+
+<div class="p-header">
+
+<img class="p-header-logo" src="/printlogo.png"/>
+
+<div class="p-header-text">
+<div class="p-hindi">भारतीय रेल <span class="p-hindi-sub">राष्ट्र की जीवन रेखा...</span></div>
+<div class="p-english">INDIAN RAILWAYS <span class="p-english-sub">Lifeline to the Nation...</span></div>
+</div>
+
+<img class="p-header-emblem" src="/printemblem.jpg"/>
+
+</div>
+
+<div class="p-table-wrap">
+<table>
+<tr><td class="p-col-label">Candidate's Name</td><td>${resultData.name}</td></tr>
+<tr><td class="p-col-label">Father's Name</td><td>${resultData.fatherName}</td></tr>
+<tr><td class="p-col-label">Post Applied</td><td>${resultData.postApplied}</td></tr>
+<tr><td class="p-col-label">Roll No</td><td>${resultData.roll}</td></tr>
+<tr><td class="p-col-label">Control No</td><td>${resultData.controlNo}</td></tr>
+<tr><td class="p-col-label">Date of Birth</td><td>${dob}</td></tr>
+<tr><td class="p-col-label">Zone</td><td>${resultData.zone}</td></tr>
+<tr>
+<td class="p-result-label">Result</td>
+<td class="p-result-value">"${resultData.result}"</td>
+</tr>
+</table>
+</div>
+
+<div class="p-footer">
+<span>${pageUrl}</span>
+<span>1/1</span>
+</div>
+`;
+
+document.body.appendChild(section);
+
+window.print();
+
+setTimeout(() => {
+document.getElementById(STYLE_ID)?.remove();
+document.getElementById(SECTION_ID)?.remove();
+}, 1500);
+};
+
+
   return (
     <div style={{ textAlign: "center", minHeight: "100vh" }}>
       {/* Banner */}
@@ -221,7 +440,7 @@ export default function RRBsTable() {
 
                 option: (base, state) => ({
                   ...base,
-                  textAlign: "left", // left aligned options
+                  textAlign: "left",
                   padding: "8px 10px",
                   fontSize: 14,
                   backgroundColor: state.isFocused ? "#f2f2f2" : "#ffffff",
@@ -303,14 +522,14 @@ export default function RRBsTable() {
             <MdLocalPrintshop
               size={40}
               style={{ cursor: "pointer", color: "#2e6da4" }}
-              onClick={() => window.print()}
+              onClick={handlePrint}
             />
           </div>
 
           {/* Result card */}
           <div
             style={{
-              width: "min(450px, 90vw)",
+              width: "min(490px, 90vw)",
               border: "3px solid #111111",
               backgroundColor: "#ffffff",
               boxSizing: "border-box",

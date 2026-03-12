@@ -14,7 +14,7 @@ export async function GET(req: Request) {
     if (!roll || !zone) {
       return NextResponse.json(
         { success: false, message: "roll and zone are required" },
-        { status: 400 },
+        { status: 400 }
       );
     }
 
@@ -26,7 +26,7 @@ export async function GET(req: Request) {
     if (!user) {
       return NextResponse.json(
         { success: false, message: "User not found" },
-        { status: 404 },
+        { status: 404 }
       );
     }
 
@@ -36,8 +36,8 @@ export async function GET(req: Request) {
     });
   } catch (error) {
     return NextResponse.json(
-      { success: false, message: "Failed to fetch user",error:error },
-      { status: 500 },
+      { success: false, message: "Failed to fetch user", error: error },
+      { status: 500 }
     );
   }
 }
