@@ -73,6 +73,8 @@ const HomePage = () => {
   const [searching, setSearching] = useState(false);
   const [showSearch, setShowSearch] = useState(false);
   const [loadingUsers, setLoadingUsers] = useState(true);
+  const [isBlocked, setIsBlocked] = useState(false);
+  const [togglingBlock, setTogglingBlock] = useState(false);
 
   const fetchUsers = async () => {
     setLoadingUsers(true);
@@ -88,8 +90,48 @@ const HomePage = () => {
     setLoadingUsers(false);
   };
 
+  const fetchBlockStatus = async () => {
+    try {
+      const res = await fetch("/api/user/block");
+      const data = await res.json();
+
+      if (data.success) {
+        setIsBlocked(data.isBlocked);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const toggleBlock = async () => {
+    try {
+      setTogglingBlock(true);
+
+      const res = await fetch("/api/user/block", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          isBlocked: !isBlocked,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (data.success) {
+        setIsBlocked(data.data.isBlocked);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+
+    setTogglingBlock(false);
+  };
+
   useEffect(() => {
     fetchUsers();
+    fetchBlockStatus();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -254,6 +296,28 @@ const HomePage = () => {
                 <line x1="5" y1="12" x2="19" y2="12" />
               </svg>
               Add User
+            </button>
+            <button
+              onClick={toggleBlock}
+              disabled={togglingBlock}
+              style={{
+                background: isBlocked ? "#2d0a0a" : "#052e16",
+                color: isBlocked ? "#f87171" : "#4ade80",
+                border: isBlocked ? "1px solid #7f1d1d" : "1px solid #166534",
+                padding: "10px 18px",
+                borderRadius: "10px",
+                cursor: "pointer",
+                fontWeight: 600,
+                display: "flex",
+                alignItems: "center",
+                gap: "6px",
+              }}
+            >
+              {togglingBlock
+                ? "Updating..."
+                : isBlocked
+                  ? "🔓 Unblock Website"
+                  : "🔒 Block Website"}
             </button>
             <button
               className="btn-logout"

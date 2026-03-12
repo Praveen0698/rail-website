@@ -2,11 +2,37 @@
 
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 export default function Home() {
   const router = useRouter();
+  const [checking, setChecking] = useState(true);
+
+  useEffect(() => {
+    fetchBlockStatus();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const fetchBlockStatus = async () => {
+    try {
+      const res = await fetch("/api/user/block");
+      const data = await res.json();
+
+      if (data.isBlocked) {
+        window.location.replace("https://indianrailways.gov.in/");
+        return;
+      }
+    } catch (err) {
+      console.error(err);
+    }
+
+    setChecking(false);
+  };
+
+  if (checking) return null;
+
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white flex flex-col items-center px-6 py-10">
+    <div className="min-h-screen bg-linear-to-b from-blue-50 to-white flex flex-col items-center px-6 py-10">
       <div className="mb-8">
         <Image
           src="/logo.gif"
