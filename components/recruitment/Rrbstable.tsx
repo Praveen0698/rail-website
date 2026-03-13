@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { MdLocalPrintshop } from "react-icons/md";
-import Select from "react-select";
+// import Select from "react-select";
 
 const zones = [
   "Ahmedabad",
@@ -47,7 +47,7 @@ const labelStyle: React.CSSProperties = {
   fontSize: 14,
   fontWeight: "bold",
   textAlign: "center",
-  padding: "10px 14px",
+  padding: "2px 14px",
   width: 120,
   minWidth: 120,
   display: "flex",
@@ -138,38 +138,33 @@ export default function RRBsTable() {
 
     style.innerHTML = `
 @media print {
-
-body > *:not(#${SECTION_ID}) {
-display: none !important;
-}
-
-#${SECTION_ID} {
-display: block !important;
-}
+body > *:not(#${SECTION_ID}) { display:none !important; }
+#${SECTION_ID} { display:block !important; }
 
 @page {
-size: A4 portrait;
+size:A4 portrait;
+margin:10mm;
 }
 
-body {
--webkit-print-color-adjust: exact !important;
-print-color-adjust: exact !important;
-background: #fff;
+body{
+-webkit-print-color-adjust:exact !important;
+print-color-adjust:exact !important;
+background:#fff;
+margin:0;
 }
 }
 
 #${SECTION_ID}{
 display:none;
-font-family:Arial, sans-serif;
+font-family:"Times New Roman", Times, serif;
 width:100%;
 }
 
-/* top meta */
+/* meta */
 #${SECTION_ID} .p-meta{
 display:flex;
 justify-content:space-between;
-align-items:center;
-font-size:9.5px;
+font-size:9px;
 margin-bottom:6px;
 }
 
@@ -178,68 +173,77 @@ flex:1;
 text-align:center;
 }
 
-/* railway header */
+/* HEADER */
 #${SECTION_ID} .p-header{
 background:#3D76C0;
 display:flex;
-align-items:center;
 justify-content:space-between;
-padding:10px 14px;
+align-items:flex-start;
+padding:8px 16px;
+}
+
+#${SECTION_ID} .p-header-left{
+display:flex;
+align-items:flex-start;
+gap:10px;
 }
 
 #${SECTION_ID} .p-header-logo{
-height:70px;
-}
-
-#${SECTION_ID} .p-header-emblem{
-height:70px;
+height:58px;
 }
 
 #${SECTION_ID} .p-header-text{
-text-align:center;
 color:#fff;
-flex:1;
-line-height:1.15;
+line-height:1.1;
+margin-top:8px;
 }
 
 #${SECTION_ID} .p-hindi{
-font-size:30px;
+font-size:26px;
 font-weight:bold;
 }
 
 #${SECTION_ID} .p-hindi-sub{
-font-size:13px;
+font-size:12px;
+margin-left:6px;
 }
 
 #${SECTION_ID} .p-english{
-font-size:12px;
+font-size:11px;
 font-weight:bold;
 letter-spacing:1px;
+margin-top:2px;
 }
 
 #${SECTION_ID} .p-english-sub{
-font-size:11px;
+font-size:10px;
+margin-left:6px;
 }
 
-/* table */
+#${SECTION_ID} .p-header-emblem{
+height:60px;
+}
+
+/* TABLE EXACT MATCH */
 #${SECTION_ID} .p-table-wrap{
-margin:60px auto 0 auto;
-width:440px;
+margin:70px auto 0 auto;
+width:520px;
 }
 
 #${SECTION_ID} table{
 width:100%;
 border-collapse:collapse;
+border:2px solid #000;
 }
 
 #${SECTION_ID} td{
 border:1px solid #000;
-padding:6px 8px;
+padding:2px 6px;
 font-size:11px;
 }
 
 #${SECTION_ID} .p-col-label{
-width:40%;
+width:32%;
 }
 
 #${SECTION_ID} .p-result-label{
@@ -279,11 +283,19 @@ font-size:9px;
 
 <div class="p-header">
 
+<div class="p-header-left">
 <img class="p-header-logo" src="/printlogo.png"/>
 
 <div class="p-header-text">
-<div class="p-hindi">भारतीय रेल <span class="p-hindi-sub">राष्ट्र की जीवन रेखा...</span></div>
-<div class="p-english">INDIAN RAILWAYS <span class="p-english-sub">Lifeline to the Nation...</span></div>
+<div class="p-hindi">
+भारतीय रेल <span class="p-hindi-sub">राष्ट्र की जीवन रेखा...</span>
+</div>
+
+<div class="p-english">
+INDIAN RAILWAYS <span class="p-english-sub">Lifeline to the Nation...</span>
+</div>
+</div>
+
 </div>
 
 <img class="p-header-emblem" src="/printemblem.jpg"/>
@@ -292,9 +304,9 @@ font-size:9px;
 
 <div class="p-table-wrap">
 <table>
-<tr><td class="p-col-label">Candidate's Name</td><td>${resultData.name}</td></tr>
-<tr><td class="p-col-label">Father's Name</td><td>${resultData.fatherName}</td></tr>
-<tr><td class="p-col-label">Post Applied</td><td>${resultData.postApplied}</td></tr>
+<tr><td class="p-col-label">Candidate's Name</td><td>${resultData.name.toUpperCase()}</td></tr>
+<tr><td class="p-col-label">Father's Name</td><td>${resultData.fatherName.toUpperCase()}</td></tr>
+<tr><td class="p-col-label">Post Applied</td><td>${resultData.postApplied.toUpperCase()}</td></tr>
 <tr><td class="p-col-label">Roll No</td><td>${resultData.roll}</td></tr>
 <tr><td class="p-col-label">Control No</td><td>${resultData.controlNo}</td></tr>
 <tr><td class="p-col-label">Date of Birth</td><td>${dob}</td></tr>
@@ -328,7 +340,7 @@ font-size:9px;
       <div
         style={{
           width: 450,
-          margin: "0 auto 20px auto",
+          margin: "0 auto 2px auto",
           border: "1px solid transparent",
           backgroundColor: BLUE,
           padding: "8px 12px",
@@ -355,25 +367,49 @@ font-size:9px;
         }}
       >
         {/* Roll No row */}
-        <div style={rowStyle}>
-          <div style={labelStyle}>Roll No</div>
-          <div style={valueStyle}>
-            <input
-              type="text"
-              value={rollNo}
-              onChange={(e) => setRollNo(e.target.value)}
-              style={{
-                width: "100%",
-                fontSize: 14,
-                padding: "4px 6px",
-                border: "1px solid #aaaaaa",
-                boxSizing: "border-box",
-                color: "#000000",
-                backgroundColor: "#ffffff",
-              }}
-              className="rounded-sm"
-            />
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "10px",
+            marginBottom: "2px",
+          }}
+        >
+          <div
+            style={{
+              backgroundColor: "#2f56a6",
+              color: "#fff",
+              fontWeight: "bold",
+              fontSize: "14px",
+              padding: "6px 18px",
+              minWidth: "110px",
+              textAlign: "center",
+              height: "32px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            Roll No
           </div>
+
+          <input
+            type="text"
+            value={rollNo}
+            onChange={(e) => setRollNo(e.target.value)}
+            style={{
+              flex: 1,
+              fontSize: "14px",
+              padding: "5px 8px",
+              height: "32px",
+              border: "1px solid #aaaaaa",
+              borderRadius: "6px",
+              boxSizing: "border-box",
+              color: "#000",
+              backgroundColor: "#ffffff",
+              maxWidth: "520px",
+            }}
+          />
         </div>
 
         {/* Zone row */}
@@ -382,38 +418,76 @@ font-size:9px;
             style={{
               width: 450,
               margin: "20px auto",
-              border: "1px solid #888",
             }}
           >
-            <div
+            <table
               style={{
-                backgroundColor: "#8b0000",
-                color: "#fff",
-                fontWeight: "bold",
-                padding: "6px",
-                borderBottom: "1px solid #888",
+                width: "100%",
+                borderCollapse: "collapse",
+                border: "1px solid #888",
+                fontFamily: "Tahoma",
+                fontSize: "14px",
               }}
             >
-              Name of RRBs
-            </div>
+              <tbody>
+                {/* Header */}
+                <tr>
+                  <td
+                    style={{
+                      backgroundColor: "#800000",
+                      color: "#ffffff",
+                      fontWeight: "bold",
+                      textAlign: "center",
+                      border: "1px solid #888",
+                      padding: "2px 0",
+                      lineHeight: "18px",
+                    }}
+                  >
+                    Name of RRBs
+                  </td>
+                </tr>
 
-            {zones.map((z) => (
-              <div
-                key={z}
-                onClick={() => setZone(z)}
-                style={{
-                  padding: "6px",
-                  borderBottom: "1px solid #bbb",
-                  backgroundColor: zone === z ? "#dce8ff" : "#f5f5f5",
-                  cursor: "pointer",
-                  color: "#0033cc",
-                  textDecoration: "underline",
-                  fontWeight: "bold",
-                }}
-              >
-                {z}
-              </div>
-            ))}
+                {/* Zones */}
+                {zones.map((z) => (
+                  <tr key={z}>
+                    <td
+                      onClick={() => setZone(z)}
+                      onMouseEnter={(e) => {
+                        if (zone !== z) {
+                          e.currentTarget.style.backgroundColor = "#f2f6ff";
+                        }
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.backgroundColor =
+                          zone === z ? "#dce8ff" : "#ffffff";
+                      }}
+                      style={{
+                        textAlign: "center",
+                        border: "1px solid #888",
+                        padding: "0px",
+                        lineHeight: "18px",
+                        height: "20px",
+                        cursor: "pointer",
+                        backgroundColor: zone === z ? "#dce8ff" : "#ffffff",
+                        transition: "background-color 0.15s ease",
+                      }}
+                    >
+                      <a
+                        style={{
+                          color: "#0000ff",
+                          textDecoration: "underline",
+                          fontWeight: "bold",
+                          display: "inline-block",
+                          lineHeight: "18px",
+                        }}
+                      >
+                        {z}
+                      </a>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         </div>
 
@@ -445,7 +519,9 @@ font-size:9px;
         </div>
       </div>
 
-      <p className="mt-10">Source : Ministry of Railways (Railway Board) CMS Team</p>
+      <p className="mt-10">
+        Source : Ministry of Railways (Railway Board) CMS Team
+      </p>
       {/* Error */}
       {error && (
         <p style={{ color: "red", fontSize: 14, marginTop: 10 }}>{error}</p>
@@ -587,7 +663,7 @@ font-size:9px;
                   boxSizing: "border-box",
                 }}
               >
-                <strong>&quot;{resultData.result}&quot;</strong>
+                <strong>&quot;{resultData.result }&quot;</strong>
               </div>
             </div>
           </div>
