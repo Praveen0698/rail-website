@@ -12,86 +12,162 @@ interface MenuItem {
 const menuItems: MenuItem[] = [
   {
     label: "About Indian Railways",
-    href: "view_section.jsp?lang=0&id=0,1",
+    href: "#",
     children: [
-      { label: "Honourable Ministers", href: "view_section.jsp?lang=0&id=0,1,2550" },
+      {
+        label: "Honourable Ministers",
+        href: "#",
+      },
       {
         label: "Corporate Overview",
-        href: "view_section.jsp?lang=0&id=0,1,304",
+        href: "#",
         children: [
-          { label: "Organisation Structure", href: "view_section.jsp?lang=0&id=0,1,304,305" },
-          { label: "Board Members/General Managers", href: "view_section.jsp?lang=0&id=0,1,304,365" },
+          {
+            label: "Organisation Structure",
+            href: "#",
+          },
+          {
+            label: "Board Members/General Managers",
+            href: "#",
+          },
         ],
       },
-      { label: "Statistics", href: "view_section.jsp?lang=0&id=0,1,304,366,554" },
-      { label: "Railway Board Directorates", href: "view_section.jsp?lang=0&id=0,1,388" },
-      { label: "Citizen Charter", href: "view_section.jsp?lang=0&id=0,1,262" },
-      { label: "Portal Policies", href: "view_section.jsp?lang=0&id=0,1,265" },
-      { label: "RTI", href: "view_section.jsp?lang=0&id=0,1,1260" },
-      { label: "IPR of Railway Officers", href: "view_section.jsp?lang=0&id=0,1,2469" },
-      { label: "Archives", href: "view_section.jsp?lang=0&id=0,1,1289" },
+      {
+        label: "Statistics",
+        href: "#",
+      },
+      {
+        label: "Railway Board Directorates",
+        href: "#",
+      },
+      { label: "Citizen Charter", href: "#" },
+      { label: "Portal Policies", href: "#" },
+      { label: "RTI", href: "#" },
+      {
+        label: "IPR of Railway Officers",
+        href: "#",
+      },
+      { label: "Archives", href: "#" },
     ],
   },
   {
     label: "For IR Personnel",
-    href: "view_section.jsp?lang=0&id=0,5",
+    href: "#",
     children: [
-      { label: "Vacancy Circulars", href: "view_section.jsp?lang=0&id=0,5,373" },
-      { label: "Empanelments (Beta Version)", href: "view_section.jsp?lang=0&id=0,5,1387" },
-      { label: "REIS", href: "view_section.jsp?lang=0&id=0,5,383" },
-      { label: "Promotion/Posting/Other Orders", href: "view_section.jsp?lang=0&id=0,5,1418" },
-      { label: "Recruitment Rules", href: "view_section.jsp?lang=0&id=0,5,1749" },
-      { label: "IRWO", href: "view_section.jsp?lang=0&id=0,5,353" },
-      { label: "Codes And Manuals", href: "view_section.jsp?lang=0&id=0,5,377" },
-      { label: "FROA", href: "view_section.jsp?lang=0&id=0,5,384" },
-      { label: "Training Circulars", href: "view_section.jsp?lang=0&id=0,5,385" },
-      { label: "FEDERATION", href: "view_section.jsp?lang=0&id=0,5,1144" },
-      { label: "IR Good Work Portal", href: "view_section.jsp?lang=0&id=0,5,1940" },
-      { label: "Selection for L-17 posts", href: "view_section.jsp?lang=0&id=0,5,3135" },
-      { label: "Empanelment for IRMS", href: "view_section.jsp?lang=0&id=0,5,2703" },
-      { label: "SPARROW", href: "view_section.jsp?lang=0&id=0,5,3036" },
+      {
+        label: "Vacancy Circulars",
+        href: "#",
+      },
+      {
+        label: "Empanelments (Beta Version)",
+        href: "#",
+      },
+      { label: "REIS", href: "#" },
+      {
+        label: "Promotion/Posting/Other Orders",
+        href: "#",
+      },
+      {
+        label: "Recruitment Rules",
+        href: "#",
+      },
+      { label: "IRWO", href: "#" },
+      {
+        label: "Codes And Manuals",
+        href: "#",
+      },
+      { label: "FROA", href: "#" },
+      {
+        label: "Training Circulars",
+        href: "#",
+      },
+      { label: "FEDERATION", href: "#" },
+      {
+        label: "IR Good Work Portal",
+        href: "#",
+      },
+      {
+        label: "Selection for L-17 posts",
+        href: "#",
+      },
+      {
+        label: "Empanelment for IRMS",
+        href: "#",
+      },
+      { label: "SPARROW", href: "#" },
     ],
   },
   {
     label: "Passenger Info",
-    href: "view_section.jsp?lang=0&id=0,2",
+    href: "#",
     children: [
-      { label: "Tourist Information", href: "view_section.jsp?lang=0&id=0,2,320" },
-      { label: "Concessions List", href: "view_section.jsp?lang=0&id=0,2,1360" },
-      { label: "Concession Certificates", href: "view_section.jsp?lang=0&id=0,2,1491" },
-      { label: "Time Table Information", href: "view_section.jsp?lang=0&id=0,2,266" },
-      { label: "Reservation & Ticketing", href: "view_section.jsp?lang=0&id=0,2,330" },
-      { label: "Claims Passenger", href: "view_section.jsp?lang=0&id=0,2,280" },
-      { label: "Concession Rules", href: "view_section.jsp?lang=0&id=0,2,281" },
+      {
+        label: "Tourist Information",
+        href: "#",
+      },
+      {
+        label: "Concessions List",
+        href: "#",
+      },
+      {
+        label: "Concession Certificates",
+        href: "#",
+      },
+      {
+        label: "Time Table Information",
+        href: "#",
+      },
+      {
+        label: "Reservation & Ticketing",
+        href: "#",
+      },
+      { label: "Claims Passenger", href: "#" },
+      { label: "Concession Rules", href: "#" },
     ],
   },
   {
     label: "Freight Info",
-    href: "view_section.jsp?lang=0&id=0,6",
+    href: "#",
     children: [
-      { label: "Claims Freight", href: "view_section.jsp?lang=0&id=0,6,287" },
-      { label: "Freight Rate", href: "view_section.jsp?lang=0&id=0,6,338" },
+      { label: "Claims Freight", href: "#" },
+      { label: "Freight Rate", href: "#" },
     ],
   },
   {
     label: "Tenders",
-    href: "view_section.jsp?lang=0&id=0,3",
+    href: "#",
     children: [
-      { label: "Railway Board Tenders", href: "view_section.jsp?lang=0&id=0,3,269" },
-      { label: "CPP Portal Instructions", href: "view_section.jsp?lang=0&id=0,3,1243" },
+      {
+        label: "Railway Board Tenders",
+        href: "#",
+      },
+      {
+        label: "CPP Portal Instructions",
+        href: "#",
+      },
     ],
   },
   {
     label: "Contact Us",
-    href: "view_section.jsp?lang=0&id=0,7",
+    href: "#",
     children: [
-      { label: "Tel. Directory & Email ID", href: "view_section.jsp?lang=0&id=0,7,367" },
-      { label: "RRBs Website", href: "view_section.jsp?lang=0&id=0,7,1281" },
-      { label: "Other Railway Sites", href: "view_section.jsp?lang=0&id=0,7,276" },
-      { label: "Sitemap", href: "view_section.jsp?lang=0&id=0,7,277" },
-      { label: "Disclaimer", href: "view_section.jsp?lang=0&id=0,7,286" },
-      { label: "Terms & Conditions", href: "view_section.jsp?lang=0&id=0,7,332" },
-      { label: "Privacy Policy", href: "view_section.jsp?lang=0&id=0,7,333" },
+      {
+        label: "Tel. Directory & Email ID",
+        href: "#",
+      },
+      { label: "RRBs Website", href: "#" },
+      { label: "CBT Examination", href: "https://examination.irrb.co.in" },
+      {
+        label: "Other Railway Sites",
+        href: "#",
+      },
+      { label: "Sitemap", href: "#" },
+      { label: "Disclaimer", href: "#" },
+      {
+        label: "Terms & Conditions",
+        href: "#",
+      },
+      { label: "Privacy Policy", href: "#" },
     ],
   },
 ];
@@ -174,7 +250,8 @@ function MobileMenuItem({
           alignItems: "center",
           paddingLeft: 16 + depth * 12,
           paddingRight: 12,
-          backgroundColor: depth === 0 ? "#3E70CB" : depth === 1 ? "#CF343A" : "#a82a30",
+          backgroundColor:
+            depth === 0 ? "#3E70CB" : depth === 1 ? "#CF343A" : "#a82a30",
         }}
       >
         <a
@@ -246,7 +323,7 @@ export default function Navbar() {
           borderRadius: 0,
           borderBottom: "2px solid red",
           position: "relative",
-          marginBottom:"20px"
+          marginBottom: "20px",
         }}
       >
         {/* ── Desktop layout ── */}
@@ -282,7 +359,11 @@ export default function Navbar() {
           {menuItems.map((item, index) => (
             <div
               key={index}
-              style={{ position: "relative", display: "flex", alignItems: "center" }}
+              style={{
+                position: "relative",
+                display: "flex",
+                alignItems: "center",
+              }}
               onMouseEnter={() => setActiveMenu(index)}
               onMouseLeave={() => setActiveMenu(null)}
             >
@@ -304,7 +385,14 @@ export default function Navbar() {
                 {item.label}
               </a>
               {item.children && activeMenu === index && (
-                <div style={{ position: "absolute", top: "100%", left: 0, zIndex: 9999 }}>
+                <div
+                  style={{
+                    position: "absolute",
+                    top: "100%",
+                    left: 0,
+                    zIndex: 9999,
+                  }}
+                >
                   <DropdownMenu items={item.children} />
                 </div>
               )}
