@@ -3,12 +3,12 @@
 import { Fragment } from "react";
 
 const sidebarLinks = [
-  { label: "Tel. Directory & Email ID", href: "view_section.jsp?lang=0&id=0,7,367" },
-  { label: "Other Railway Sites", href: "view_section.jsp?lang=0&id=0,7,276" },
-  { label: "Sitemap", href: "view_section.jsp?lang=0&id=0,7,277" },
-  { label: "Disclaimer", href: "view_section.jsp?lang=0&id=0,7,286" },
-  { label: "Terms & Conditions", href: "view_section.jsp?lang=0&id=0,7,332" },
-  { label: "Privacy Policy", href: "view_section.jsp?lang=0&id=0,7,333" },
+  { label: "Tel. Directory & Email ID", href: "#" },
+  { label: "Other Railway Sites", href: "#" },
+  { label: "Sitemap", href: "#" },
+  { label: "Disclaimer", href: "#" },
+  { label: "Terms & Conditions", href: "#" },
+  { label: "Privacy Policy", href: "#" },
 ];
 
 export default function Sidebar() {
@@ -31,7 +31,7 @@ export default function Sidebar() {
             <td style={{ textAlign: "left", paddingTop: 8, paddingBottom: 4 }}>
               {/* Parent: Contact Us */}
               <a
-                href="view_section.jsp?lang=0&id=0,7"
+                href="#"
                 style={{
                   color: "white",
                   textDecoration: "none",
@@ -44,7 +44,7 @@ export default function Sidebar() {
               </a>
               {/* Sub-item: › RRBs Website */}
               <a
-                href="view_section.jsp?lang=0&id=0,7,1281"
+                href="#"
                 style={{
                   color: "white",
                   textDecoration: "none",

@@ -7,7 +7,7 @@ const navItems = [
     href: null,
     options: [
       { label: "Railway Board", href: "https://indianrailways.gov.in/railwayboard/", target: "_blank" },
-      { label: "Others Railways", href: "OthersRailway.html", target: "_blank" },
+      { label: "Others Railways", href: "#",  },
     ],
   },
   {
@@ -106,7 +106,7 @@ const navItems = [
     label: "RTI",
     href: null,
     options: [
-      { label: "RTI Act", href: "rti-act.pdf", target: "_blank" },
+      { label: "RTI Act", href: "#",  },
       { label: "Proactive Disclosure of Information U/s4(1)(b)", href: "https://indianrailways.gov.in/railwayboard/view_section.jsp?lang=0&id=0,1,1260", target: "_blank" },
     ],
   },
@@ -259,7 +259,7 @@ export default function Navbar() {
       >
         {/* Home icon */}
         <a
-          href="index.html"
+          href="#"
           title="Home"
           rel="nofollow noopener"
           style={{

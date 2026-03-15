@@ -36,16 +36,16 @@ const newsItems = [
     text: "AIZAWL ON THE RAIL MAP TURNING DREAMS INTO REALITY",
     link: null,
     subLinks: [
-      { label: "Hindi", href: "AIZAWL_BR_2025.pdf", target: "_blank" },
-      { label: "English", href: "AIZAWL_IR_2025.pdf", target: "_blank" },
+      { label: "Hindi", href: "#",  },
+      { label: "English", href: "#",  },
     ],
   },
   {
     text: "Train in the Valley of Kashmir",
     link: null,
     subLinks: [
-      { label: "Hindi", href: "BR_June_Kashmir2025.pdf", target: "_blank" },
-      { label: "English", href: "IR_June_Kashmir2025.pdf", target: "_blank" },
+      { label: "Hindi", href: "#",  },
+      { label: "English", href: "#",  },
     ],
   },
   {

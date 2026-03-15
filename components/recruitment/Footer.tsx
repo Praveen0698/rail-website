@@ -51,14 +51,14 @@ export default function Footer() {
         </a>
         {" | "}
         <a
-          href="view_section.jsp?lang=0&id=0,7,277"
+          href="#"
           style={{ color: "white", textDecoration: "none", fontSize: 14 }}
         >
           &nbsp;Site Map&nbsp;
         </a>
         <span style={{ color: "#888888", fontSize: 14 }}> | </span>
         <a
-          href="view_section.jsp?lang=0&id=0,7"
+          href="#"
           style={{ color: "white", textDecoration: "none", fontSize: 14 }}
         >
           &nbsp;Contact Us&nbsp;
@@ -72,21 +72,21 @@ export default function Footer() {
         </a>
         <span style={{ color: "#888888", fontSize: 14 }}> | </span>
         <a
-          href="view_section.jsp?lang=0&id=0,7,286"
+          href="#"
           style={{ color: "white", textDecoration: "none", fontSize: 14 }}
         >
           &nbsp;Disclaimer&nbsp;
         </a>
         <span style={{ color: "#888888", fontSize: 14 }}> | </span>
         <a
-          href="view_section.jsp?lang=0&id=0,7,332"
+          href="#"
           style={{ color: "white", textDecoration: "none", fontSize: 14 }}
         >
           &nbsp;Terms &amp; Conditions&nbsp;
         </a>
         <span style={{ color: "#888888", fontSize: 14 }}> | </span>
         <a
-          href="view_section.jsp?lang=0&id=0,7,333"
+          href="#"
           style={{ color: "white", textDecoration: "none", fontSize: 14 }}
         >
           &nbsp;Privacy Policy&nbsp;
