@@ -43,7 +43,8 @@ export default function Home() {
 
   return (
     <>
-      <TopBar />
+    <div className="min-w-full">
+  <TopBar />
       <Header />
       <Navbar />
 
@@ -58,6 +59,8 @@ export default function Home() {
 
       <SocialSection />
       <Footer />
+    </div>
+    
     </>
   );
 }

@@ -66,7 +66,7 @@ export default function TopBar() {
   }, []);
 
   return (
-<div className="min-w-full bg-[#2b6f95] text-white px-2 md:px-6 py-[4px] md:py-[6px]">
+<div className="max-w-full bg-[#2b6f95] text-white px-2 md:px-6 py-1 md:py-1.5">
         <div className="flex items-center justify-between min-w-0 text-[9px] md:text-[13px]">
 
         {/* Time */}
