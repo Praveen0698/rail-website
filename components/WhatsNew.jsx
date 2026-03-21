@@ -78,8 +78,8 @@ const newsItems = [
 export default function WhatsNew() {
   return (
     <div className="mt-4 px-1">
-      <div className="bg-white rounded border border-gray-200 shadow-md px-6 md:px-10 py-5 rounded-lg">
-        <h2 className="text-center text-[18px] md:text-[26px] font-bold text-gray-900 mb-4">
+      <div className="bg-white  border border-gray-200 shadow-md px-6 md:px-10 py-5 rounded-lg">
+        <h2 className="text-center text-[10px] md:text-[26px] font-bold text-gray-900 mb-4">
           What&apos;s New
         </h2>
         <ul className="space-y-2">
@@ -91,13 +91,13 @@ export default function WhatsNew() {
                   href={item.link}
                   target={item.target || "_self"}
                   rel="nofollow noopener"
-                  className="text-[#fc2e2e] font-bold text-[11px] md:text-[14px] hover:underline block"
+                  className="text-[#fc2e2e] font-bold text-[9px] md:text-[14px] hover:underline block"
                 >
                   • {item.text}
                 </a>
               ) : (
                 // Multi-link item (e.g. RailOne, AIZAWL, Kashmir)
-                <span className="text-[#fc2e2e] font-bold text-[11px] md:text-[14px] block">
+                <span className="text-[#fc2e2e] font-bold text-[9px] md:text-[14px] block">
                   • {item.text}{" "}
                   {item.subLinks && (
                     <span className="inline-flex gap-1 flex-wrap">
@@ -113,7 +113,7 @@ export default function WhatsNew() {
                             {sub.label}
                           </a>
                           {j < item.subLinks.length - 1 && (
-                            <span className="mx-[2px]">/</span>
+                            <span className="mx-0.5">/</span>
                           )}
                         </span>
                       ))}

@@ -43,24 +43,79 @@ export default function Home() {
 
   return (
     <>
-    <div className="min-w-full">
-  <TopBar />
-      <Header />
-      <Navbar />
+      <style>{`
+#userwayAccessibilityIcon {
+  position: fixed;
+  top: 15px; /* Adjust this to line up with your search bar */
+  right: 5px;
+  z-index: 999;
 
-      {/* Main content + sidebar always side by side */}
-      <div className="flex gap-0 items-start w-full">
-        <div className="flex-1 min-w-0">
-          <HeroSection />
-        </div>
-        {/* Sidebar: visible at all sizes, narrow on mobile */}
-        <MinistersSidebar />
+  /* 1. The Circle Size */
+  width: 46px; 
+  height: 46px;
+  border-radius: 50%;
+  
+  /* 2. Solid Blue Background - No outside rings */
+  background: #0049ff; 
+  border: none;
+  outline: none;
+  box-shadow: none;
+
+  /* 3. Perfect Centering */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+/* 4. THE ICON: Large and bold to fill the blue circle */
+#userwayAccessibilityIcon img.ui_w {
+  width: 42px;  
+  height: 42px;
+  display: block;
+  margin: 0;
+  padding: 0;
+}
+
+/* 5. Force hide all extra UserWay elements/wrappers */
+#userwayAccessibilityIcon .ups,
+#userwayAccessibilityIcon .usr,
+#userwayAccessibilityIcon .userway_check_on,
+#userwayAccessibilityIcon .uiiw {
+  display: none !important;
+}
+      `}</style>
+
+      <div
+        id="userwayAccessibilityIcon"
+        aria-label="Accessibility Menu"
+        role="button"
+        tabIndex={0}
+        title="Accessibility Menu"
+      >
+        <img
+          className="ui_w"
+          alt=""
+          src="https://cdn.userway.org/widgetapp/images/body_wh.svg"
+        />
       </div>
 
-      <SocialSection />
-      <Footer />
-    </div>
-    
+      <div className="min-w-full max-w-full">
+        <TopBar />
+        <Header />
+        <Navbar />
+
+        <div className="flex gap-0 items-start w-full">
+          <div className="flex-1 min-w-0">
+            <HeroSection />
+          </div>
+          <MinistersSidebar />
+        </div>
+
+        <SocialSection />
+        <Footer />
+      </div>
     </>
   );
 }

@@ -2,61 +2,63 @@ import Image from "next/image";
 
 export default function Header() {
   return (
-       <div className="bg-white border-b border-gray-200">
-      <div className="min-w-full px-3 md:px-6 py-3 md:py-1 flex flex-row justify-between items-center">
+    <header className="bg-white w-full border-b border-gray-100 font-sans relative">
+      
+      {/* Centered Language Toggle: Absolute positioning prevents it from taking up space in the flex row */}
+      <div className="absolute top-1 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center text-[#2b3990] leading-none cursor-pointer pointer-events-auto">
+        <span className="text-[15px] sm:text-[18px] font-bold">अ</span>
+        <span className="text-[11px] sm:text-[14px] font-bold -mt-1">A</span>
+      </div>
 
-        {/* Left Section */}
-        <div className="flex items-center gap-2 md:gap-3">
+      <div className="max-w-full mx-auto px-2 sm:px-6 md:px-12 flex items-center h-14 sm:h-24 pt-3">
+        
+        {/* Left: Branding */}
+        <div className="flex items-center gap-2 shrink-0">
           <Image
-            src="/indian-blue.png"
-            width={50}
-            height={50}
-            alt="Indian Railways Logo"
-            priority
-            className="w-[50px] h-[50px] md:w-[75px] md:h-[75px]"
+            src="/indian-blue.png" 
+            width={72}
+            height={72}
+            alt="Logo"
+            className="w-8 h-8 sm:w-14 md:w-20 md:h-20 object-contain"
           />
-          <div>
-            <h1 className="text-[14px] md:text-[26px] font-extrabold tracking-wide text-[#1a1a2e] leading-tight">
-              GOVERNMENT OF
-              <span className="md:hidden"> INDIA</span>
-              <span className="hidden md:inline"> INDIA</span>
+          <div className="flex flex-col">
+            <h1 className="text-[12px] sm:text-[18px] md:text-[24px] font-black text-black leading-none tracking-tight whitespace-nowrap">
+              GOVERNMENT OF INDIA
             </h1>
-            <p className="text-[10px] md:text-[13px] text-gray-500 tracking-[0.1em] md:tracking-[0.2em] font-medium mt-0.5">
+            <p className="text-[9px] sm:text-[12px] md:text-[16px] text-[#555] font-bold uppercase whitespace-nowrap mt-0.5">
               MINISTRY OF RAILWAYS
             </p>
           </div>
         </div>
 
-        {/* Center: Language Toggle - hidden on mobile (shown in topbar instead) */}
-        <div className="hidden md:flex flex-col self-start items-center leading-tight text-[#3a3a9a] font-bold select-none cursor-pointer">
-          <span className="text-[15px]">अ</span>
-          <span className="text-[12px] font-normal">A</span>
-        </div>
+        
 
-        {/* Right Section */}
-        <div className="flex items-center gap-2 md:gap-4">
-          {/* International Year of Cooperatives 2025 */}
-          <Image
-            src="/irctc2025.jpeg"
-            width={70}
-            height={70}
-            alt="International Year of Cooperatives 2025"
-            priority
-            className="w-17 h-17 md:w-30 md:h-20 xl:w-35 xl:h-25 object-contain"
-          />
-
-          {/* Ashoka Emblem */}
-          <Image
-            src="/emblemBlack.png"
-            width={40}
-            height={50}
-            alt="Ashoka Emblem"
-            priority
-            className="w-12 h-14 md:w-20 md:h-15 xl:w-30 xl:h-25 object-contain"
-          />
+        {/* Right: Logos pushed to the end using ml-auto */}
+        <div className="ml-auto flex items-center gap-2 sm:gap-6 shrink-0">
+          {/* 2025 Logo */}
+          <div className="flex flex-col items-center">
+             <Image
+              src="/irctc2025.jpeg" 
+              width={100}
+              height={100}
+              alt="2025"
+              className="w-10 h-10 sm:w-20 sm:h-auto object-contain"
+            />
+          </div>
+          
+          {/* National Emblem */}
+          <div className="flex flex-col items-center">
+            <Image
+              src="/emblemBlack.png" 
+              width={50}
+              height={70}
+              alt="Emblem"
+              className="w-7 h-auto sm:w-10 md:w-12 object-contain"
+            />
+          </div>
         </div>
 
       </div>
-    </div>
+    </header>
   );
 }
