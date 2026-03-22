@@ -39,7 +39,7 @@ export default function MinistersSidebar() {
           }`}
         >
           {/* Photo */}
-          <div className="relative w-full aspect-[4/3] overflow-hidden">
+          <div className="relative w-full aspect-[7/5] md:aspect-[4/3] overflow-hidden">
             <Image
               src={m.img}
               fill
@@ -49,12 +49,12 @@ export default function MinistersSidebar() {
           </div>
 
           {/* Name */}
-          <h3 className="font-semibold text-[6px] md:text-[11px] xl:text-[13px] mt-0.5 text-gray-800 leading-tight">
+          <h3 className="font-semibold text-[5px] md:text-[11px] xl:text-[13px] mt-0.5 text-gray-800 leading-tight">
             {m.name}
           </h3>
 
           {/* Role */}
-          <p className="text-[5.5px] md:text-[10px] xl:text-[11px] text-gray-500 mt-0.5 leading-tight">
+          <p className="text-[5px] md:text-[10px] xl:text-[11px] text-gray-500 mt-0.5 leading-tight">
             {m.role}
           </p>
         </div>

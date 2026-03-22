@@ -57,14 +57,16 @@ const quickLinks = [
 
 export default function QuickLinksGrid() {
   return (
-    <div className="mt-4 grid grid-cols-3 border border-gray-300">
+    <div className="mt-2 grid grid-cols-3 w-full border-t border-l border-white/20">
       {quickLinks.map((item, i) => (
         <a
           key={i}
           href={item.href}
-          target={item.target || "_self"}
-          rel="nofollow noopener"
-          className={`flex items-center justify-center text-center text-white font-bold text-[11px] md:text-[13px] lg:text-[14px] px-2 py-4 md:py-5 border border-white/20 hover:brightness-110 transition-all leading-snug
+          target="_blank"
+          rel="noopener noreferrer"
+          className={`flex items-center justify-center text-center text-white font-bold 
+            text-[5px] md:text-[14px] px-1 py-1.5 md:py-3 
+            border-r border-b border-white/30 transition-colors leading-tight
             ${item.orange ? "bg-[#f5a623]" : "bg-[#1c6e9e]"}`}
         >
           {item.label}

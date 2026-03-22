@@ -77,51 +77,57 @@ const newsItems = [
 
 export default function WhatsNew() {
   return (
-    <div className="mt-4 px-1">
-      <div className="bg-white  border border-gray-200 shadow-md px-6 md:px-10 py-5 rounded-lg">
-        <h2 className="text-center text-[10px] md:text-[26px] font-bold text-gray-900 mb-4">
+    <div className="mt-1 md:mt-4 px-1">
+      <div className="bg-white border border-gray-200 shadow-sm px-3 md:px-8 py-3 md:py-5 rounded-lg">
+        {/* Smaller Title with less margin */}
+        <h2 className="text-center text-[9px] md:text-[22px] font-bold text-gray-900 mb-2 md:mb-4">
           What&apos;s New
         </h2>
-        <ul className="space-y-2">
+        
+        {/* Tight spacing between items */}
+        <ul className="space-y-0.5 md:space-y-2">
           {newsItems.map((item, i) => (
-            <li key={i} className="leading-snug">
-              {item.link ? (
-                // Single link item
-                <a
-                  href={item.link}
-                  target={item.target || "_self"}
-                  rel="nofollow noopener"
-                  className="text-[#fc2e2e] font-bold text-[9px] md:text-[14px] hover:underline block"
-                >
-                  • {item.text}
-                </a>
-              ) : (
-                // Multi-link item (e.g. RailOne, AIZAWL, Kashmir)
-                <span className="text-[#fc2e2e] font-bold text-[9px] md:text-[14px] block">
-                  • {item.text}{" "}
-                  {item.subLinks && (
-                    <span className="inline-flex gap-1 flex-wrap">
-                      {"("}
-                      {item.subLinks.map((sub, j) => (
-                        <span key={j}>
-                          <a
-                            href={sub.href}
-                            target={sub.target || "_self"}
-                            rel="nofollow noopener"
-                            className="text-[#fc2e2e] hover:underline underline"
-                          >
-                            {sub.label}
-                          </a>
-                          {j < item.subLinks.length - 1 && (
-                            <span className="mx-0.5">/</span>
-                          )}
-                        </span>
-                      ))}
-                      {")"}
-                    </span>
-                  )}
-                </span>
-              )}
+            <li key={i} className="flex items-start text-[5px] md:text-[12px] leading-[1.2] md:leading-normal">
+              {/* Neutral bullet point */}
+              <span className="text-gray-500 mr-1.5">•</span>
+              
+              <div className="flex-1">
+                {item.link ? (
+                  <a
+                    href={item.link}
+                    target={item.target || "_self"}
+                    rel="nofollow noopener"
+                    className="text-[#cc0000] font-bold hover:underline"
+                  >
+                    {item.text}
+                  </a>
+                ) : (
+                  <span className="text-[#cc0000] font-bold">
+                    {item.text}{" "}
+                    {item.subLinks && (
+                      <span className="inline-flex">
+                        {"("}
+                        {item.subLinks.map((sub, j) => (
+                          <span key={j}>
+                            <a
+                              href={sub.href}
+                              target={sub.target || "_self"}
+                              rel="nofollow noopener"
+                              className="text-[#cc0000] hover:underline underline decoration-1"
+                            >
+                              {sub.label}
+                            </a>
+                            {j < item.subLinks.length - 1 && (
+                              <span className="mx-0.5 text-[#cc0000]">/</span>
+                            )}
+                          </span>
+                        ))}
+                        {")"}
+                      </span>
+                    )}
+                  </span>
+                )}
+              </div>
             </li>
           ))}
         </ul>

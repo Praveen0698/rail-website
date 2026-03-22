@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { createPortal } from "react-dom";
 
 const navItems = [
   {
@@ -7,7 +8,7 @@ const navItems = [
     href: null,
     options: [
       { label: "Railway Board", href: "https://indianrailways.gov.in/railwayboard/", target: "_blank" },
-      { label: "Others Railways", href: "#",  },
+      { label: "Others Railways", href: "#" },
     ],
   },
   {
@@ -106,7 +107,7 @@ const navItems = [
     label: "RTI",
     href: null,
     options: [
-      { label: "RTI Act", href: "#",  },
+      { label: "RTI Act", href: "#" },
       { label: "Proactive Disclosure of Information U/s4(1)(b)", href: "https://indianrailways.gov.in/railwayboard/view_section.jsp?lang=0&id=0,1,1260", target: "_blank" },
     ],
   },
@@ -118,15 +119,14 @@ const navItems = [
   },
 ];
 
+// Shared text style for nav items — no padding/font-size here, those come from className
 const itemInnerStyle = {
   display: "flex",
   alignItems: "start",
   width: "100%",
   height: "100%",
-  padding: "6px 4px 6px 8px",
   boxSizing: "border-box",
   fontFamily: "Arial, sans-serif",
-  fontSize: "11.8px",
   fontWeight: "500",
   lineHeight: "1.3",
   wordBreak: "break-word",
@@ -138,12 +138,76 @@ const itemInnerStyle = {
   whiteSpace: "pre-line",
 };
 
+function PortalDropdown({ anchorEl, options, onMouseEnter, onMouseLeave }) {
+  if (!anchorEl || typeof window === "undefined") return null;
+
+  const rect = anchorEl.getBoundingClientRect();
+  const top = rect.bottom + window.scrollY;
+  const left = rect.left + window.scrollX;
+
+  return createPortal(
+    <div
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
+      style={{
+        position: "absolute",
+        top,
+        left,
+        backgroundColor: "#fff",
+        color: "#333",
+        boxShadow: "0 4px 8px rgba(0,0,0,0.15)",
+        zIndex: 99999,
+        minWidth: "max-content",
+        border: "1px solid #ddd",
+        fontFamily: "Arial, sans-serif",
+        fontSize: "12px",
+      }}
+    >
+      {options.map((opt, i) => (
+        <a
+          key={i}
+          href={opt.href}
+          target={opt.target || "_self"}
+          rel="nofollow noopener"
+          style={{
+            display: "block",
+            padding: "6px 16px",
+            borderBottom: "1px solid #f0f0f0",
+            whiteSpace: "nowrap",
+            color: "#333",
+            textDecoration: "none",
+            fontWeight: "normal",
+          }}
+          onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#f0f0f0")}
+          onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#fff")}
+        >
+          {opt.label}
+        </a>
+      ))}
+    </div>,
+    document.body
+  );
+}
+
 export default function Navbar() {
   const [openIndex, setOpenIndex] = useState(null);
   const [hoveredIndex, setHoveredIndex] = useState(null);
   const [homeHovered, setHomeHovered] = useState(false);
-  const [mobileOpen, setMobileOpen] = useState(false);
-  const [mobileExpanded, setMobileExpanded] = useState(null);
+  const [anchorEl, setAnchorEl] = useState(null);
+
+  const handleMouseEnter = (index, item, el) => {
+    setHoveredIndex(index);
+    if (item.options.length > 0) {
+      setOpenIndex(index);
+      setAnchorEl(el);
+    }
+  };
+
+  const handleMouseLeave = () => {
+    setHoveredIndex(null);
+    setOpenIndex(null);
+    setAnchorEl(null);
+  };
 
   return (
     <div
@@ -153,120 +217,28 @@ export default function Navbar() {
         position: "relative",
         zIndex: 50,
         fontFamily: "Arial, sans-serif",
+        overflowX: "hidden",
       }}
+      className="max-sm:h-4.5"
     >
-      {/* ── Mobile hamburger ── */}
-      <div className="flex md:hidden items-center justify-between px-3 py-2">
-        <span className="text-white font-bold" style={{ fontSize: "13px" }}>
-          MENU
-        </span>
-        <button
-          onClick={() => setMobileOpen(!mobileOpen)}
-          className="text-white flex flex-col gap-[5px] p-1"
-        >
-          <span
-            className={`block w-5 h-[2px] bg-white transition-transform ${
-              mobileOpen ? "rotate-45 translate-y-[7px]" : ""
-            }`}
-          />
-          <span
-            className={`block w-5 h-[2px] bg-white transition-opacity ${
-              mobileOpen ? "opacity-0" : ""
-            }`}
-          />
-          <span
-            className={`block w-5 h-[2px] bg-white transition-transform ${
-              mobileOpen ? "-rotate-45 -translate-y-[7px]" : ""
-            }`}
-          />
-        </button>
-      </div>
-
-      {/* ── Mobile Menu ── */}
-      {mobileOpen && (
-        <div className="md:hidden bg-[#146696] border-t border-blue-700 px-2 pb-3">
-          {navItems.map((item, index) => (
-            <div key={index}>
-              <div
-                className="flex justify-between items-center px-3 py-2 border-b border-blue-700 cursor-pointer"
-                style={{ fontSize: "12px", fontWeight: "bold" }}
-                onMouseEnter={(e) =>
-                  (e.currentTarget.style.backgroundColor = "#000")
-                }
-                onMouseLeave={(e) =>
-                  (e.currentTarget.style.backgroundColor = "transparent")
-                }
-                onClick={() =>
-                  item.options.length > 0
-                    ? setMobileExpanded(
-                        mobileExpanded === index ? null : index
-                      )
-                    : null
-                }
-              >
-                {item.href ? (
-                  <a
-                    href={item.href}
-                    target={item.target || "_self"}
-                    rel="nofollow noopener"
-                    className="text-white w-full"
-                    style={{ textDecoration: "none" }}
-                  >
-                    {item.label.replace("\n", " ")}
-                  </a>
-                ) : (
-                  <span>{item.label.replace("\n", " ")}</span>
-                )}
-                {item.options.length > 0 && (
-                  <span style={{ fontSize: "10px", marginLeft: "8px" }}>
-                    {mobileExpanded === index ? "▲" : "▼"}
-                  </span>
-                )}
-              </div>
-              {mobileExpanded === index && item.options.length > 0 && (
-                <div
-                  className="bg-white text-gray-800"
-                  style={{ fontSize: "11px" }}
-                >
-                  {item.options.map((opt, i) => (
-                    <a
-                      key={i}
-                      href={opt.href}
-                      target={opt.target || "_self"}
-                      rel="nofollow noopener"
-                      className="block px-5 py-2 border-b border-gray-100 cursor-pointer text-gray-800 no-underline"
-                      onMouseEnter={(e) =>
-                        (e.currentTarget.style.backgroundColor = "#f3f4f6")
-                      }
-                      onMouseLeave={(e) =>
-                        (e.currentTarget.style.backgroundColor = "#fff")
-                      }
-                    >
-                      {opt.label}
-                    </a>
-                  ))}
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
-      )}
-
-      {/* ── Desktop Menu ── */}
       <div
-        className="hidden md:flex items-stretch w-full"
-        style={{ justifyContent: "space-between" }}
+        style={{
+          display: "flex",
+          alignItems: "stretch",
+          justifyContent: "space-between",
+          width: "100%",
+        }}
       >
-        {/* Home icon */}
+        {/* Home icon — tiny on mobile, normal on sm+ */}
         <a
           href="#"
           title="Home"
           rel="nofollow noopener"
+          className="px-0.5  sm:px-2 sm:py-1"
           style={{
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            padding: "6px 10px",
             backgroundColor: homeHovered ? "#000" : "#0d3d5c",
             borderRight: "1px solid rgba(255,255,255,0.3)",
             flexShrink: 0,
@@ -277,9 +249,10 @@ export default function Navbar() {
           onMouseEnter={() => setHomeHovered(true)}
           onMouseLeave={() => setHomeHovered(false)}
         >
+          {/* 10px on mobile, 16px on sm+ */}
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            style={{ width: 20, height: 20 }}
+            className="w-[10px] h-[10px] sm:w-[16px] sm:h-[16px]"
             fill="white"
             viewBox="0 0 24 24"
           >
@@ -292,82 +265,46 @@ export default function Navbar() {
             key={index}
             style={{
               position: "relative",
-              flex: "1 1 auto",
+              flex: "1 1 auto",   // natural width — short labels get less space, long get more
               minWidth: 0,
               borderRight: "1px solid rgba(255,255,255,0.3)",
               backgroundColor: hoveredIndex === index ? "#000" : "transparent",
               transition: "background-color 0.15s",
               cursor: "pointer",
             }}
-            onMouseEnter={() => {
-              setHoveredIndex(index);
-              if (item.options.length > 0) setOpenIndex(index);
-            }}
-            onMouseLeave={() => {
-              setHoveredIndex(null);
-              setOpenIndex(null);
-            }}
+            onMouseEnter={(e) => handleMouseEnter(index, item, e.currentTarget)}
+            onMouseLeave={handleMouseLeave}
           >
             {item.href ? (
               <a
                 href={item.href}
                 target={item.target || "_self"}
                 rel="nofollow noopener"
+                className="text-[5px] sm:text-[9px] lg:text-[11px] py-[2px] px-[2px] sm:px-[3px] sm:py-[3px] lg:px-[6px] lg:py-[4px]"
                 style={itemInnerStyle}
               >
                 {item.label}
               </a>
             ) : (
-              <div style={itemInnerStyle}>{item.label}</div>
-            )}
-
-            {/* Dropdown */}
-            {openIndex === index && item.options.length > 0 && (
               <div
-                style={{
-                  position: "absolute",
-                  top: "100%",
-                  left: 0,
-                  backgroundColor: "#fff",
-                  color: "#333",
-                  boxShadow: "0 4px 8px rgba(0,0,0,0.15)",
-                  zIndex: 100,
-                  minWidth: "max-content",
-                  border: "1px solid #ddd",
-                  fontFamily: "Arial, sans-serif",
-                  fontSize: "12px",
-                }}
+                className="text-[5px] sm:text-[9px] lg:text-[11px] py-[2px] px-[2px] sm:px-[3px] sm:py-[3px] lg:px-[6px] lg:py-[4px]"
+                style={itemInnerStyle}
               >
-                {item.options.map((opt, i) => (
-                  <a
-                    key={i}
-                    href={opt.href}
-                    target={opt.target || "_self"}
-                    rel="nofollow noopener"
-                    style={{
-                      display: "block",
-                      padding: "6px 16px",
-                      borderBottom: "1px solid #f0f0f0",
-                      whiteSpace: "nowrap",
-                      color: "#333",
-                      textDecoration: "none",
-                      fontWeight: "normal",
-                    }}
-                    onMouseEnter={(e) =>
-                      (e.currentTarget.style.backgroundColor = "#f0f0f0")
-                    }
-                    onMouseLeave={(e) =>
-                      (e.currentTarget.style.backgroundColor = "#fff")
-                    }
-                  >
-                    {opt.label}
-                  </a>
-                ))}
+                {item.label}
               </div>
             )}
           </div>
         ))}
       </div>
+
+      {openIndex !== null && anchorEl && navItems[openIndex].options.length > 0 && (
+        <PortalDropdown
+          anchorEl={anchorEl}
+          options={navItems[openIndex].options}
+          onMouseEnter={() => setOpenIndex(openIndex)}
+          onMouseLeave={handleMouseLeave}
+        />
+      )}
     </div>
   );
 }

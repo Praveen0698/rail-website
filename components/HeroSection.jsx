@@ -65,11 +65,11 @@ export default function HeroSection() {
   const next = () => { setCurrent((p) => (p + 1) % banners.length); startTimer(); };
 
   return (
-    <div className="w-full">
+    <div className="w-full bg-white">
       <style dangerouslySetInnerHTML={{ __html: marqueeStyles }} />
 
       {/* ── Carousel ── */}
-      <div className="relative w-full overflow-hidden bg-gray-200 aspect-[16/7] md:aspect-[16/6] lg:aspect-[16/5]">
+      <div className="relative w-full overflow-hidden bg-gray-200 aspect-[14/5] md:aspect-[16/6] lg:aspect-[16/5]">
         {banners.map((src, i) => (
           <div
             key={i}
@@ -89,7 +89,7 @@ export default function HeroSection() {
         {/* Prev */}
         <button
           onClick={prev}
-          className="absolute left-0 top-1/2 -translate-y-1/2 z-20 bg-white/80 hover:bg-white text-gray-800 w-8 h-12 md:w-10 md:h-14 flex items-center justify-center shadow font-bold text-lg md:text-xl"
+          className="absolute left-0 top-1/2 -translate-y-1/2 z-20 bg-white/80 hover:bg-white text-gray-800 w-4 h-4 md:w-10 md:h-14 flex items-center justify-center shadow font-bold text-lg md:text-xl"
         >
           ‹
         </button>
@@ -97,36 +97,36 @@ export default function HeroSection() {
         {/* Next */}
         <button
           onClick={next}
-          className="absolute right-0 top-1/2 -translate-y-1/2 z-20 bg-white/80 hover:bg-white text-gray-800 w-8 h-12 md:w-10 md:h-14 flex items-center justify-center shadow font-bold text-lg md:text-xl"
+          className="absolute right-0 top-1/2 -translate-y-1/2 z-20 bg-white/80 hover:bg-white text-gray-800 w-4 h-4 md:w-10 md:h-14 flex items-center justify-center shadow font-bold text-lg md:text-xl"
         >
           ›
         </button>
 
         {/* Play/Pause */}
-        <button
+        {/* <button
           onClick={() => setIsPlaying(!isPlaying)}
-          className="absolute bottom-0 right-0 z-20 bg-black/70 hover:bg-black text-white w-9 h-9 md:w-11 md:h-11 flex items-center justify-center text-sm md:text-base"
+          className="absolute bottom-0 right-0 z-20 bg-black/70 hover:bg-black text-white w-2 h-2 md:w-11 md:h-11 flex items-center justify-center text-sm md:text-base"
         >
           {isPlaying ? "⏸" : "▶"}
-        </button>
+        </button> */}
       </div>
 
       {/* ── Social Icons ── */}
       <div className="flex items-center gap-2 mt-2 px-1 py-1 md:py-3">
         <a href="#" aria-label="Facebook">
-          <Image src="/facebook.jpg" width={28} height={28} alt="Facebook" className="w-4 h-4 md:w-7 md:h-7" />
+          <Image src="/facebook.jpg" width={28} height={28} alt="Facebook" className="w-2 h-2 md:w-7 md:h-7" />
         </a>
         <a href="#" aria-label="Twitter">
-          <Image src="/twitter.jpg" width={28} height={28} alt="Twitter" className="w-4 h-4 md:w-7 md:h-7" />
+          <Image src="/twitter.jpg" width={28} height={28} alt="Twitter" className="w-2 h-2 md:w-7 md:h-7" />
         </a>
         <a href="#" aria-label="YouTube">
-          <Image src="/youtube.jpg" width={56} height={28} alt="YouTube" className="h-4 md:h-7 w-auto" />
+          <Image src="/youtube.jpg" width={56} height={28} alt="YouTube" className="h-2 md:h-7 w-auto" />
         </a>
       </div>
 
       {/* ── Scrolling Text Bar ── */}
-      <div className="mt-2 overflow-hidden bg-white border-gray-200 py-1">
-        <div className="scrolling-text whitespace-nowrap text-[11px] md:text-[16px] text-gray-700">
+      <div className="mt-0 md:mt-2 overflow-hidden bg-white border-gray-200 py-0 md:py-1 leading-0.5">
+        <div className="scrolling-text whitespace-nowrap text-[6px] md:text-[15px] text-gray-700">
           <span>{scrollingText}</span>
           <span className="inline-block w-24 md:w-40" />
           <span>{scrollingText}</span>

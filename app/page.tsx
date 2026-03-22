@@ -85,6 +85,29 @@ export default function Home() {
 #userwayAccessibilityIcon .uiiw {
   display: none !important;
 }
+
+
+@media (max-width: 640px) {
+  #userwayAccessibilityIcon {
+    width: 24px;
+    height: 24px;
+    top: 10px;
+    right: 4px;
+  }
+
+  #userwayAccessibilityIcon img.ui_w {
+    width: 26px;
+    height: 26px;
+  }
+}
+
+#userwayAccessibilityIcon img.ui_w {
+  width: 42px;  
+  height: 42px;
+  display: block;
+  margin: 0;
+  padding: 0;
+}
       `}</style>
 
       <div
@@ -101,7 +124,10 @@ export default function Home() {
         />
       </div>
 
-      <div className="min-w-full max-w-full">
+      <div className="min-w-full max-w-full min-h-screen max-sm:max-h-screen 
+      max-sm:overflow-y-hidden overflow-x-hidden"
+       style={{ background: '#1a5f8a' }}
+      >
         <TopBar />
         <Header />
         <Navbar />
