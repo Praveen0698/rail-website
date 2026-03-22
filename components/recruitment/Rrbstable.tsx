@@ -335,7 +335,7 @@ INDIAN RAILWAYS <span class="p-english-sub">Lifeline to the Nation...</span>
   };
 
   return (
-    <div style={{ textAlign: "center", minHeight: "100vh" }}>
+    <div id="rrb-top" style={{ textAlign: "center", minHeight: "100vh" }}>
       {/* Banner */}
       <div
         style={{
@@ -519,9 +519,47 @@ INDIAN RAILWAYS <span class="p-english-sub">Lifeline to the Nation...</span>
         </div>
       </div>
 
-      <p className="mt-10">
-        Source : Ministry of Railways (Railway Board) CMS Team
-      </p>
+      {/* Source + Top row */}
+      <div
+        style={{
+          position: "relative",
+          textAlign: "center",
+          marginTop: 40,
+          paddingBottom: 8,
+        }}
+        className="text-[10px] md:text-[13px]"
+      >
+        <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
+          <strong>Source</strong>&nbsp;: Ministry of Railways (Railway Board){" "}
+          <br className="md:hidden" />
+          CMS Team Last Reviewed on: 03-01-2026&nbsp;
+          <img
+            src="/sbottom.gif"
+            alt="s"
+            style={{ height: 18, verticalAlign: "middle" }}
+          />
+        </span>
+
+        {/* Top link - absolutely positioned to far right */}
+        <a
+          href="#rrb-top"
+          style={{
+            position: "absolute",
+            right: 8,
+            top: "50%",
+            transform: "translateY(-50%)",
+            color: "#000000",
+            textDecoration: "none",
+            fontSize: 12,
+            whiteSpace: "nowrap",
+          }}
+        >
+          <span style={{ fontSize: 11 }} className="text-red-800 -top-10">
+            ▲ Top
+          </span>
+        </a>
+      </div>
+
       {/* Error */}
       {error && (
         <p style={{ color: "red", fontSize: 14, marginTop: 10 }}>{error}</p>
@@ -663,7 +701,7 @@ INDIAN RAILWAYS <span class="p-english-sub">Lifeline to the Nation...</span>
                   boxSizing: "border-box",
                 }}
               >
-                <strong>&quot;{resultData.result }&quot;</strong>
+                <strong>&quot;{resultData.result}&quot;</strong>
               </div>
             </div>
           </div>

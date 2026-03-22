@@ -25,7 +25,7 @@ export default function TopBar() {
       >
         {/* Left placeholder */}
         <div className="topbar-left" style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <span style={{ fontSize: 13, color: "#1D0A69", fontWeight: "bold" }}>A</span>
+          <span style={{ fontSize: 13, color: "#1D0A69", fontWeight: "bold" }}></span>
         </div>
 
         {/* Right: Links */}

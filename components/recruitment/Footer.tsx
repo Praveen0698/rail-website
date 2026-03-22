@@ -4,6 +4,7 @@ export default function Footer() {
   return (
     <div style={{ padding: 0 }}>
       <div
+      className="text-[10px] md:text-[14px]"
         style={{
           lineHeight: "1.12857143",
           fontFamily: "Arial Narrow, Arial, sans-serif",
@@ -12,7 +13,6 @@ export default function Footer() {
           backgroundColor: "#353535",
           color: "white",
           padding: "8px 16px",
-          fontSize: 14,
         }}
       >
         {/* CSS validator badges — float right, so render before text flow */}
@@ -20,7 +20,7 @@ export default function Footer() {
           href="http://jigsaw.w3.org/css-validator/check/referer"
           target="_blank"
           rel="noopener noreferrer"
-          style={{ float: "right", fontSize: 14, color: "white", textDecoration: "none" }}
+          style={{ float: "right", , color: "white", textDecoration: "none" }}
         >
           <img
             style={{ border: "0pt none", width: 70, height: 20 }}
@@ -32,7 +32,7 @@ export default function Footer() {
           href="http://validator.w3.org/check?uri=referer"
           target="_blank"
           rel="noopener noreferrer"
-          style={{ float: "right", fontSize: 14, color: "white", textDecoration: "none" }}
+          style={{ float: "right", , color: "white", textDecoration: "none" }}
         >
           <img
             style={{ border: "0pt none", width: 70, height: 20 }}
@@ -45,49 +45,49 @@ export default function Footer() {
           href="https://indianrailways.gov.in/railwayboard/webadmin/"
           target="_blank"
           rel="noopener noreferrer"
-          style={{ color: "white", textDecoration: "none", fontSize: 14 }}
+          style={{ color: "white", textDecoration: "none", }}
         >
           Admin Login
         </a>
         {" | "}
         <a
           href="#"
-          style={{ color: "white", textDecoration: "none", fontSize: 14 }}
+          style={{ color: "white", textDecoration: "none",  }}
         >
           &nbsp;Site Map&nbsp;
         </a>
-        <span style={{ color: "#888888", fontSize: 14 }}> | </span>
+        <span style={{ color: "#888888", }}> | </span>
         <a
           href="#"
-          style={{ color: "white", textDecoration: "none", fontSize: 14 }}
+          style={{ color: "white", textDecoration: "none", }}
         >
           &nbsp;Contact Us&nbsp;
         </a>
-        <span style={{ color: "#888888", fontSize: 14 }}> | </span>
+        <span style={{ color: "#888888", }}> | </span>
         <a
           href="https://rtionline.gov.in/"
-          style={{ color: "white", textDecoration: "none", fontSize: 14 }}
+          style={{ color: "white", textDecoration: "none", }}
         >
           &nbsp;RTI&nbsp;
         </a>
-        <span style={{ color: "#888888", fontSize: 14 }}> | </span>
+        <span style={{ color: "#888888", }}> | </span>
         <a
           href="#"
-          style={{ color: "white", textDecoration: "none", fontSize: 14 }}
+          style={{ color: "white", textDecoration: "none",  }}
         >
           &nbsp;Disclaimer&nbsp;
         </a>
-        <span style={{ color: "#888888", fontSize: 14 }}> | </span>
+        <span style={{ color: "#888888",  }}> | </span>
         <a
           href="#"
-          style={{ color: "white", textDecoration: "none", fontSize: 14 }}
+          style={{ color: "white", textDecoration: "none", }}
         >
           &nbsp;Terms &amp; Conditions&nbsp;
         </a>
-        <span style={{ color: "#888888", fontSize: 14 }}> | </span>
+        <span style={{ color: "#888888",  }}> | </span>
         <a
           href="#"
-          style={{ color: "white", textDecoration: "none", fontSize: 14 }}
+          style={{ color: "white", textDecoration: "none",  }}
         >
           &nbsp;Privacy Policy&nbsp;
         </a>

@@ -77,6 +77,7 @@ export default function Header() {
               width={80}
               height={80}
               style={{ borderRadius: "50%" }}
+              className="w-15 h-15 md:w-20 md:h-20"
             />
           </a>
         </div>
@@ -124,12 +125,17 @@ export default function Header() {
             alt="National Emblem of India - Voters"
             width={100}
             height={45}
+                          className="w-30 h-10 md:w-25 md:h-25"
+
+
           />
           <Image
             src="/emblemBlack.png"
             alt="National Emblem of India"
             width={70}
             height={55}
+                                      className="w-10 h-10 md:w-15 md:h-25"
+
           />
         </div>
       </div>

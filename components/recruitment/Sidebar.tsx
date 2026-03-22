@@ -36,9 +36,9 @@ export default function Sidebar() {
                   color: "white",
                   textDecoration: "none",
                   fontFamily: "Arial Narrow, Arial, sans-serif",
-                  fontSize: 14,
                   display: "block",
                 }}
+                className="text-[11px] md:text-[14px]"
               >
                 <strong>Contact Us</strong>
               </a>
@@ -49,10 +49,10 @@ export default function Sidebar() {
                   color: "white",
                   textDecoration: "none",
                   fontFamily: "Arial Narrow, Arial, sans-serif",
-                  fontSize: 14,
                   display: "block",
                   paddingLeft: 12,
                 }}
+                className="text-[11px] md:text-[14px]"
               >
                 <strong>› RRBs Website</strong>
               </a>
@@ -65,7 +65,7 @@ export default function Sidebar() {
       <table
         border={0}
         cellSpacing={0}
-        width={200}
+        width="100%"
         cellPadding={0}
         style={{ backgroundColor: "#2352b9" }}
       >
@@ -73,8 +73,18 @@ export default function Sidebar() {
           {sidebarLinks.map((link, index) => (
             <Fragment key={index}>
               <tr>
-                <td width={27} height={25} style={{ textAlign: "center" }}>
-                  <span style={{ color: "#aad4f5", fontSize: 10 }}>●</span>
+                <td
+                  width={18}
+                  height={20}
+                  style={{ textAlign: "center" }}
+                  className="md:w-[27px] md:h-[25px]"
+                >
+                  <span
+                    style={{ color: "#aad4f5" }}
+                    className="text-[8px] md:text-[10px]"
+                  >
+                    ●
+                  </span>
                 </td>
                 <td style={{ textAlign: "left" }}>
                   <a
@@ -83,15 +93,18 @@ export default function Sidebar() {
                       color: "white",
                       textDecoration: "none",
                       fontFamily: "Arial Narrow, Arial, sans-serif",
-                      fontSize: 14,
                     }}
+                    className="text-[11px] md:text-[14px]"
                   >
                     {link.label}
                   </a>
                 </td>
               </tr>
               <tr>
-                <td colSpan={2} style={{ height: 1, backgroundColor: "#4a6fa5" }}>
+                <td
+                  colSpan={2}
+                  style={{ height: 1, backgroundColor: "#4a6fa5" }}
+                >
                   <div style={{ height: 1 }} />
                 </td>
               </tr>

@@ -30,7 +30,7 @@ export default function TopBar() {
 
   return (
     <div className="w-full bg-[#2b6f95] text-white overflow-hidden">
-      <div className="flex items-center justify-between px-0.5 md:px-1 py-[1px] md:py-1">
+      <div className="flex items-center justify-between pl-2 pr-0.5 md:px-1 py-[1px] md:py-1">
 
         {/* Left: Date & Time */}
         <div className="font-medium whitespace-nowrap shrink-0 text-[7px] md:text-[13px]">
@@ -78,9 +78,9 @@ export default function TopBar() {
             <input
               type="text"
               placeholder=""
-              className="h-[15px] md:h-[26px] w-20 md:w-44 px-1 md:px-2 text-black text-[8px] md:text-[13px] bg-white border-0 outline-none"
+              className="h-[10px] md:h-[24px] w-25 md:w-44 px-1 md:px-2 text-black text-[8px] md:text-[13px] bg-white border-0 outline-none"
             />
-            <button className="h-[15px] md:h-[26px] px-[3px] mx-[2px] md:px-2 bg-gray-50 text-[#111] text-[8px] md:text-[13px] font-semibold whitespace-nowrap flex items-center justify-center border-0 border-l border-gray-300">
+            <button className="h-[10px] md:h-[24px] px-[3px] mx-[2px] md:px-2 bg-gray-50 text-[#111] text-[8px] md:text-[13px] font-semibold whitespace-nowrap flex items-center justify-center border-0 border-l border-gray-300">
               Search
             </button>
           </div>

@@ -16,11 +16,17 @@ export default function MainContent() {
           min-width: 640px; /* forces side-by-side, scroll kicks in below this */
         }
         .maincontent-sidebar {
-          flex-shrink: 0;
-          width: 220px;
-          background-color: #2352b9;
-          align-self: stretch;
-        }
+  flex-shrink: 0;
+  width: 150px;
+  background-color: #2352b9;
+  align-self: stretch;
+}
+
+@media (min-width: 700px) {
+  .maincontent-sidebar {
+    width: 220px;
+  }
+}
         .maincontent-body {
           flex: 1;
           min-width: 0;
@@ -43,7 +49,6 @@ export default function MainContent() {
 
       <div className="maincontent-scroll-wrapper ">
         <main className="maincontent-inner">
-
           {/* ── Sidebar column ── */}
           <div className="maincontent-sidebar">
             {/* Home button */}
@@ -67,8 +72,8 @@ export default function MainContent() {
                     color: "white",
                     textDecoration: "none",
                     fontFamily: "Arial Narrow, Arial, sans-serif",
-                    fontSize: 14,
                   }}
+                  className="text-[10px] md:text-[12px]"
                 >
                   Home
                 </a>
