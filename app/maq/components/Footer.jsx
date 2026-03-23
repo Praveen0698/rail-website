@@ -23,7 +23,7 @@ export default function Footer() {
           <div className="grid grid-cols-2 gap-x-1 gap-y-1 sm:gap-x-2 sm:gap-y-1.5 md:gap-x-3 md:gap-y-2 w-1/2">
             <a href="http://india.gov.in/" title="india.govern.in" target="_blank" rel="nofollow noopener">
               <Image
-                src="/maq/Images/india.gov.gif"
+                src="/india.gov.gif"
                 width={100}
                 height={44}
                 alt="India.govern.in"
@@ -32,7 +32,7 @@ export default function Footer() {
             </a>
             <a href="http://makeinindia.com" title="makeinindia.com" target="_blank" rel="nofollow noopener">
               <Image
-                src="/maq/Images/makeinindia.png"
+                src="/makeinindia.png"
                 width={100}
                 height={44}
                 alt="makeinindia.com"
@@ -41,7 +41,7 @@ export default function Footer() {
             </a>
             <a href="http://incredibleindia.org" title="incredibleindia" target="_blank" rel="nofollow noopener">
               <Image
-                src="/maq/Images/incredible.png"
+                src="/incredible.png"
                 width={120}
                 height={44}
                 alt="incredibleindia"
@@ -50,7 +50,7 @@ export default function Footer() {
             </a>
             <a href="https://innovate.mygov.in" title="Innovate MyGov" target="_blank" rel="nofollow noopener">
               <Image
-                src="/maq/Images/thumbnail.jpg"
+                src="/thumbnail.jpg"
                 width={64}
                 height={64}
                 alt="Innovate MyGov"

@@ -451,7 +451,7 @@ export default function Home() {
             {/* Brand row */}
             <div className="brand-row">
               <div className="logo-ring">
-                <img src="/maq/Images/indian-railway.png" alt="Indian Railways Logo" />
+                <img src="/indian-railway.png" alt="Indian Railways Logo" />
               </div>
               <div className="brand-text">
                 <div className="ir-title">Indian Railways</div>

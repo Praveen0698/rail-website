@@ -4,13 +4,13 @@ import Image from "next/image";
 
 export default function Header() {
   return (
-    <header className="bg-white w-full border-b-2 border-gray-200 font-sans">
+    <header className="bg-white w-full border-b-2 border-gray-200 font-sans py-1 px-2 md:px-4">
       <div className="w-full max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4 flex items-center justify-between gap-4">
 
         {/* ── LEFT: National Emblem + Text ── */}
         <div className="flex items-center gap-3 sm:gap-4 shrink-0">
           <Image
-            src="/maq/Images/emblemBlack.png"
+            src="/emblemBlack.png"
             width={70}
             height={90}
             alt="National Emblem of India"
@@ -28,11 +28,11 @@ export default function Header() {
         {/* ── RIGHT: Indian Railways Emblem ── */}
         <div className="shrink-0">
           <Image
-            src="/maq/Images/indian-blue.png"
+            src="/indian-blue.png"
             width={80}
             height={80}
             alt="Indian Railways Logo"
-            className="w-12 h-12 sm:w-16 sm:h-16 md:w-24 md:h-24 object-contain"
+            className="w-12 h-12 sm:w-16 sm:h-16 md:w-21 md:h-21 object-contain"
           />
         </div>
 
