@@ -12,14 +12,14 @@ export default function useAuthGuard() {
     const auth = localStorage.getItem("auth");
 
     if (!auth) {
-      router.replace("/admin");
+      router.replace("/examination/admin");
       return;
     }
 
     const parsed = JSON.parse(auth);
 
     if (!parsed.sessionKey) {
-      router.replace("/admin");
+      router.replace("/examination/admin");
       return;
     }
 

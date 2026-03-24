@@ -56,7 +56,12 @@ const menuItems: MenuItem[] = [
           { label: "VC_RCT", href: "#" },
         ],
       },
-            { label: "CBT Examination", href: "https://examination.irrb.co.in" },
+      {
+        label: "CBT Examination",
+        href: "/examination",
+      },
+      { label: "Application Form", href: "/application/form" },
+      { label: "Admit Card", href: "#" },
 
       { label: "Empanelments (Beta Version)", href: "#" },
       {
@@ -126,9 +131,7 @@ const menuItems: MenuItem[] = [
           {
             label: "ERB_V_Orders",
             href: "#",
-            children: [
-              { label: "2024", href: "#" },
-            ],
+            children: [{ label: "2024", href: "#" }],
           },
           {
             label: "E(GR)-I's Orders",
@@ -162,7 +165,10 @@ const menuItems: MenuItem[] = [
           { label: "AT Welding Manual", href: "#" },
           { label: "FBW_Manual", href: "#" },
           { label: "USFD_Manual", href: "#" },
-          { label: "Correction Slip to Manual Glued Insulated Rail Joints", href: "#" },
+          {
+            label: "Correction Slip to Manual Glued Insulated Rail Joints",
+            href: "#",
+          },
           { label: "IREC_Vol_1", href: "#" },
           { label: "IREC_Vol_II", href: "#" },
           { label: "IREM-Vol_I", href: "#" },
@@ -242,9 +248,7 @@ const menuItems: MenuItem[] = [
       {
         label: "Concession Rules",
         href: "#",
-        children: [
-          { label: "GENERAL RULES FOR CONCESSION", href: "#" },
-        ],
+        children: [{ label: "GENERAL RULES FOR CONCESSION", href: "#" }],
       },
     ],
   },
@@ -286,7 +290,14 @@ const menuItems: MenuItem[] = [
 ];
 
 /* ── Desktop dropdown ── */
-function DropdownMenu({ items }: { items: MenuItem[] }) {
+function DropdownMenu({
+  items,
+  setShowAdmitModal,
+}: {
+  items: MenuItem[];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  setShowAdmitModal: any;
+}) {
   return (
     <ul
       style={{
@@ -303,13 +314,24 @@ function DropdownMenu({ items }: { items: MenuItem[] }) {
       }}
     >
       {items.map((item, i) => (
-        <DropdownItem key={i} item={item} />
+        <DropdownItem
+          key={i}
+          item={item}
+          setShowAdmitModal={setShowAdmitModal}
+        />
       ))}
     </ul>
   );
 }
 
-function DropdownItem({ item }: { item: MenuItem }) {
+function DropdownItem({
+  item,
+  setShowAdmitModal,
+}: {
+  item: MenuItem;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  setShowAdmitModal: any;
+}) {
   const [hovered, setHovered] = useState(false);
   return (
     <li
@@ -319,6 +341,18 @@ function DropdownItem({ item }: { item: MenuItem }) {
     >
       <a
         href={item.href}
+        onClick={(e) => {
+          if (item.label === "Admit Card") {
+            e.preventDefault();
+            setShowAdmitModal(true);
+          }
+        }}
+        target={
+          item.label === "CBT Examination" || item.label === "Application Form"
+            ? "_blank"
+            : "_self"
+        }
+        rel="noopener noreferrer"
         style={{
           display: "flex",
           alignItems: "center",
@@ -340,7 +374,10 @@ function DropdownItem({ item }: { item: MenuItem }) {
       </a>
       {item.children && item.children.length > 0 && hovered && (
         <div style={{ position: "absolute", left: "100%", top: 0 }}>
-          <DropdownMenu items={item.children} />
+          <DropdownMenu
+            items={item.children}
+            setShowAdmitModal={setShowAdmitModal}
+          />
         </div>
       )}
     </li>
@@ -348,7 +385,16 @@ function DropdownItem({ item }: { item: MenuItem }) {
 }
 
 /* ── Mobile accordion item ── */
-function MobileMenuItem({ item, depth = 0 }: { item: MenuItem; depth?: number }) {
+function MobileMenuItem({
+  item,
+  depth = 0,
+  setShowAdmitModal,
+}: {
+  item: MenuItem;
+  depth?: number;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  setShowAdmitModal: any;
+}) {
   const [open, setOpen] = useState(false);
   const hasChildren = item.children && item.children.length > 0;
   return (
@@ -360,11 +406,25 @@ function MobileMenuItem({ item, depth = 0 }: { item: MenuItem; depth?: number })
           alignItems: "center",
           paddingLeft: 16 + depth * 12,
           paddingRight: 12,
-          backgroundColor: depth === 0 ? "#3E70CB" : depth === 1 ? "#CF343A" : "#a82a30",
+          backgroundColor:
+            depth === 0 ? "#3E70CB" : depth === 1 ? "#CF343A" : "#a82a30",
         }}
       >
         <a
           href={item.href}
+          onClick={(e) => {
+            if (item.label === "Admit Card") {
+              e.preventDefault();
+              setShowAdmitModal(true);
+            }
+          }}
+          target={
+            item.label === "CBT Examination" ||
+            item.label === "Application Form"
+              ? "_blank"
+              : "_self"
+          }
+          rel="noopener noreferrer"
           style={{
             flex: 1,
             display: "block",
@@ -380,7 +440,15 @@ function MobileMenuItem({ item, depth = 0 }: { item: MenuItem; depth?: number })
         {hasChildren && (
           <button
             onClick={() => setOpen((o) => !o)}
-            style={{ background: "none", border: "none", color: "white", cursor: "pointer", fontSize: 16, padding: "0 4px", lineHeight: 1 }}
+            style={{
+              background: "none",
+              border: "none",
+              color: "white",
+              cursor: "pointer",
+              fontSize: 16,
+              padding: "0 4px",
+              lineHeight: 1,
+            }}
             aria-label="toggle submenu"
           >
             {open ? "▲" : "▼"}
@@ -390,7 +458,12 @@ function MobileMenuItem({ item, depth = 0 }: { item: MenuItem; depth?: number })
       {hasChildren && open && (
         <ul style={{ listStyle: "none", margin: 0, padding: 0 }}>
           {item.children!.map((child, i) => (
-            <MobileMenuItem key={i} item={child} depth={depth + 1} />
+            <MobileMenuItem
+              key={i}
+              item={child}
+              depth={depth + 1}
+              setShowAdmitModal={setShowAdmitModal}
+            />
           ))}
         </ul>
       )}
@@ -402,6 +475,7 @@ function MobileMenuItem({ item, depth = 0 }: { item: MenuItem; depth?: number })
 export default function Navbar() {
   const [activeMenu, setActiveMenu] = useState<number | null>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [showAdmitModal, setShowAdmitModal] = useState(false);
 
   return (
     <>
@@ -471,7 +545,13 @@ export default function Navbar() {
               flexShrink: 0,
             }}
           >
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="white">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="white"
+            >
               <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
             </svg>
           </Link>
@@ -480,14 +560,44 @@ export default function Navbar() {
             <div
               key={index}
               className="nav-menu-item"
-              style={{ backgroundColor: activeMenu === index ? "#3D76C0" : "#3E70CB", height: "49px" }}
+              style={{
+                backgroundColor: activeMenu === index ? "#3D76C0" : "#3E70CB",
+                height: "49px",
+              }}
               onMouseEnter={() => setActiveMenu(index)}
               onMouseLeave={() => setActiveMenu(null)}
             >
-              <a href={item.href}>{item.label}</a>
+              <a
+                href={item.href}
+                onClick={(e) => {
+                  if (item.label === "Admit Card") {
+                    e.preventDefault();
+                    setShowAdmitModal(true);
+                  }
+                }}
+                target={
+                  item.label === "CBT Examination" ||
+                  item.label === "Application Form"
+                    ? "_blank"
+                    : "_self"
+                }
+                rel="noopener noreferrer"
+              >
+                {item.label}
+              </a>
               {item.children && activeMenu === index && (
-                <div style={{ position: "absolute", top: "100%", left: 0, zIndex: 9999 }}>
-                  <DropdownMenu items={item.children} />
+                <div
+                  style={{
+                    position: "absolute",
+                    top: "100%",
+                    left: 0,
+                    zIndex: 9999,
+                  }}
+                >
+                  <DropdownMenu
+                    items={item.children}
+                    setShowAdmitModal={setShowAdmitModal}
+                  />
                 </div>
               )}
             </div>
@@ -497,37 +607,174 @@ export default function Navbar() {
         {/* ── Mobile ── */}
         <div
           className="navbar-hamburger"
-          style={{ display: "none", alignItems: "center", justifyContent: "space-between", padding: "0 8px" }}
+          style={{
+            display: "none",
+            alignItems: "center",
+            justifyContent: "space-between",
+            padding: "0 8px",
+          }}
         >
           <Link
             href="/"
-            style={{ backgroundColor: "#CF343A", display: "flex", alignItems: "center", justifyContent: "center", padding: "10px 16px", textDecoration: "none" }}
+            style={{
+              backgroundColor: "#CF343A",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              padding: "10px 16px",
+              textDecoration: "none",
+            }}
           >
-            <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" viewBox="0 0 24 24" fill="white">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="21"
+              height="21"
+              viewBox="0 0 24 24"
+              fill="white"
+            >
               <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
             </svg>
           </Link>
           <button
             onClick={() => setMobileOpen((o) => !o)}
-            style={{ background: "none", border: "1px solid rgba(255,255,255,0.5)", borderRadius: 4, padding: "6px 10px", cursor: "pointer", color: "white" }}
+            style={{
+              background: "none",
+              border: "1px solid rgba(255,255,255,0.5)",
+              borderRadius: 4,
+              padding: "6px 10px",
+              cursor: "pointer",
+              color: "white",
+            }}
             aria-label="Toggle navigation"
           >
             {mobileOpen ? (
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2">
-                <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="white"
+                strokeWidth="2"
+              >
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
               </svg>
             ) : (
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2">
-                <line x1="3" y1="6" x2="21" y2="6" /><line x1="3" y1="12" x2="21" y2="12" /><line x1="3" y1="18" x2="21" y2="18" />
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="white"
+                strokeWidth="2"
+              >
+                <line x1="3" y1="6" x2="21" y2="6" />
+                <line x1="3" y1="12" x2="21" y2="12" />
+                <line x1="3" y1="18" x2="21" y2="18" />
               </svg>
             )}
           </button>
         </div>
 
+        {showAdmitModal && (
+          <div
+            onClick={() => setShowAdmitModal(false)}
+            style={{
+              position: "fixed",
+              top: 0,
+              left: 0,
+              width: "100%",
+              height: "100%",
+              backgroundColor: "rgba(0,0,0,0.5)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              zIndex: 99999,
+            }}
+          >
+            <div
+              onClick={(e) => e.stopPropagation()} // prevent close inside
+              style={{
+                background: "white",
+                padding: 25,
+                borderRadius: 8,
+                width: 420, // 🔥 increased width
+                position: "relative",
+              }}
+            >
+              {/* ❌ Close Button */}
+              <button
+                onClick={() => setShowAdmitModal(false)}
+                style={{
+                  position: "absolute",
+                  top: 10,
+                  right: 10,
+                  background: "transparent",
+                  border: "none",
+                  fontSize: 18,
+                  cursor: "pointer",
+                  color: "#333",
+                }}
+              >
+                ✕
+              </button>
+
+              <h3 style={{ marginBottom: 20 }}>Download Admit Card</h3>
+
+              <input
+                type="text"
+                placeholder="Roll Number"
+                style={{
+                  width: "100%",
+                  padding: 10,
+                  marginBottom: 12,
+                  border: "1px solid #ccc",
+                  borderRadius: 4,
+                }}
+              />
+
+              <input
+                type="date"
+                style={{
+                  width: "100%",
+                  padding: 10,
+                  marginBottom: 18,
+                  border: "1px solid #ccc",
+                  borderRadius: 4,
+                }}
+              />
+
+              <button
+                style={{
+                  width: "100%",
+                  padding: 12,
+                  backgroundColor: "#3E70CB",
+                  color: "white",
+                  border: "none",
+                  borderRadius: 4,
+                  cursor: "pointer",
+                  fontWeight: "bold",
+                }}
+              >
+                Download
+              </button>
+            </div>
+          </div>
+        )}
+
         {mobileOpen && (
           <div className="navbar-mobile-menu">
             <ul style={{ listStyle: "none", margin: 0, padding: 0 }}>
-              {menuItems.map((item, i) => <MobileMenuItem key={i} item={item} depth={0} />)}
+              {menuItems.map((item, i) => (
+                <MobileMenuItem
+                  key={i}
+                  item={item}
+                  depth={0}
+                  setShowAdmitModal={setShowAdmitModal}
+                />
+              ))}
             </ul>
           </div>
         )}
