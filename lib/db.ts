@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { Mongoose } from "mongoose";
 
 const MONGODB_URI = process.env.MAQ_MONGODB_URI as string;
 
@@ -7,16 +7,26 @@ if (!MONGODB_URI) {
 }
 
 declare global {
-  var mongoose_maq: { conn: any; promise: any } | undefined;
+  // 👇 Define proper types instead of any
+  // eslint-disable-next-line no-var
+  var mongoose_maq:
+    | {
+        conn: Mongoose | null;
+        promise: Promise<Mongoose> | null;
+      }
+    | undefined;
 }
 
 let cached = global.mongoose_maq;
 
 if (!cached) {
-  cached = global.mongoose_maq = { conn: null, promise: null };
+  cached = global.mongoose_maq = {
+    conn: null,
+    promise: null,
+  };
 }
 
-export async function connectDB() {
+export async function connectDB(): Promise<Mongoose> {
   if (cached!.conn) return cached!.conn;
 
   if (!cached!.promise) {

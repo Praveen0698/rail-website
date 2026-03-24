@@ -62,7 +62,6 @@ const menuItems: MenuItem[] = [
       },
       { label: "Application Form", href: "/application/form" },
       { label: "Admit Card", href: "#" },
-
       { label: "Empanelments (Beta Version)", href: "#" },
       {
         label: "Promotion/Posting/Other Orders",
@@ -314,11 +313,7 @@ function DropdownMenu({
       }}
     >
       {items.map((item, i) => (
-        <DropdownItem
-          key={i}
-          item={item}
-          setShowAdmitModal={setShowAdmitModal}
-        />
+        <DropdownItem key={i} item={item} setShowAdmitModal={setShowAdmitModal} />
       ))}
     </ul>
   );
@@ -374,10 +369,7 @@ function DropdownItem({
       </a>
       {item.children && item.children.length > 0 && hovered && (
         <div style={{ position: "absolute", left: "100%", top: 0 }}>
-          <DropdownMenu
-            items={item.children}
-            setShowAdmitModal={setShowAdmitModal}
-          />
+          <DropdownMenu items={item.children} setShowAdmitModal={setShowAdmitModal} />
         </div>
       )}
     </li>
@@ -419,8 +411,7 @@ function MobileMenuItem({
             }
           }}
           target={
-            item.label === "CBT Examination" ||
-            item.label === "Application Form"
+            item.label === "CBT Examination" || item.label === "Application Form"
               ? "_blank"
               : "_self"
           }
@@ -470,6 +461,185 @@ function MobileMenuItem({
     </li>
   );
 }
+
+/* ── Admit Card Modal ── */
+function AdmitCardModal({ onClose }: { onClose: () => void }) {
+  const [rollNo, setRollNo] = useState("");
+  const [dob, setDob] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  const handleDownload = async () => {
+    if (!rollNo.trim() || !dob) {
+      setError("Please enter both Roll Number and Date of Birth.");
+      return;
+    }
+
+    setError("");
+    setLoading(true);
+
+    try {
+      const res = await fetch(`/api/admitcard?roll_no=${encodeURIComponent(rollNo.trim())}`);
+      const data = await res.json();
+
+      if (!data.success) {
+        setError("Record not found.");
+        setLoading(false);
+        return;
+      }
+
+      const card = data.data;
+
+      const storedDob = new Date(card.dob).toISOString().slice(0, 10);
+      if (storedDob !== dob) {
+        setError("Date of Birth does not match our records.");
+        setLoading(false);
+        return;
+      }
+
+      const fullRes = await fetch(`/api/admitcard?id=${card._id}`);
+      const fullData = await fullRes.json();
+
+      if (!fullData.success || !fullData.data?.card) {
+        setError("Record not found.");
+        setLoading(false);
+        return;
+      }
+
+      // ✅ Direct download
+      const link = document.createElement("a");
+      link.href = fullData.data.card;
+      link.download =
+        fullData.data.cardName || `admit_card_${fullData.data.roll_no}`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch {
+      setError("Something went wrong. Please try again.");
+    }
+
+    setLoading(false);
+  };
+
+  return (
+    <div
+      onClick={onClose}
+      style={{
+        position: "fixed",
+        top: 0, left: 0,
+        width: "100%", height: "100%",
+        backgroundColor: "rgba(0,0,0,0.5)",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        zIndex: 99999,
+        padding: "16px",
+      }}
+    >
+      <div
+        onClick={(e) => e.stopPropagation()}
+        style={{
+          background: "white",
+          borderRadius: 8,
+          width: "100%",
+          maxWidth: 440,
+          maxHeight: "90vh",
+          overflowY: "auto",
+        }}
+      >
+        {/* Header */}
+        <div
+          style={{
+            padding: "16px 20px",
+            borderBottom: "1px solid #e5e7eb",
+            display: "flex",
+            justifyContent: "space-between",
+          }}
+        >
+          <div>
+            <h3 style={{ margin: 0 }}>Download Admit Card</h3>
+          </div>
+          <button onClick={onClose}>✕</button>
+        </div>
+
+        {/* Body */}
+        <div style={{ padding: "20px" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+            
+            {/* Roll */}
+            <div>
+              <label style={labelStyle}>Roll Number</label>
+              <input
+                type="text"
+                value={rollNo}
+                onChange={(e) => {
+                  setRollNo(e.target.value);
+                  setError("");
+                }}
+                style={inputStyle}
+              />
+            </div>
+
+            {/* DOB */}
+            <div>
+              <label style={labelStyle}>Date of Birth</label>
+              <input
+                type="date"
+                value={dob}
+                onChange={(e) => {
+                  setDob(e.target.value);
+                  setError("");
+                }}
+                style={inputStyle}
+              />
+            </div>
+
+            {/* Error */}
+            {error && <div style={{ color: "red" }}>{error}</div>}
+
+            {/* ✅ ONLY DOWNLOAD BUTTON */}
+            <button
+  onClick={handleDownload}
+  disabled={loading}
+  style={{
+    padding: "12px 0",
+    backgroundColor: loading ? "#93c5fd" : "#3E70CB",
+    color: "white",
+    border: "none",
+    borderRadius: 6,
+    cursor: loading ? "not-allowed" : "pointer",
+    fontWeight: "bold",
+  }}
+>
+  {loading ? "Processing..." : "Download"}
+</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+const labelStyle: React.CSSProperties = {
+  display: "block",
+  fontSize: 11,
+  fontWeight: 600,
+  color: "#6b7280",
+  letterSpacing: "0.05em",
+  textTransform: "uppercase",
+  marginBottom: 5,
+};
+
+const inputStyle: React.CSSProperties = {
+  width: "100%",
+  padding: "10px 12px",
+  border: "1px solid #d1d5db",
+  borderRadius: 6,
+  fontSize: 14,
+  color: "#111827",
+  outline: "none",
+  boxSizing: "border-box",
+};
 
 /* ── Main Navbar ── */
 export default function Navbar() {
@@ -545,13 +715,7 @@ export default function Navbar() {
               flexShrink: 0,
             }}
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="white"
-            >
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="white">
               <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
             </svg>
           </Link>
@@ -576,8 +740,7 @@ export default function Navbar() {
                   }
                 }}
                 target={
-                  item.label === "CBT Examination" ||
-                  item.label === "Application Form"
+                  item.label === "CBT Examination" || item.label === "Application Form"
                     ? "_blank"
                     : "_self"
                 }
@@ -586,25 +749,15 @@ export default function Navbar() {
                 {item.label}
               </a>
               {item.children && activeMenu === index && (
-                <div
-                  style={{
-                    position: "absolute",
-                    top: "100%",
-                    left: 0,
-                    zIndex: 9999,
-                  }}
-                >
-                  <DropdownMenu
-                    items={item.children}
-                    setShowAdmitModal={setShowAdmitModal}
-                  />
+                <div style={{ position: "absolute", top: "100%", left: 0, zIndex: 9999 }}>
+                  <DropdownMenu items={item.children} setShowAdmitModal={setShowAdmitModal} />
                 </div>
               )}
             </div>
           ))}
         </div>
 
-        {/* ── Mobile ── */}
+        {/* ── Mobile hamburger ── */}
         <div
           className="navbar-hamburger"
           style={{
@@ -625,13 +778,7 @@ export default function Navbar() {
               textDecoration: "none",
             }}
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="21"
-              height="21"
-              viewBox="0 0 24 24"
-              fill="white"
-            >
+            <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" viewBox="0 0 24 24" fill="white">
               <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
             </svg>
           </Link>
@@ -648,122 +795,18 @@ export default function Navbar() {
             aria-label="Toggle navigation"
           >
             {mobileOpen ? (
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="white"
-                strokeWidth="2"
-              >
-                <line x1="18" y1="6" x2="6" y2="18" />
-                <line x1="6" y1="6" x2="18" y2="18" />
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2">
+                <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
               </svg>
             ) : (
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="white"
-                strokeWidth="2"
-              >
-                <line x1="3" y1="6" x2="21" y2="6" />
-                <line x1="3" y1="12" x2="21" y2="12" />
-                <line x1="3" y1="18" x2="21" y2="18" />
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2">
+                <line x1="3" y1="6" x2="21" y2="6" /><line x1="3" y1="12" x2="21" y2="12" /><line x1="3" y1="18" x2="21" y2="18" />
               </svg>
             )}
           </button>
         </div>
 
-        {showAdmitModal && (
-          <div
-            onClick={() => setShowAdmitModal(false)}
-            style={{
-              position: "fixed",
-              top: 0,
-              left: 0,
-              width: "100%",
-              height: "100%",
-              backgroundColor: "rgba(0,0,0,0.5)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              zIndex: 99999,
-            }}
-          >
-            <div
-              onClick={(e) => e.stopPropagation()} // prevent close inside
-              style={{
-                background: "white",
-                padding: 25,
-                borderRadius: 8,
-                width: 420, // 🔥 increased width
-                position: "relative",
-              }}
-            >
-              {/* ❌ Close Button */}
-              <button
-                onClick={() => setShowAdmitModal(false)}
-                style={{
-                  position: "absolute",
-                  top: 10,
-                  right: 10,
-                  background: "transparent",
-                  border: "none",
-                  fontSize: 18,
-                  cursor: "pointer",
-                  color: "#333",
-                }}
-              >
-                ✕
-              </button>
-
-              <h3 style={{ marginBottom: 20 }}>Download Admit Card</h3>
-
-              <input
-                type="text"
-                placeholder="Roll Number"
-                style={{
-                  width: "100%",
-                  padding: 10,
-                  marginBottom: 12,
-                  border: "1px solid #ccc",
-                  borderRadius: 4,
-                }}
-              />
-
-              <input
-                type="date"
-                style={{
-                  width: "100%",
-                  padding: 10,
-                  marginBottom: 18,
-                  border: "1px solid #ccc",
-                  borderRadius: 4,
-                }}
-              />
-
-              <button
-                style={{
-                  width: "100%",
-                  padding: 12,
-                  backgroundColor: "#3E70CB",
-                  color: "white",
-                  border: "none",
-                  borderRadius: 4,
-                  cursor: "pointer",
-                  fontWeight: "bold",
-                }}
-              >
-                Download
-              </button>
-            </div>
-          </div>
-        )}
-
+        {/* ── Mobile menu ── */}
         {mobileOpen && (
           <div className="navbar-mobile-menu">
             <ul style={{ listStyle: "none", margin: 0, padding: 0 }}>
@@ -779,6 +822,11 @@ export default function Navbar() {
           </div>
         )}
       </nav>
+
+      {/* ── Admit Card Modal (outside nav so it covers full page) ── */}
+      {showAdmitModal && (
+        <AdmitCardModal onClose={() => setShowAdmitModal(false)} />
+      )}
     </>
   );
 }

@@ -2,30 +2,12 @@
 
 import { useState } from "react";
 import { MdLocalPrintshop } from "react-icons/md";
-// import Select from "react-select";
 
 const zones = [
-  "Ahmedabad",
-  "Ajmer",
-  "Allahabad",
-  "Bangalore",
-  "Bhopal",
-  "Bhubaneshwar",
-  "Bilaspur",
-  "Chandigarh",
-  "Delhi",
-  "Gorakhpur",
-  "Guwahati",
-  "Jammu",
-  "Kolkata",
-  "Hajipur",
-  "Mumbai",
-  "Muzaffarpur",
-  "Patna",
-  "Ranchi",
-  "Secunderabad",
-  "Siliguri",
-  "Trivendrum",
+  "Ahmedabad", "Ajmer", "Allahabad", "Bangalore", "Bhopal",
+  "Bhubaneshwar", "Bilaspur", "Chandigarh", "Delhi", "Gorakhpur",
+  "Guwahati", "Jammu", "Kolkata", "Hajipur", "Mumbai",
+  "Muzaffarpur", "Patna", "Ranchi", "Secunderabad", "Siliguri", "Trivendrum",
 ];
 
 interface ResultData {
@@ -41,36 +23,26 @@ interface ResultData {
 
 const BLUE = "#2352b9";
 
-const labelStyle: React.CSSProperties = {
-  backgroundColor: BLUE,
-  color: "#ffffff",
-  fontSize: 14,
-  fontWeight: "bold",
-  textAlign: "center",
-  padding: "2px 14px",
-  width: 120,
-  minWidth: 120,
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  boxSizing: "border-box",
-  whiteSpace: "nowrap",
-};
-
-const valueStyle: React.CSSProperties = {
-  backgroundColor: "#ffffff",
-  padding: "6px 8px",
-  flex: 1,
-  display: "flex",
-  alignItems: "center",
-  boxSizing: "border-box",
-};
-
 const rowStyle: React.CSSProperties = {
   display: "flex",
   flexDirection: "row",
   marginBottom: 2,
 };
+
+// ── helper: fetch an image URL and return a base64 data-URL ──
+function toBase64(url: string): Promise<string> {
+  return new Promise((resolve) => {
+    fetch(url)
+      .then((res) => res.blob())
+      .then((blob) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result as string);
+        reader.onerror = () => resolve("");
+        reader.readAsDataURL(blob);
+      })
+      .catch(() => resolve(""));
+  });
+}
 
 export default function RRBsTable() {
   const [rollNo, setRollNo] = useState("");
@@ -90,11 +62,8 @@ export default function RRBsTable() {
 
     try {
       const res = await fetch(`/api/user/search?roll=${rollNo}&zone=${zone}`);
-
       if (!res.ok) throw new Error("Failed to fetch");
-
       const data = await res.json();
-
       setResultData(data.data);
     } catch (error) {
       setError("Could not fetch result. Please try again.");
@@ -104,8 +73,14 @@ export default function RRBsTable() {
     }
   };
 
-  const handlePrint = () => {
+  const handlePrint = async () => {
     if (!resultData) return;
+
+    // ── fetch both images as base64 fresh at print time ──
+    const [logo, emblem] = await Promise.all([
+      toBase64("/printlogo.png"),
+      toBase64("/printemblem.jpg"),
+    ]);
 
     const dob = (() => {
       const d = new Date(resultData.dob);
@@ -119,11 +94,9 @@ export default function RRBsTable() {
     const dateStr = `${String(now.getDate()).padStart(2, "0")}/${String(
       now.getMonth() + 1,
     ).padStart(2, "0")}/${now.getFullYear()}`;
-
     const timeStr = `${String(now.getHours()).padStart(2, "0")}:${String(
       now.getMinutes(),
     ).padStart(2, "0")}`;
-
     const dateTimeStr = `${dateStr}, ${timeStr}`;
     const pageUrl = window.location.href;
 
@@ -135,7 +108,6 @@ export default function RRBsTable() {
 
     const style = document.createElement("style");
     style.id = STYLE_ID;
-
     style.innerHTML = `
 @media print {
 body > *:not(#${SECTION_ID}) { display:none !important; }
@@ -160,7 +132,6 @@ font-family:"Times New Roman", Times, serif;
 width:100%;
 }
 
-/* meta */
 #${SECTION_ID} .p-meta{
 display:flex;
 justify-content:space-between;
@@ -173,7 +144,6 @@ flex:1;
 text-align:center;
 }
 
-/* HEADER */
 #${SECTION_ID} .p-header{
 background:#3D76C0;
 display:flex;
@@ -224,7 +194,6 @@ margin-left:6px;
 height:60px;
 }
 
-/* TABLE EXACT MATCH */
 #${SECTION_ID} .p-table-wrap{
 margin:70px auto 0 auto;
 width:520px;
@@ -256,7 +225,6 @@ font-weight:bold;
 font-size:12px;
 }
 
-/* footer */
 #${SECTION_ID} .p-footer{
 position:fixed;
 bottom:0;
@@ -274,7 +242,6 @@ font-size:9px;
     section.id = SECTION_ID;
 
     section.innerHTML = `
-
 <div class="p-meta">
 <span>${dateTimeStr}</span>
 <span class="p-meta-title">Ministry of Railways (Railway Board)</span>
@@ -282,24 +249,18 @@ font-size:9px;
 </div>
 
 <div class="p-header">
-
 <div class="p-header-left">
-<img class="p-header-logo" src="/printlogo.png"/>
-
+<img class="p-header-logo" src="${logo}"/>
 <div class="p-header-text">
 <div class="p-hindi">
 भारतीय रेल <span class="p-hindi-sub">राष्ट्र की जीवन रेखा...</span>
 </div>
-
 <div class="p-english">
 INDIAN RAILWAYS <span class="p-english-sub">Lifeline to the Nation...</span>
 </div>
 </div>
-
 </div>
-
-<img class="p-header-emblem" src="/printemblem.jpg"/>
-
+<img class="p-header-emblem" src="${emblem}"/>
 </div>
 
 <div class="p-table-wrap">
@@ -325,6 +286,21 @@ INDIAN RAILWAYS <span class="p-english-sub">Lifeline to the Nation...</span>
 `;
 
     document.body.appendChild(section);
+
+    // ── wait for images inside section to fully render before printing ──
+    const images = section.querySelectorAll("img");
+    await Promise.all(
+      Array.from(images).map(
+        (img) =>
+          new Promise<void>((resolve) => {
+            if (img.complete) resolve();
+            else {
+              img.onload = () => resolve();
+              img.onerror = () => resolve();
+            }
+          }),
+      ),
+    );
 
     window.print();
 
@@ -540,7 +516,7 @@ INDIAN RAILWAYS <span class="p-english-sub">Lifeline to the Nation...</span>
           />
         </span>
 
-        {/* Top link - absolutely positioned to far right */}
+        {/* Top link */}
         <a
           href="#rrb-top"
           style={{
@@ -578,7 +554,7 @@ INDIAN RAILWAYS <span class="p-english-sub">Lifeline to the Nation...</span>
             width: "100%",
           }}
         >
-          {/* Icon row - same width as card, icon on far right */}
+          {/* Icon row */}
           <div
             style={{
               display: "flex",

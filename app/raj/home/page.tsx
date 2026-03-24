@@ -5,27 +5,10 @@ import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
 const zones = [
-  "Ahmedabad",
-  "Ajmer",
-  "Allahabad",
-  "Bangalore",
-  "Bhopal",
-  "Bhubaneshwar",
-  "Bilaspur",
-  "Chandigarh",
-  "Delhi",
-  "Gorakhpur",
-  "Guwahati",
-  "Jammu",
-  "Kolkata",
-  "Hajipur",
-  "Mumbai",
-  "Muzaffarpur",
-  "Patna",
-  "Ranchi",
-  "Secunderabad",
-  "Siliguri",
-  "Trivendrum",
+  "Ahmedabad", "Ajmer", "Allahabad", "Bangalore", "Bhopal",
+  "Bhubaneshwar", "Bilaspur", "Chandigarh", "Delhi", "Gorakhpur",
+  "Guwahati", "Jammu", "Kolkata", "Hajipur", "Mumbai",
+  "Muzaffarpur", "Patna", "Ranchi", "Secunderabad", "Siliguri", "Trivendrum",
 ];
 
 interface User {
@@ -43,14 +26,8 @@ interface User {
 type FormData = Omit<User, "_id">;
 
 const emptyForm: FormData = {
-  roll: "",
-  zone: "",
-  name: "",
-  fatherName: "",
-  postApplied: "",
-  controlNo: "",
-  dob: "",
-  result: "",
+  roll: "", zone: "", name: "", fatherName: "",
+  postApplied: "", controlNo: "", dob: "", result: "",
 };
 
 const HomePage = () => {
@@ -64,29 +41,23 @@ const HomePage = () => {
   const [formData, setFormData] = useState<FormData>(emptyForm);
   const [saving, setSaving] = useState(false);
 
-  // Search state
   const [searchRoll, setSearchRoll] = useState("");
   const [searchZone, setSearchZone] = useState("");
-  const [searchResult, setSearchResult] = useState<User | null | "not_found">(
-    null,
-  );
+  const [searchResult, setSearchResult] = useState<User | null | "not_found">(null);
   const [searching, setSearching] = useState(false);
   const [showSearch, setShowSearch] = useState(false);
   const [loadingUsers, setLoadingUsers] = useState(true);
   const [isBlocked, setIsBlocked] = useState(false);
   const [togglingBlock, setTogglingBlock] = useState(false);
+  const [activeNav, setActiveNav] = useState("users");
 
   const fetchUsers = async () => {
     setLoadingUsers(true);
-
     try {
       const res = await fetch("/api/user");
       const data = await res.json();
       setUsers(data.data || []);
-    } catch (err) {
-      console.error(err);
-    }
-
+    } catch (err) { console.error(err); }
     setLoadingUsers(false);
   };
 
@@ -94,38 +65,21 @@ const HomePage = () => {
     try {
       const res = await fetch("/api/user/block");
       const data = await res.json();
-
-      if (data.success) {
-        setIsBlocked(data.isBlocked);
-      }
-    } catch (err) {
-      console.error(err);
-    }
+      if (data.success) setIsBlocked(data.isBlocked);
+    } catch (err) { console.error(err); }
   };
 
   const toggleBlock = async () => {
     try {
       setTogglingBlock(true);
-
       const res = await fetch("/api/user/block", {
         method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          isBlocked: !isBlocked,
-        }),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ isBlocked: !isBlocked }),
       });
-
       const data = await res.json();
-
-      if (data.success) {
-        setIsBlocked(data.data.isBlocked);
-      }
-    } catch (err) {
-      console.error(err);
-    }
-
+      if (data.success) setIsBlocked(data.data.isBlocked);
+    } catch (err) { console.error(err); }
     setTogglingBlock(false);
   };
 
@@ -140,9 +94,7 @@ const HomePage = () => {
     router.replace("/raj");
   };
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
-  ) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
@@ -155,13 +107,9 @@ const HomePage = () => {
   const openEditForm = (user: User) => {
     setEditingUser(user);
     setFormData({
-      roll: user.roll,
-      zone: user.zone,
-      name: user.name,
-      fatherName: user.fatherName,
-      postApplied: user.postApplied,
-      controlNo: user.controlNo,
-      dob: user.dob ? user.dob.slice(0, 10) : "",
+      roll: user.roll, zone: user.zone, name: user.name,
+      fatherName: user.fatherName, postApplied: user.postApplied,
+      controlNo: user.controlNo, dob: user.dob ? user.dob.slice(0, 10) : "",
       result: user.result,
     });
     setShowForm(true);
@@ -202,7 +150,7 @@ const HomePage = () => {
     setSearching(true);
     setSearchResult(null);
     const res = await fetch(
-      `/api/user/search?roll=${encodeURIComponent(searchRoll)}&zone=${encodeURIComponent(searchZone)}`,
+      `/api/user/search?roll=${encodeURIComponent(searchRoll)}&zone=${encodeURIComponent(searchZone)}`
     );
     const data = await res.json();
     setSearchResult(data.success ? data.data : "not_found");
@@ -230,469 +178,326 @@ const HomePage = () => {
   const formFields = [
     { name: "roll", label: "Roll Number", placeholder: "e.g. 10234567" },
     { name: "name", label: "Full Name", placeholder: "Candidate name" },
-    {
-      name: "fatherName",
-      label: "Father's Name",
-      placeholder: "Father's full name",
-    },
-    {
-      name: "postApplied",
-      label: "Post Applied",
-      placeholder: "e.g. Junior Engineer",
-    },
-    {
-      name: "controlNo",
-      label: "Control Number",
-      placeholder: "e.g. CTRL-001",
-    },
+    { name: "fatherName", label: "Father's Name", placeholder: "Father's full name" },
+    { name: "postApplied", label: "Post Applied", placeholder: "e.g. Junior Engineer" },
+    { name: "controlNo", label: "Control Number", placeholder: "e.g. CTRL-001" },
     { name: "result", label: "Result", placeholder: "e.g. Pass / Fail" },
   ];
 
-  return (
-    <div style={styles.page}>
-      <style>{css}</style>
-      <div style={styles.sideAccent} />
+  const navItems = [
+    {
+      key: "dashboard", label: "Dashboard", icon: (
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <rect x="3" y="3" width="7" height="7" rx="1" /><rect x="14" y="3" width="7" height="7" rx="1" />
+          <rect x="3" y="14" width="7" height="7" rx="1" /><rect x="14" y="14" width="7" height="7" rx="1" />
+        </svg>
+      )
+    },
+    {
+      key: "users", label: "Users", icon: (
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" />
+          <path d="M23 21v-2a4 4 0 0 0-3-3.87" /><path d="M16 3.13a4 4 0 0 1 0 7.75" />
+        </svg>
+      )
+    },
+    {
+      key: "admitcards", label: "Admit Cards", icon: (
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <rect x="2" y="5" width="20" height="14" rx="2" />
+          <line x1="2" y1="10" x2="22" y2="10" />
+          <line x1="7" y1="15" x2="10" y2="15" />
+          <line x1="14" y1="15" x2="17" y2="15" />
+        </svg>
+      )
+    },
+  ];
 
-      <div style={styles.content}>
-        {/* HEADER */}
-        <header style={styles.header}>
-          <div>
-            <p style={styles.headerEyebrow}>RAILWAY RECRUITMENT BOARD</p>
-            <h1 style={styles.headerTitle}>User Management</h1>
+  return (
+    <div style={styles.layout}>
+      <style>{css}</style>
+
+      {/* SIDEBAR */}
+      <aside style={styles.sidebar}>
+        <div style={styles.sidebarTop}>
+          <div style={styles.brandMark}>
+            <div style={styles.brandIcon}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5">
+                <path d="M12 2L2 7l10 5 10-5-10-5z" />
+                <path d="M2 17l10 5 10-5" />
+                <path d="M2 12l10 5 10-5" />
+              </svg>
+            </div>
+            <div>
+              <p style={styles.brandName}>Admin</p>
+              <p style={styles.brandSub}>Control Panel</p>
+            </div>
           </div>
-          <div style={styles.headerActions}>
-            {/* <span style={styles.badge}>{users.length} Records</span> */}
+        </div>
+
+        <div style={styles.navSection}>
+          <p style={styles.navLabel}>NAVIGATION</p>
+          <nav style={styles.nav}>
+            {navItems.map((item) => (
+              <button
+                key={item.key}
+                className={`nav-item ${activeNav === item.key ? "nav-item-active" : ""}`}
+                style={{
+                  ...styles.navItem,
+                  ...(activeNav === item.key ? styles.navItemActive : {}),
+                }}
+                onClick={() => {
+                  setActiveNav(item.key);
+                  if (item.key === "admitcards") router.push("/admitcard");
+                }}
+              >
+                <span style={{
+                  ...styles.navIcon,
+                  color: activeNav === item.key ? "#7c3aed" : "#9ca3af",
+                }}>
+                  {item.icon}
+                </span>
+                <span style={styles.navText}>{item.label}</span>
+                {activeNav === item.key && <span style={styles.navActiveDot} />}
+              </button>
+            ))}
+          </nav>
+        </div>
+
+        <div style={styles.sidebarBottom}>
+          <button
+            onClick={toggleBlock}
+            disabled={togglingBlock}
+            className="sidebar-block-btn"
+            style={{
+              ...styles.sidebarBlockBtn,
+              background: isBlocked ? "#fef2f2" : "#f0fdf4",
+              color: isBlocked ? "#dc2626" : "#16a34a",
+              border: isBlocked ? "1px solid #fecaca" : "1px solid #bbf7d0",
+            }}
+          >
+            <span>{isBlocked ? "🔓" : "🔒"}</span>
+            <span>{togglingBlock ? "Updating..." : isBlocked ? "Unblock Site" : "Block Site"}</span>
+          </button>
+          <button onClick={handleLogout} className="sidebar-logout-btn" style={styles.sidebarLogoutBtn}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+              <polyline points="16 17 21 12 16 7" />
+              <line x1="21" y1="12" x2="9" y2="12" />
+            </svg>
+            <span>Logout</span>
+          </button>
+        </div>
+      </aside>
+
+      {/* MAIN CONTENT */}
+      <main style={styles.main}>
+        {/* TOP BAR */}
+        <div style={styles.topbar}>
+          <div>
+            <h1 style={styles.pageTitle}>Users</h1>
+            <p style={styles.pageSubtitle}>Manage all candidate records</p>
+          </div>
+          <div style={styles.topbarActions}>
+            <span style={styles.countBadge}>{users.length} total records</span>
             <button
               className="btn-search-toggle"
               onClick={() => setShowSearch((s) => !s)}
               style={styles.btnSearchToggle}
+              title="Search"
             >
-              <svg
-                width="15"
-                height="15"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-              >
-                <circle cx="11" cy="11" r="8" />
-                <line x1="21" y1="21" x2="16.65" y2="16.65" />
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" />
               </svg>
+              Search
             </button>
-            <button
-              className="btn-add"
-              onClick={openAddForm}
-              style={styles.btnAdd}
-            >
-              <svg
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2.5"
-              >
-                <line x1="12" y1="5" x2="12" y2="19" />
-                <line x1="5" y1="12" x2="19" y2="12" />
+            <button className="btn-add" onClick={openAddForm} style={styles.btnAdd}>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                <line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" />
               </svg>
               Add User
             </button>
-            <button
-              onClick={toggleBlock}
-              disabled={togglingBlock}
-              style={{
-                background: isBlocked ? "#2d0a0a" : "#052e16",
-                color: isBlocked ? "#f87171" : "#4ade80",
-                border: isBlocked ? "1px solid #7f1d1d" : "1px solid #166534",
-                padding: "10px 18px",
-                borderRadius: "10px",
-                cursor: "pointer",
-                fontWeight: 600,
-                display: "flex",
-                alignItems: "center",
-                gap: "6px",
-              }}
-            >
-              {togglingBlock
-                ? "Updating..."
-                : isBlocked
-                  ? "🔓 Unblock Website"
-                  : "🔒 Block Website"}
-            </button>
-            <button
-              className="btn-logout"
-              onClick={handleLogout}
-              style={styles.btnLogout}
-            >
-              <svg
-                width="15"
-                height="15"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-              >
-                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
-                <polyline points="16 17 21 12 16 7" />
-                <line x1="21" y1="12" x2="9" y2="12" />
-              </svg>
-              Logout
-            </button>
           </div>
-        </header>
+        </div>
 
-        <div style={styles.divider} />
-
-        {/* SEARCH PANEL */}
-        {showSearch && (
-          <div className="search-panel" style={styles.searchPanel}>
-            <p style={styles.searchTitle}>
-              <svg
-                width="14"
-                height="14"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="#3b82f6"
-                strokeWidth="2"
-              >
-                <circle cx="11" cy="11" r="8" />
-                <line x1="21" y1="21" x2="16.65" y2="16.65" />
-              </svg>
-              Search Candidate by Roll & Zone
-            </p>
-            <div style={styles.searchRow}>
-              <input
-                placeholder="Roll Number"
-                value={searchRoll}
-                onChange={(e) => setSearchRoll(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-                className="form-input"
-                style={styles.searchInput}
-              />
-              <select
-                value={searchZone}
-                onChange={(e) => setSearchZone(e.target.value)}
-                className="form-input"
-                style={styles.searchInput}
-              >
-                <option value="">Select Zone</option>
-                {zones.map((z) => (
-                  <option key={z} value={z}>
-                    {z}
-                  </option>
-                ))}
-              </select>
-              <button
-                className="btn-add"
-                onClick={handleSearch}
-                disabled={searching}
-                style={{ ...styles.btnAdd, minWidth: "100px" }}
-              >
-                {searching ? "Searching..." : "Search"}
-              </button>
-              <button
-                className="btn-logout"
-                onClick={clearSearch}
-                style={styles.btnLogout}
-              >
-                Clear
-              </button>
-            </div>
-
-            {searchResult === "not_found" && (
-              <div style={styles.searchNotFound}>
-                <svg
-                  width="20"
-                  height="20"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="#f87171"
-                  strokeWidth="2"
-                >
-                  <circle cx="12" cy="12" r="10" />
-                  <line x1="15" y1="9" x2="9" y2="15" />
-                  <line x1="9" y1="9" x2="15" y2="15" />
+        <div style={styles.mainBody}>
+          {/* SEARCH PANEL */}
+          {showSearch && (
+            <div className="search-panel" style={styles.searchPanel}>
+              <p style={styles.searchTitle}>
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" strokeWidth="2">
+                  <circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" />
                 </svg>
-                No candidate found with Roll{" "}
-                <strong style={{ marginLeft: 4 }}>{searchRoll}</strong> in{" "}
-                <strong style={{ marginLeft: 4 }}>{searchZone}</strong> zone.
-              </div>
-            )}
-            {searchResult && searchResult !== "not_found" && (
-              <div style={styles.searchResultCard}>
-                <div style={styles.searchResultGrid}>
-                  {[
-                    ["Roll", searchResult.roll],
-                    ["Zone", searchResult.zone],
-                    ["Name", searchResult.name],
-                    ["Father's Name", searchResult.fatherName],
-                    ["Post Applied", searchResult.postApplied],
-                    ["Control No", searchResult.controlNo],
-                    [
-                      "DOB",
-                      new Date(searchResult.dob).toLocaleDateString("en-IN", {
-                        day: "2-digit",
-                        month: "short",
-                        year: "numeric",
-                      }),
-                    ],
-                    ["Result", searchResult.result],
-                  ].map(([label, value]) => (
-                    <div key={label} style={styles.searchResultItem}>
-                      <span style={styles.searchResultLabel}>{label}</span>
-                      <span style={styles.searchResultValue}>{value}</span>
-                    </div>
-                  ))}
-                </div>
-                <div
-                  style={{ display: "flex", gap: "10px", marginTop: "16px" }}
+                Search by Roll & Zone
+              </p>
+              <div style={styles.searchRow}>
+                <input
+                  placeholder="Roll Number"
+                  value={searchRoll}
+                  onChange={(e) => setSearchRoll(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && handleSearch()}
+                  className="form-input"
+                  style={styles.searchInput}
+                />
+                <select
+                  value={searchZone}
+                  onChange={(e) => setSearchZone(e.target.value)}
+                  className="form-input"
+                  style={styles.searchInput}
                 >
-                  <button
-                    className="btn-edit"
-                    onClick={() => openEditForm(searchResult as User)}
-                    style={{
-                      ...styles.btnEdit,
-                      padding: "8px 16px",
-                      fontSize: "13px",
-                      gap: "6px",
-                      display: "flex",
-                      alignItems: "center",
-                    }}
-                  >
-                    <svg
-                      width="13"
-                      height="13"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                    >
-                      <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
-                      <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
-                    </svg>
-                    Edit Record
-                  </button>
-                  <button
-                    className="btn-delete"
-                    onClick={() => deleteUser((searchResult as User)._id)}
-                    style={{
-                      ...styles.btnDelete,
-                      padding: "8px 16px",
-                      fontSize: "13px",
-                      gap: "6px",
-                      display: "flex",
-                      alignItems: "center",
-                    }}
-                  >
-                    <svg
-                      width="13"
-                      height="13"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                    >
-                      <polyline points="3 6 5 6 21 6" />
-                      <path d="M19 6l-1 14H6L5 6" />
-                    </svg>
-                    Delete
-                  </button>
-                </div>
+                  <option value="">Select Zone</option>
+                  {zones.map((z) => <option key={z} value={z}>{z}</option>)}
+                </select>
+                <button className="btn-add" onClick={handleSearch} disabled={searching} style={{ ...styles.btnAdd, minWidth: "100px" }}>
+                  {searching ? "Searching..." : "Search"}
+                </button>
+                <button className="btn-outline" onClick={clearSearch} style={styles.btnOutline}>Clear</button>
               </div>
-            )}
-          </div>
-        )}
 
-        {/* TABLE */}
-        <div style={styles.card}>
-          {loadingUsers ? (
-            <div style={styles.tableLoader}>
-              <div style={styles.spinner} />
-              <p style={{ color: "#64748b", marginTop: "10px" }}>
-                Loading records...
-              </p>
-            </div>
-          ) : users.length === 0 ? (
-            <div style={styles.emptyState}>
-              <svg
-                width="48"
-                height="48"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="#4b5563"
-                strokeWidth="1.5"
-              >
-                <rect x="3" y="3" width="18" height="18" rx="2" />
-                <line x1="3" y1="9" x2="21" y2="9" />
-                <line x1="9" y1="21" x2="9" y2="9" />
-              </svg>
-              <p style={styles.emptyText}>
-                No records found. Add a user to get started.
-              </p>
-            </div>
-          ) : (
-            <div style={styles.tableWrapper}>
-              <table style={styles.table}>
-                <thead>
-                  <tr>
+              {searchResult === "not_found" && (
+                <div style={styles.searchNotFound}>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#dc2626" strokeWidth="2">
+                    <circle cx="12" cy="12" r="10" /><line x1="15" y1="9" x2="9" y2="15" /><line x1="9" y1="9" x2="15" y2="15" />
+                  </svg>
+                  No candidate found with Roll <strong>{searchRoll}</strong> in <strong>{searchZone}</strong> zone.
+                </div>
+              )}
+              {searchResult && searchResult !== "not_found" && (
+                <div style={styles.searchResultCard}>
+                  <div style={styles.searchResultGrid}>
                     {[
-                      "Roll",
-                      "Zone",
-                      "Name",
-                      "Father Name",
-                      "Post Applied",
-                      "Control No",
-                      "DOB",
-                      "Result",
-                      "Actions",
-                    ].map((h) => (
-                      <th key={h} style={styles.th}>
-                        {h}
-                      </th>
+                      ["Roll", searchResult.roll], ["Zone", searchResult.zone],
+                      ["Name", searchResult.name], ["Father's Name", searchResult.fatherName],
+                      ["Post Applied", searchResult.postApplied], ["Control No", searchResult.controlNo],
+                      ["DOB", new Date(searchResult.dob).toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" })],
+                      ["Result", searchResult.result],
+                    ].map(([label, value]) => (
+                      <div key={label} style={styles.searchResultItem}>
+                        <span style={styles.searchResultLabel}>{label}</span>
+                        <span style={styles.searchResultValue}>{value}</span>
+                      </div>
                     ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {users.map((user, i) => (
-                    <tr
-                      key={user._id}
-                      className="table-row"
-                      style={{ animationDelay: `${i * 30}ms` }}
-                    >
-                      <td style={styles.td}>
-                        <span style={styles.rollBadge}>{user.roll}</span>
-                      </td>
-                      <td style={styles.td}>
-                        <span style={styles.zonePill}>{user.zone}</span>
-                      </td>
-                      <td
-                        style={{
-                          ...styles.td,
-                          fontWeight: 600,
-                          color: "#f1f5f9",
-                        }}
-                      >
-                        {user.name}
-                      </td>
-                      <td style={styles.td}>{user.fatherName}</td>
-                      <td style={styles.td}>{user.postApplied}</td>
-                      <td style={styles.td}>
-                        <code style={styles.code}>{user.controlNo}</code>
-                      </td>
-                      <td style={styles.td}>
-                        {new Date(user.dob).toLocaleDateString("en-IN", {
-                          day: "2-digit",
-                          month: "short",
-                          year: "numeric",
-                        })}
-                      </td>
-                      <td style={styles.td}>
-                        <span
-                          style={{
-                            ...styles.resultBadge,
-                            ...(user.result?.toLowerCase().includes("pass")
-                              ? styles.resultPass
-                              : user.result?.toLowerCase().includes("fail")
-                                ? styles.resultFail
-                                : styles.resultNeutral),
-                          }}
-                        >
-                          {user.result}
-                        </span>
-                      </td>
-                      <td style={{ ...styles.td, whiteSpace: "nowrap" }}>
-                        <div style={{ display: "flex", gap: "8px" }}>
-                          <button
-                            className="btn-edit"
-                            onClick={() => openEditForm(user)}
-                            style={styles.btnEdit}
-                            title="Edit"
-                          >
-                            <svg
-                              width="13"
-                              height="13"
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              stroke="currentColor"
-                              strokeWidth="2"
-                            >
-                              <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
-                              <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
-                            </svg>
-                          </button>
-                          <button
-                            className="btn-delete"
-                            onClick={() => deleteUser(user._id)}
-                            disabled={deletingId === user._id}
-                            style={styles.btnDelete}
-                            title="Delete"
-                          >
-                            {deletingId === user._id ? (
-                              "·"
-                            ) : (
-                              <svg
-                                width="13"
-                                height="13"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                strokeWidth="2"
-                              >
-                                <polyline points="3 6 5 6 21 6" />
-                                <path d="M19 6l-1 14H6L5 6" />
-                                <path d="M10 11v6M14 11v6" />
-                                <path d="M9 6V4h6v2" />
-                              </svg>
-                            )}
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </div>
+                  <div style={{ display: "flex", gap: "10px", marginTop: "16px" }}>
+                    <button className="btn-edit" onClick={() => openEditForm(searchResult as User)}
+                      style={{ ...styles.btnEdit, padding: "8px 16px", fontSize: "13px", gap: "6px", display: "flex", alignItems: "center" }}>
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                      </svg>
+                      Edit Record
+                    </button>
+                    <button className="btn-delete" onClick={() => deleteUser((searchResult as User)._id)}
+                      style={{ ...styles.btnDelete, padding: "8px 16px", fontSize: "13px", gap: "6px", display: "flex", alignItems: "center" }}>
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <polyline points="3 6 5 6 21 6" /><path d="M19 6l-1 14H6L5 6" />
+                      </svg>
+                      Delete
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
           )}
+
+          {/* TABLE CARD */}
+          <div style={styles.card}>
+            {loadingUsers ? (
+              <div style={styles.tableLoader}>
+                <div style={styles.spinnerLight} />
+                <p style={{ color: "#9ca3af", marginTop: "10px", fontSize: "14px" }}>Loading records...</p>
+              </div>
+            ) : users.length === 0 ? (
+              <div style={styles.emptyState}>
+                <div style={styles.emptyIcon}>
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#d1d5db" strokeWidth="1.5">
+                    <rect x="3" y="3" width="18" height="18" rx="2" />
+                    <line x1="3" y1="9" x2="21" y2="9" />
+                    <line x1="9" y1="21" x2="9" y2="9" />
+                  </svg>
+                </div>
+                <p style={styles.emptyText}>No records found. Add a user to get started.</p>
+              </div>
+            ) : (
+              <div style={styles.tableWrapper}>
+                <table style={styles.table}>
+                  <thead>
+                    <tr>
+                      {["Roll", "Zone", "Name", "Father Name", "Post Applied", "Control No", "DOB", "Result", "Actions"].map((h) => (
+                        <th key={h} style={styles.th}>{h}</th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {users.map((user, i) => (
+                      <tr key={user._id} className="table-row" style={{ animationDelay: `${i * 30}ms` }}>
+                        <td style={styles.td}><span style={styles.rollBadge}>{user.roll}</span></td>
+                        <td style={styles.td}><span style={styles.zonePill}>{user.zone}</span></td>
+                        <td style={{ ...styles.td, fontWeight: 600, color: "#111827" }}>{user.name}</td>
+                        <td style={styles.td}>{user.fatherName}</td>
+                        <td style={styles.td}>{user.postApplied}</td>
+                        <td style={styles.td}><code style={styles.code}>{user.controlNo}</code></td>
+                        <td style={styles.td}>
+                          {new Date(user.dob).toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" })}
+                        </td>
+                        <td style={styles.td}>
+                          <span style={{
+                            ...styles.resultBadge,
+                            ...(user.result?.toLowerCase().includes("pass") ? styles.resultPass
+                              : user.result?.toLowerCase().includes("fail") ? styles.resultFail
+                                : styles.resultNeutral),
+                          }}>
+                            {user.result}
+                          </span>
+                        </td>
+                        <td style={{ ...styles.td, whiteSpace: "nowrap" }}>
+                          <div style={{ display: "flex", gap: "8px" }}>
+                            <button className="btn-edit" onClick={() => openEditForm(user)} style={styles.btnEdit} title="Edit">
+                              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                              </svg>
+                            </button>
+                            <button className="btn-delete" onClick={() => deleteUser(user._id)}
+                              disabled={deletingId === user._id} style={styles.btnDelete} title="Delete">
+                              {deletingId === user._id ? "·" : (
+                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                  <polyline points="3 6 5 6 21 6" />
+                                  <path d="M19 6l-1 14H6L5 6" />
+                                  <path d="M10 11v6M14 11v6" />
+                                  <path d="M9 6V4h6v2" />
+                                </svg>
+                              )}
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
         </div>
-      </div>
+      </main>
 
       {/* ADD / EDIT MODAL */}
       {showForm && (
-        <div
-          style={styles.overlay}
-          onClick={(e) => e.target === e.currentTarget && setShowForm(false)}
-        >
+        <div style={styles.overlay} onClick={(e) => e.target === e.currentTarget && setShowForm(false)}>
           <div className="modal-card" style={styles.modal}>
             <div style={styles.modalHeader}>
               <div>
-                <h2 style={styles.modalTitle}>
-                  {editingUser ? "Edit Record" : "Add New User"}
-                </h2>
+                <h2 style={styles.modalTitle}>{editingUser ? "Edit Record" : "Add New User"}</h2>
                 <p style={styles.modalSubtitle}>
-                  {editingUser
-                    ? `Editing: ${editingUser.name}`
-                    : "Fill in the candidate details below"}
+                  {editingUser ? `Editing: ${editingUser.name}` : "Fill in the candidate details below"}
                 </p>
               </div>
-              <button
-                onClick={() => setShowForm(false)}
-                className="btn-close"
-                style={styles.btnClose}
-              >
-                <svg
-                  width="18"
-                  height="18"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                >
-                  <line x1="18" y1="6" x2="6" y2="18" />
-                  <line x1="6" y1="6" x2="18" y2="18" />
+              <button onClick={() => setShowForm(false)} className="btn-close" style={styles.btnClose}>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
                 </svg>
               </button>
             </div>
-
             <div style={styles.modalBody}>
               <div style={styles.formGrid}>
                 {formFields.map((field) => (
@@ -710,54 +515,21 @@ const HomePage = () => {
                 ))}
                 <div style={styles.formGroup}>
                   <label style={styles.label}>Zone</label>
-                  <select
-                    name="zone"
-                    value={formData.zone}
-                    onChange={handleChange}
-                    className="form-input"
-                    style={styles.input}
-                  >
+                  <select name="zone" value={formData.zone} onChange={handleChange} className="form-input" style={styles.input}>
                     <option value="">Select Zone</option>
-                    {zones.map((z) => (
-                      <option key={z} value={z}>
-                        {z}
-                      </option>
-                    ))}
+                    {zones.map((z) => <option key={z} value={z}>{z}</option>)}
                   </select>
                 </div>
                 <div style={styles.formGroup}>
                   <label style={styles.label}>Date of Birth</label>
-                  <input
-                    type="date"
-                    name="dob"
-                    value={formData.dob}
-                    onChange={handleChange}
-                    className="form-input"
-                    style={styles.input}
-                  />
+                  <input type="date" name="dob" value={formData.dob} onChange={handleChange} className="form-input" style={styles.input} />
                 </div>
               </div>
             </div>
-
             <div style={styles.modalFooter}>
-              <button
-                onClick={() => setShowForm(false)}
-                className="btn-cancel"
-                style={styles.btnCancel}
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleSubmit}
-                disabled={saving}
-                className="btn-save"
-                style={styles.btnSave}
-              >
-                {saving
-                  ? "Saving..."
-                  : editingUser
-                    ? "Update Record"
-                    : "Save Record"}
+              <button onClick={() => setShowForm(false)} className="btn-cancel" style={styles.btnCancel}>Cancel</button>
+              <button onClick={handleSubmit} disabled={saving} className="btn-save" style={styles.btnSave}>
+                {saving ? "Saving..." : editingUser ? "Update Record" : "Save Record"}
               </button>
             </div>
           </div>
@@ -768,169 +540,292 @@ const HomePage = () => {
 };
 
 const styles: Record<string, React.CSSProperties> = {
-  page: {
+  layout: {
     minHeight: "100vh",
-    background: "#0b0f1a",
+    background: "#f3f4f6",
     display: "flex",
-    fontFamily: "'DM Sans', sans-serif",
-    color: "#cbd5e1",
-    position: "relative",
+    fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, sans-serif",
+    color: "#374151",
   },
-  sideAccent: {
-    position: "fixed",
-    left: 0,
+
+  /* ── SIDEBAR ── */
+  sidebar: {
+    width: "220px",
+    minWidth: "220px",
+    background: "#ffffff",
+    borderRight: "1px solid #e5e7eb",
+    display: "flex",
+    flexDirection: "column",
+    padding: "0",
+    position: "sticky" as const,
     top: 0,
-    bottom: 0,
-    width: "3px",
-    background:
-      "linear-gradient(180deg, #3b82f6 0%, #6366f1 50%, transparent 100%)",
+    height: "100vh",
+    overflowY: "auto" as const,
   },
-  content: {
-    flex: 1,
-    padding: "40px 48px",
-    maxWidth: "1500px",
-    margin: "0 auto",
-    width: "100%",
+  sidebarTop: {
+    padding: "20px 16px 16px",
+    borderBottom: "1px solid #f3f4f6",
   },
-  header: {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: "28px",
-    flexWrap: "wrap",
-    gap: "16px",
-  },
-  headerEyebrow: {
-    fontSize: "11px",
-    letterSpacing: "0.2em",
-    color: "#3b82f6",
-    fontWeight: 600,
-    marginBottom: "6px",
-  },
-  headerTitle: {
-    fontSize: "28px",
-    fontWeight: 700,
-    color: "#f1f5f9",
-    margin: 0,
-    letterSpacing: "-0.02em",
-  },
-  headerActions: {
+  brandMark: {
     display: "flex",
     alignItems: "center",
     gap: "10px",
-    flexWrap: "wrap",
   },
-  badge: {
-    background: "#1e293b",
-    border: "1px solid #334155",
-    color: "#94a3b8",
+  brandIcon: {
+    width: "36px",
+    height: "36px",
+    background: "linear-gradient(135deg, #7c3aed, #6d28d9)",
+    borderRadius: "10px",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    flexShrink: 0,
+  },
+  brandName: {
+    fontSize: "14px",
+    fontWeight: 700,
+    color: "#111827",
+    margin: 0,
+    lineHeight: 1.2,
+  },
+  brandSub: {
+    fontSize: "11px",
+    color: "#9ca3af",
+    margin: 0,
+    lineHeight: 1.4,
+  },
+  navSection: {
+    padding: "20px 12px 12px",
+    flex: 1,
+  },
+  navLabel: {
+    fontSize: "10px",
+    fontWeight: 600,
+    color: "#9ca3af",
+    letterSpacing: "0.1em",
+    marginBottom: "8px",
+    paddingLeft: "8px",
+  },
+  nav: {
+    display: "flex",
+    flexDirection: "column" as const,
+    gap: "2px",
+  },
+  navItem: {
+    display: "flex",
+    alignItems: "center",
+    gap: "10px",
+    padding: "9px 10px",
+    borderRadius: "8px",
+    border: "none",
+    background: "transparent",
+    cursor: "pointer",
+    width: "100%",
+    textAlign: "left" as const,
+    transition: "all 0.15s",
+    position: "relative" as const,
+  },
+  navItemActive: {
+    background: "#f5f3ff",
+  },
+  navIcon: {
+    display: "flex",
+    alignItems: "center",
+    flexShrink: 0,
+  },
+  navText: {
+    fontSize: "13.5px",
+    fontWeight: 500,
+    color: "#374151",
+    flex: 1,
+  },
+  navActiveDot: {
+    width: "6px",
+    height: "6px",
+    borderRadius: "50%",
+    background: "#7c3aed",
+  },
+  sidebarBottom: {
+    padding: "12px",
+    borderTop: "1px solid #f3f4f6",
+    display: "flex",
+    flexDirection: "column" as const,
+    gap: "6px",
+  },
+  sidebarBlockBtn: {
+    display: "flex",
+    alignItems: "center",
+    gap: "7px",
+    padding: "8px 12px",
+    borderRadius: "8px",
+    cursor: "pointer",
+    fontWeight: 500,
+    fontSize: "12.5px",
+    width: "100%",
+    justifyContent: "center" as const,
+  },
+  sidebarLogoutBtn: {
+    display: "flex",
+    alignItems: "center",
+    gap: "7px",
+    background: "transparent",
+    color: "#6b7280",
+    padding: "8px 12px",
+    borderRadius: "8px",
+    border: "1px solid #e5e7eb",
+    cursor: "pointer",
+    fontWeight: 500,
+    fontSize: "12.5px",
+    width: "100%",
+    justifyContent: "center" as const,
+  },
+
+  /* ── MAIN ── */
+  main: {
+    flex: 1,
+    display: "flex",
+    flexDirection: "column" as const,
+    minWidth: 0,
+  },
+  topbar: {
+    background: "#ffffff",
+    borderBottom: "1px solid #e5e7eb",
+    padding: "20px 32px",
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    flexWrap: "wrap" as const,
+    gap: "12px",
+  },
+  pageTitle: {
+    fontSize: "22px",
+    fontWeight: 700,
+    color: "#111827",
+    margin: 0,
+    letterSpacing: "-0.01em",
+  },
+  pageSubtitle: {
+    fontSize: "13px",
+    color: "#9ca3af",
+    margin: "2px 0 0",
+  },
+  topbarActions: {
+    display: "flex",
+    alignItems: "center",
+    gap: "10px",
+    flexWrap: "wrap" as const,
+  },
+  countBadge: {
+    background: "#f9fafb",
+    border: "1px solid #e5e7eb",
+    color: "#6b7280",
     padding: "6px 14px",
     borderRadius: "20px",
-    fontSize: "13px",
+    fontSize: "12.5px",
     fontWeight: 500,
   },
   btnAdd: {
     display: "flex",
     alignItems: "center",
-    gap: "7px",
-    background: "linear-gradient(135deg, #3b82f6, #6366f1)",
+    gap: "6px",
+    background: "#7c3aed",
     color: "#fff",
-    padding: "10px 20px",
-    borderRadius: "10px",
+    padding: "9px 18px",
+    borderRadius: "8px",
     border: "none",
     cursor: "pointer",
     fontWeight: 600,
-    fontSize: "14px",
+    fontSize: "13.5px",
   },
   btnSearchToggle: {
     display: "flex",
     alignItems: "center",
-    gap: "7px",
-    background: "#1e293b",
-    color: "#7dd3fc",
-    padding: "10px 18px",
-    borderRadius: "10px",
-    border: "1px solid #2d4a6e",
+    gap: "6px",
+    background: "#ffffff",
+    color: "#374151",
+    padding: "9px 16px",
+    borderRadius: "8px",
+    border: "1px solid #e5e7eb",
     cursor: "pointer",
     fontWeight: 500,
-    fontSize: "14px",
+    fontSize: "13.5px",
   },
-  btnLogout: {
+  btnOutline: {
     display: "flex",
     alignItems: "center",
-    gap: "7px",
-    background: "#1e293b",
-    color: "#94a3b8",
-    padding: "10px 18px",
-    borderRadius: "10px",
-    border: "1px solid #334155",
+    gap: "6px",
+    background: "#ffffff",
+    color: "#6b7280",
+    padding: "9px 16px",
+    borderRadius: "8px",
+    border: "1px solid #e5e7eb",
     cursor: "pointer",
     fontWeight: 500,
-    fontSize: "14px",
+    fontSize: "13.5px",
   },
-  divider: {
-    height: "1px",
-    background:
-      "linear-gradient(90deg, #1e3a5f 0%, #334155 40%, transparent 100%)",
-    marginBottom: "28px",
+  mainBody: {
+    padding: "24px 32px",
+    flex: 1,
   },
+
+  /* ── SEARCH PANEL ── */
   searchPanel: {
-    background: "#111827",
-    border: "1px solid #1e293b",
-    borderRadius: "14px",
-    padding: "22px 24px",
-    marginBottom: "24px",
+    background: "#ffffff",
+    border: "1px solid #e5e7eb",
+    borderRadius: "12px",
+    padding: "20px 22px",
+    marginBottom: "20px",
   },
   searchTitle: {
-    fontSize: "13px",
+    fontSize: "11px",
     fontWeight: 600,
-    color: "#64748b",
-    letterSpacing: "0.05em",
+    color: "#9ca3af",
+    letterSpacing: "0.07em",
     textTransform: "uppercase" as const,
     marginBottom: "14px",
     display: "flex",
     alignItems: "center",
-    gap: "8px",
+    gap: "7px",
   },
   searchRow: {
     display: "flex",
-    gap: "12px",
+    gap: "10px",
     flexWrap: "wrap" as const,
     alignItems: "center",
   },
   searchInput: {
-    background: "#0f172a",
-    border: "1px solid #1e293b",
-    color: "#e2e8f0",
-    padding: "10px 14px",
-    borderRadius: "10px",
-    fontSize: "14px",
+    background: "#f9fafb",
+    border: "1px solid #e5e7eb",
+    color: "#111827",
+    padding: "9px 13px",
+    borderRadius: "8px",
+    fontSize: "13.5px",
     outline: "none",
-    minWidth: "180px",
+    minWidth: "160px",
     flex: 1,
   },
   searchNotFound: {
-    marginTop: "16px",
-    background: "#2d0a0a",
-    border: "1px solid #7f1d1d",
-    color: "#f87171",
-    borderRadius: "10px",
-    padding: "14px 18px",
-    fontSize: "14px",
+    marginTop: "14px",
+    background: "#fef2f2",
+    border: "1px solid #fecaca",
+    color: "#dc2626",
+    borderRadius: "8px",
+    padding: "12px 16px",
+    fontSize: "13.5px",
     display: "flex",
     alignItems: "center",
-    gap: "10px",
+    gap: "8px",
   },
   searchResultCard: {
-    marginTop: "16px",
-    background: "#0d1f3a",
-    border: "1px solid #2d4a6e",
-    borderRadius: "12px",
-    padding: "20px",
+    marginTop: "14px",
+    background: "#f9fafb",
+    border: "1px solid #e5e7eb",
+    borderRadius: "10px",
+    padding: "18px",
   },
   searchResultGrid: {
     display: "grid",
-    gridTemplateColumns: "repeat(auto-fill, minmax(180px, 1fr))",
+    gridTemplateColumns: "repeat(auto-fill, minmax(160px, 1fr))",
     gap: "14px",
   },
   searchResultItem: {
@@ -939,101 +834,91 @@ const styles: Record<string, React.CSSProperties> = {
     gap: "3px",
   },
   searchResultLabel: {
-    fontSize: "11px",
+    fontSize: "10px",
     fontWeight: 600,
-    color: "#475569",
+    color: "#9ca3af",
     textTransform: "uppercase" as const,
     letterSpacing: "0.07em",
   },
-  searchResultValue: { fontSize: "14px", color: "#e2e8f0", fontWeight: 500 },
+  searchResultValue: { fontSize: "13.5px", color: "#111827", fontWeight: 500 },
+
+  /* ── TABLE CARD ── */
   card: {
-    background: "#111827",
-    border: "1px solid #1e293b",
-    borderRadius: "16px",
+    background: "#ffffff",
+    border: "1px solid #e5e7eb",
+    borderRadius: "12px",
     overflow: "hidden",
   },
   tableWrapper: { overflowX: "auto" as const },
   table: { width: "100%", borderCollapse: "collapse" as const },
   th: {
-    padding: "14px 16px",
+    padding: "12px 16px",
     textAlign: "left" as const,
-    fontSize: "11px",
+    fontSize: "10.5px",
     fontWeight: 700,
     textTransform: "uppercase" as const,
-    letterSpacing: "0.1em",
-    color: "#475569",
-    background: "#0f172a",
-    borderBottom: "1px solid #1e293b",
+    letterSpacing: "0.08em",
+    color: "#9ca3af",
+    background: "#f9fafb",
+    borderBottom: "1px solid #e5e7eb",
     whiteSpace: "nowrap" as const,
   },
   td: {
-    padding: "13px 16px",
+    padding: "12px 16px",
     fontSize: "13.5px",
-    color: "#94a3b8",
-    borderBottom: "1px solid #1a2234",
+    color: "#4b5563",
+    borderBottom: "1px solid #f3f4f6",
     whiteSpace: "nowrap" as const,
   },
   rollBadge: {
     fontFamily: "monospace",
     fontSize: "13px",
-    color: "#60a5fa",
+    color: "#7c3aed",
     fontWeight: 600,
   },
   zonePill: {
-    background: "#1e293b",
-    color: "#7dd3fc",
-    padding: "3px 10px",
+    background: "#f5f3ff",
+    color: "#7c3aed",
+    padding: "3px 9px",
     borderRadius: "20px",
     fontSize: "12px",
     fontWeight: 500,
-    border: "1px solid #2d4a6e",
+    border: "1px solid #ede9fe",
   },
   code: {
-    background: "#1a2234",
-    color: "#a78bfa",
-    padding: "2px 8px",
-    borderRadius: "5px",
+    background: "#f3f4f6",
+    color: "#6b7280",
+    padding: "2px 7px",
+    borderRadius: "4px",
     fontSize: "12px",
     fontFamily: "monospace",
   },
   resultBadge: {
-    padding: "3px 10px",
+    padding: "3px 9px",
     borderRadius: "20px",
     fontSize: "12px",
     fontWeight: 600,
   },
-  resultPass: {
-    background: "#052e16",
-    color: "#4ade80",
-    border: "1px solid #166534",
-  },
-  resultFail: {
-    background: "#2d0a0a",
-    color: "#f87171",
-    border: "1px solid #7f1d1d",
-  },
-  resultNeutral: {
-    background: "#1e293b",
-    color: "#94a3b8",
-    border: "1px solid #334155",
-  },
+  resultPass: { background: "#f0fdf4", color: "#16a34a", border: "1px solid #bbf7d0" },
+  resultFail: { background: "#fef2f2", color: "#dc2626", border: "1px solid #fecaca" },
+  resultNeutral: { background: "#f9fafb", color: "#6b7280", border: "1px solid #e5e7eb" },
   btnEdit: {
-    background: "#0d2540",
-    color: "#60a5fa",
-    border: "1px solid #2d4a6e",
-    padding: "7px 10px",
-    borderRadius: "8px",
+    background: "#f5f3ff",
+    color: "#7c3aed",
+    border: "1px solid #ede9fe",
+    padding: "6px 9px",
+    borderRadius: "7px",
     cursor: "pointer",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
   },
   btnDelete: {
-    background: "#2d0a0a",
-    color: "#f87171",
-    border: "1px solid #7f1d1d",
-    padding: "7px 10px",
-    borderRadius: "8px",
+    background: "#fef2f2",
+    color: "#dc2626",
+    border: "1px solid #fecaca",
+    padding: "6px 9px",
+    borderRadius: "7px",
     cursor: "pointer",
     display: "flex",
     alignItems: "center",
@@ -1045,14 +930,33 @@ const styles: Record<string, React.CSSProperties> = {
     display: "flex",
     flexDirection: "column" as const,
     alignItems: "center",
-    gap: "16px",
+    gap: "12px",
   },
-  emptyText: { color: "#475569", fontSize: "15px" },
+  emptyIcon: {
+    width: "60px",
+    height: "60px",
+    background: "#f9fafb",
+    border: "1px solid #e5e7eb",
+    borderRadius: "12px",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  emptyText: { color: "#9ca3af", fontSize: "14px" },
+  tableLoader: {
+    padding: "80px 20px",
+    textAlign: "center" as const,
+    display: "flex",
+    flexDirection: "column" as const,
+    alignItems: "center",
+  },
+
+  /* ── MODAL ── */
   overlay: {
     position: "fixed",
     inset: 0,
-    background: "rgba(0,0,0,0.7)",
-    backdropFilter: "blur(6px)",
+    background: "rgba(0,0,0,0.4)",
+    backdropFilter: "blur(4px)",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
@@ -1060,141 +964,142 @@ const styles: Record<string, React.CSSProperties> = {
     padding: "20px",
   },
   modal: {
-    background: "#111827",
-    border: "1px solid #1e293b",
-    borderRadius: "20px",
+    background: "#ffffff",
+    border: "1px solid #e5e7eb",
+    borderRadius: "16px",
     width: "100%",
     maxWidth: "600px",
     overflow: "hidden",
-    boxShadow: "0 25px 60px rgba(0,0,0,0.6)",
+    boxShadow: "0 20px 50px rgba(0,0,0,0.15)",
   },
   modalHeader: {
-    padding: "28px 32px 20px",
+    padding: "24px 28px 18px",
     display: "flex",
     justifyContent: "space-between",
     alignItems: "flex-start",
-    borderBottom: "1px solid #1e293b",
+    borderBottom: "1px solid #f3f4f6",
   },
-  modalTitle: {
-    fontSize: "20px",
-    fontWeight: 700,
-    color: "#f1f5f9",
-    margin: 0,
-  },
-  modalSubtitle: { fontSize: "13px", color: "#475569", marginTop: "4px" },
-  modalBody: { padding: "28px 32px" },
-  formGrid: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" },
-  formGroup: { display: "flex", flexDirection: "column" as const, gap: "6px" },
+  modalTitle: { fontSize: "18px", fontWeight: 700, color: "#111827", margin: 0 },
+  modalSubtitle: { fontSize: "13px", color: "#9ca3af", marginTop: "3px" },
+  modalBody: { padding: "24px 28px" },
+  formGrid: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: "14px" },
+  formGroup: { display: "flex", flexDirection: "column" as const, gap: "5px" },
   label: {
     fontSize: "11px",
     fontWeight: 600,
-    color: "#64748b",
-    letterSpacing: "0.07em",
+    color: "#6b7280",
+    letterSpacing: "0.06em",
     textTransform: "uppercase" as const,
   },
   input: {
-    background: "#0f172a",
-    border: "1px solid #1e293b",
-    color: "#e2e8f0",
-    padding: "10px 14px",
-    borderRadius: "10px",
-    fontSize: "14px",
+    background: "#f9fafb",
+    border: "1px solid #e5e7eb",
+    color: "#111827",
+    padding: "9px 13px",
+    borderRadius: "8px",
+    fontSize: "13.5px",
     outline: "none",
     width: "100%",
     boxSizing: "border-box" as const,
   },
   modalFooter: {
-    padding: "20px 32px",
+    padding: "18px 28px",
     display: "flex",
     justifyContent: "flex-end",
-    gap: "12px",
-    borderTop: "1px solid #1e293b",
-    background: "#0f172a",
+    gap: "10px",
+    borderTop: "1px solid #f3f4f6",
+    background: "#f9fafb",
   },
   btnClose: {
-    background: "#1e293b",
-    border: "1px solid #334155",
-    color: "#64748b",
-    borderRadius: "8px",
-    padding: "8px",
+    background: "#f9fafb",
+    border: "1px solid #e5e7eb",
+    color: "#9ca3af",
+    borderRadius: "7px",
+    padding: "7px",
     cursor: "pointer",
     display: "flex",
     alignItems: "center",
   },
   btnCancel: {
     background: "transparent",
-    border: "1px solid #334155",
-    color: "#94a3b8",
-    padding: "10px 22px",
-    borderRadius: "10px",
+    border: "1px solid #e5e7eb",
+    color: "#6b7280",
+    padding: "9px 20px",
+    borderRadius: "8px",
     cursor: "pointer",
     fontWeight: 500,
-    fontSize: "14px",
+    fontSize: "13.5px",
   },
   btnSave: {
-    background: "linear-gradient(135deg, #3b82f6, #6366f1)",
+    background: "#7c3aed",
     border: "none",
     color: "#fff",
-    padding: "10px 24px",
-    borderRadius: "10px",
+    padding: "9px 22px",
+    borderRadius: "8px",
     cursor: "pointer",
     fontWeight: 600,
-    fontSize: "14px",
+    fontSize: "13.5px",
   },
+
+  /* ── LOADING ── */
   loadingScreen: {
     minHeight: "100vh",
-    background: "#0b0f1a",
+    background: "#f9fafb",
     display: "flex",
     flexDirection: "column" as const,
     alignItems: "center",
     justifyContent: "center",
-    gap: "16px",
+    gap: "14px",
   },
   spinner: {
-    width: "36px",
-    height: "36px",
-    border: "3px solid #1e293b",
-    borderTop: "3px solid #3b82f6",
+    width: "32px",
+    height: "32px",
+    border: "3px solid #e5e7eb",
+    borderTop: "3px solid #7c3aed",
     borderRadius: "50%",
     animation: "spin 0.8s linear infinite",
   },
-  loadingText: { color: "#475569", fontSize: "15px", letterSpacing: "0.05em" },
-  tableLoader: {
-    padding: "80px 20px",
-    textAlign: "center",
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
+  spinnerLight: {
+    width: "28px",
+    height: "28px",
+    border: "2.5px solid #e5e7eb",
+    borderTop: "2.5px solid #7c3aed",
+    borderRadius: "50%",
+    animation: "spin 0.8s linear infinite",
   },
+  loadingText: { color: "#9ca3af", fontSize: "14px" },
 };
 
 const css = `
-  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap');
-  * { box-sizing: border-box; }
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+  * { box-sizing: border-box; margin: 0; padding: 0; }
   @keyframes spin { to { transform: rotate(360deg); } }
-  @keyframes fadeSlideIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
-  @keyframes modalIn { from { opacity: 0; transform: scale(0.96) translateY(12px); } to { opacity: 1; transform: scale(1) translateY(0); } }
-  @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes fadeSlideIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes modalIn { from { opacity: 0; transform: scale(0.97) translateY(10px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+  @keyframes slideDown { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
   .search-panel { animation: slideDown 0.2s ease both; }
-  .table-row { animation: fadeSlideIn 0.3s ease both; transition: background 0.15s; }
-  .table-row:hover { background: #131f35 !important; }
+  .table-row { animation: fadeSlideIn 0.25s ease both; transition: background 0.12s; }
+  .table-row:hover { background: #f9fafb !important; }
   .table-row:last-child td { border-bottom: none !important; }
-  .modal-card { animation: modalIn 0.25s cubic-bezier(0.34, 1.56, 0.64, 1) both; }
-  .form-input:focus { border-color: #3b82f6 !important; box-shadow: 0 0 0 3px rgba(59,130,246,0.15); }
-  .form-input option { background: #0f172a; }
-  .btn-add:hover { opacity: 0.9; transform: translateY(-1px); transition: all 0.15s; }
-  .btn-search-toggle:hover { border-color: #3b82f6; color: #93c5fd; transition: all 0.15s; }
-  .btn-logout:hover { border-color: #475569; color: #cbd5e1; transition: all 0.15s; }
-  .btn-edit:hover { background: #1a3a5c !important; border-color: #3b82f6 !important; transform: scale(1.05); transition: all 0.15s; }
-  .btn-delete:hover { background: #3b0a0a !important; transform: scale(1.05); transition: all 0.15s; }
-  .btn-close:hover { background: #334155 !important; color: #f1f5f9 !important; transition: all 0.15s; }
-  .btn-cancel:hover { background: #1e293b !important; transition: all 0.15s; }
-  .btn-save:hover { opacity: 0.9; transform: translateY(-1px); transition: all 0.15s; }
-  ::-webkit-scrollbar { width: 6px; height: 6px; }
-  ::-webkit-scrollbar-track { background: #0f172a; }
-  ::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
-  ::-webkit-scrollbar-thumb:hover { background: #475569; }
-  input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(0.5); cursor: pointer; }
+  .modal-card { animation: modalIn 0.2s cubic-bezier(0.34, 1.4, 0.64, 1) both; }
+  .form-input:focus { border-color: #7c3aed !important; box-shadow: 0 0 0 3px rgba(124,58,237,0.1); }
+  .form-input option { background: #fff; color: #111827; }
+  .btn-add:hover { background: #6d28d9 !important; transition: all 0.15s; }
+  .btn-search-toggle:hover { border-color: #d1d5db !important; background: #f9fafb !important; transition: all 0.15s; }
+  .btn-outline:hover { border-color: #d1d5db !important; background: #f9fafb !important; transition: all 0.15s; }
+  .btn-edit:hover { background: #ede9fe !important; border-color: #c4b5fd !important; transition: all 0.15s; }
+  .btn-delete:hover { background: #fee2e2 !important; border-color: #fca5a5 !important; transition: all 0.15s; }
+  .btn-close:hover { background: #f3f4f6 !important; color: #374151 !important; transition: all 0.15s; }
+  .btn-cancel:hover { background: #f9fafb !important; transition: all 0.15s; }
+  .btn-save:hover { background: #6d28d9 !important; transition: all 0.15s; }
+  .nav-item:hover { background: #f9fafb !important; }
+  .nav-item-active .nav-text { color: #7c3aed !important; font-weight: 600 !important; }
+  .sidebar-logout-btn:hover { background: #f9fafb !important; color: #374151 !important; transition: all 0.15s; }
+  ::-webkit-scrollbar { width: 5px; height: 5px; }
+  ::-webkit-scrollbar-track { background: #f9fafb; }
+  ::-webkit-scrollbar-thumb { background: #e5e7eb; border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: #d1d5db; }
+  input[type="date"]::-webkit-calendar-picker-indicator { cursor: pointer; opacity: 0.5; }
 `;
 
 export default HomePage;

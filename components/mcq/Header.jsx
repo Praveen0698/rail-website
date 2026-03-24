@@ -4,7 +4,7 @@ import Image from "next/image";
 
 export default function Header() {
   return (
-    <header className="bg-white w-full border-b-2 border-gray-200 font-sans py-1 px-2 md:px-4">
+    <header className="bg-white w-full border-b-2 border-gray-200 font-sans py-1">
       <div className="w-full max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4 flex items-center justify-between gap-4">
 
         {/* ── LEFT: National Emblem + Text ── */}
