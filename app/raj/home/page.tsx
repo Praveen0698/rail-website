@@ -211,6 +211,16 @@ const HomePage = () => {
         </svg>
       )
     },
+    {
+      key: "application", label: "Application Details", icon: (
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <rect x="2" y="5" width="20" height="14" rx="2" />
+          <line x1="2" y1="10" x2="22" y2="10" />
+          <line x1="7" y1="15" x2="10" y2="15" />
+          <line x1="14" y1="15" x2="17" y2="15" />
+        </svg>
+      )
+    },
   ];
 
   return (
@@ -249,6 +259,7 @@ const HomePage = () => {
                 onClick={() => {
                   setActiveNav(item.key);
                   if (item.key === "admitcards") router.push("/admitcard");
+                  if (item.key === "application") router.push("/application/form/table");
                 }}
               >
                 <span style={{

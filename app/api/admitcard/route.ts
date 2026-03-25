@@ -1,14 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-// app/api/admitcard/route.ts
-//
-// GET    /api/admitcard              → get all
-// GET    /api/admitcard?id=xxx       → get one by id
-// GET    /api/admitcard?roll_no=xxx  → search by roll number
-// POST   /api/admitcard              → create  (multipart: roll_no, dob, file)
-// PUT    /api/admitcard?id=xxx       → update  (multipart: dob?, file?)
-// DELETE /api/admitcard?id=xxx       → delete
-//
-// Files are stored as base64 data URLs directly in MongoDB — no S3 needed.
 
 import { NextRequest, NextResponse } from "next/server";
 import { connectDB } from "@/lib/mongodb";

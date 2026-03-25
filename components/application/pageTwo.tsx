@@ -2,38 +2,140 @@
 
 import React, { useState } from "react";
 
+const religions = [
+  "Hindu",
+  "Muslim",
+  "Sikh",
+  "Christian",
+  "Jain",
+  "Buddhist",
+  "Parsi",
+  "Others",
+];
+const community = ["UR", "SC", "ST", "OBC"];
+const bloodGroups = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
+
+const toBase64 = (file: File): Promise<string> =>
+  new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result as string);
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+
 const PageTwo = () => {
   const [selectedGender, setSelectedGender] = useState("");
   const [selectedWidow, setSelectedWidow] = useState("");
 
   const [selectedReligion, setSelectedReligion] = useState("");
   const [selectedCommunity, setSelectedCommunity] = useState("");
-  const religions = [
-    "Hindu",
-    "Muslim",
-    "Sikh",
-    "Christian",
-    "Jain",
-    "Buddhist",
-    "Parsi",
-    "Others",
-  ];
-
-  const community = ["UR", "SC", "ST", "OBC"];
   const [signature, setSignature] = useState<string | null>(null);
-  const [photo, setPhoto] = useState<string | null>(null);
-  const [topSignature, setTopSignature] = useState<string | null>(null);
 
-  const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const [nameGrid, setNameGrid] = useState<string[][]>([
+    Array(16).fill(""),
+    Array(16).fill(""),
+  ]);
+  const [fatherNameGrid, setFatherNameGrid] = useState<string[][]>([
+    Array(14).fill(""),
+    Array(14).fill(""),
+  ]);
+  const [topSignature, setTopSignature] = useState<string | null>(null);
+  const [photo, setPhoto] = useState<string | null>(null);
+  const [designation, setDesignation] = useState("");
+  const [dob, setDob] = useState("");
+  const [bloodGroup, setBloodGroup] = useState("");
+  const [stateName, setStateName] = useState("");
+  const [pin, setPin] = useState(["", "", "", "", "", ""]);
+  const [photoBase64, setPhotoBase64] = useState<string | null>(null);
+  const [signatureBase64, setSignatureBase64] = useState<string | null>(null);
+  const [baseAddress, setBaseAddress] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+
+  const formData = {
+    name: nameGrid
+      .map((r) => r.join(""))
+      .join("")
+      .trim(),
+    fatherName: fatherNameGrid
+      .map((r) => r.join(""))
+      .join("")
+      .trim(),
+    designation,
+    dob,
+    bloodGroup,
+    address: `${baseAddress}, State: ${stateName}, Pin: ${pin.join("")}`,
+    photo: photoBase64,
+    signature: signatureBase64,
+  };
+
+  const handleSubmit = async () => {
+    if (!formData.name || !formData.fatherName) {
+      alert("Please fill all required fields");
+      return;
+    }
+
+    setSubmitting(true);
+
+    try {
+      const res = await fetch("/api/application", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await res.json();
+
+      if (!data.success) {
+        alert(data.error || "Submission failed");
+        return;
+      }
+
+      alert("Application submitted successfully ✅");
+
+      // Optional reset
+      window.location.reload();
+    } catch (error) {
+      alert("Something went wrong");
+    }
+
+    setSubmitting(false);
+  };
+
+  console.log(
+    fatherNameGrid
+      .map((r) => r.join(""))
+      .join("")
+      .trim(),
+  );
+
+  const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
     setPhoto(URL.createObjectURL(file));
+    setPhotoBase64(await toBase64(file));
   };
 
-  const handleTopSignatureUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleTopSignatureUpload = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+  ) => {
     const file = e.target.files?.[0];
     if (!file) return;
     setTopSignature(URL.createObjectURL(file));
+    setSignatureBase64(await toBase64(file));
+  };
+
+  const handleNameCell = (row: number, col: number, val: string) => {
+    const updated = nameGrid.map((r) => [...r]);
+    updated[row][col] = val.slice(-1).toUpperCase();
+    setNameGrid(updated);
+  };
+
+  const handleFatherNameCell = (row: number, col: number, val: string) => {
+    const updated = fatherNameGrid.map((r) => [...r]);
+    updated[row][col] = val.slice(-1).toUpperCase();
+    setFatherNameGrid(updated);
   };
 
   const handleUploadSign = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -43,6 +145,7 @@ const PageTwo = () => {
     const imageUrl = URL.createObjectURL(file);
     setSignature(imageUrl);
   };
+
   return (
     <div className="bg-white w-3/5 p-20 text-[14px] leading-relaxed">
       <h1 className="text-center font-bold text-[16px]">
@@ -91,13 +194,17 @@ const PageTwo = () => {
 
             <table className="border-collapse">
               <tbody>
-                {[0, 1].map((row) => (
-                  <tr key={row}>
-                    {Array.from({ length: 14 }).map((_, colIndex) => (
-                      <td key={colIndex} className="border p-0">
+                {nameGrid.map((row, rowIdx) => (
+                  <tr key={rowIdx}>
+                    {Array.from({ length: 16 }).map((_, colIdx) => (
+                      <td key={colIdx} className="border p-0">
                         <input
                           type="text"
                           maxLength={1}
+                          value={row[colIdx]}
+                          onChange={(e) =>
+                            handleNameCell(rowIdx, colIdx, e.target.value)
+                          }
                           className="w-9 h-8 text-center outline-none"
                         />
                       </td>
@@ -107,18 +214,63 @@ const PageTwo = () => {
               </tbody>
             </table>
           </div>
+
+          <div className="mb-4 flex items-center gap-4">
+            <p className="font-semibold shrink-0">1a. Designation:</p>
+            <div className="flex items-start border w-full">
+              <input
+                type="text"
+                value={designation}
+                onChange={(e) => setDesignation(e.target.value)}
+                className="w-full p-1.5 outline-none"
+              />
+            </div>
+          </div>
+
+          <div className="mb-4 flex items-center gap-4">
+            <p className="font-semibold shrink-0">1b. Date of Birth:</p>
+            <div className="border">
+              <input
+                type="text"
+                placeholder="DD/MM/YYYY"
+                value={dob}
+                onChange={(e) => setDob(e.target.value)}
+                className="p-1.5 outline-none w-32"
+              />
+            </div>
+            <p className="font-semibold shrink-0">1c. Blood Group:</p>
+            <div className="border">
+              <select
+                value={bloodGroup}
+                onChange={(e) => setBloodGroup(e.target.value)}
+                className="p-1.5 outline-none bg-white"
+              >
+                <option value="">Select</option>
+                {bloodGroups.map((bg) => (
+                  <option key={bg} value={bg}>
+                    {bg}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+
           <div className="mb-4">
             <p className="font-semibold mb-2">2. Father / Husband Name:</p>
 
             <table className="border-collapse">
               <tbody>
-                {[0, 1].map((row) => (
-                  <tr key={row}>
-                    {Array.from({ length: 14 }).map((_, colIndex) => (
-                      <td key={colIndex} className="border p-0">
+                {fatherNameGrid.map((row, rowIdx) => (
+                  <tr key={rowIdx}>
+                    {Array.from({ length: 14 }).map((_, colIdx) => (
+                      <td key={colIdx} className="border p-0">
                         <input
                           type="text"
                           maxLength={1}
+                          value={row[colIdx]}
+                          onChange={(e) =>
+                            handleFatherNameCell(rowIdx, colIdx, e.target.value)
+                          }
                           className="w-9 h-8 text-center outline-none"
                         />
                       </td>
@@ -256,13 +408,18 @@ const PageTwo = () => {
         <div className="w-[48%]">
           <p className="font-semibold mb-2">6. Full Permanent Address:</p>
           <div className="full h-37.5 border p-3 flex flex-col justify-between">
-            <textarea className="w-full flex-1 resize-none outline-none text-sm" />
-
+            <textarea
+              value={baseAddress}
+              onChange={(e) => setBaseAddress(e.target.value)}
+              className="w-full flex-1 resize-none outline-none text-sm"
+            />
             <div className="mt-2">
               <div className="flex items-center gap-2 mb-2">
                 <p className="font-semibold text-sm">State:</p>
                 <input
                   type="text"
+                  value={stateName}
+                  onChange={(e) => setStateName(e.target.value)}
                   className="flex-1 p-1 border-b outline-none text-sm"
                 />
               </div>
@@ -270,11 +427,17 @@ const PageTwo = () => {
               <div className="flex items-center gap-2">
                 <p className="font-semibold text-sm">Pin:</p>
                 <div className="flex gap-1.5">
-                  {[...Array(6)].map((_, i) => (
+                  {pin.map((digit, i) => (
                     <input
                       key={i}
                       type="text"
                       maxLength={1}
+                      value={digit}
+                      onChange={(e) => {
+                        const newPin = [...pin];
+                        newPin[i] = e.target.value;
+                        setPin(newPin);
+                      }}
                       className="w-7 h-7 text-center border outline-none text-sm"
                     />
                   ))}
@@ -540,6 +703,17 @@ const PageTwo = () => {
             )}
           </label>
         </div>
+      </div>
+      <div className="mt-6 flex justify-center">
+        <button
+          onClick={handleSubmit}
+          disabled={submitting}
+          className={`px-10 py-2.5 border border-black font-semibold tracking-wide 
+    ${submitting ? "bg-gray-300" : "bg-white hover:bg-gray-100"} 
+    transition-all`}
+        >
+          {submitting ? "Submitting..." : "SUBMIT APPLICATION"}
+        </button>
       </div>
     </div>
   );
