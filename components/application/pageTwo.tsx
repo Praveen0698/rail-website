@@ -163,7 +163,7 @@ const PageTwo = () => {
           </div>
         </div>
 
-        <p className="font-semibold underline mb-1">
+        <p className="font-semibold text-center underline mb-1">
           Employment Notice No. ECoR /RRC /D /2006/01
         </p>
         <div className="w-3/10">
@@ -179,7 +179,7 @@ const PageTwo = () => {
         <span className="font-semibold">
           All Columns are to be filled compulsorily,
         </span>{" "}
-        except column 12 by relevant candidates only.]
+        except column 14 by relevant candidates only.]
       </p>
 
       <div className="flex flex-row justify-between mb-4">
@@ -213,46 +213,6 @@ const PageTwo = () => {
                 ))}
               </tbody>
             </table>
-          </div>
-
-          <div className="mb-4 flex items-center gap-4">
-            <p className="font-semibold shrink-0">1a. Designation:</p>
-            <div className="flex items-start border w-full">
-              <input
-                type="text"
-                value={designation}
-                onChange={(e) => setDesignation(e.target.value)}
-                className="w-full p-1.5 outline-none"
-              />
-            </div>
-          </div>
-
-          <div className="mb-4 flex items-center gap-4">
-            <p className="font-semibold shrink-0">1b. Date of Birth:</p>
-            <div className="border">
-              <input
-                type="text"
-                placeholder="DD/MM/YYYY"
-                value={dob}
-                onChange={(e) => setDob(e.target.value)}
-                className="p-1.5 outline-none w-32"
-              />
-            </div>
-            <p className="font-semibold shrink-0">1c. Blood Group:</p>
-            <div className="border">
-              <select
-                value={bloodGroup}
-                onChange={(e) => setBloodGroup(e.target.value)}
-                className="p-1.5 outline-none bg-white"
-              >
-                <option value="">Select</option>
-                {bloodGroups.map((bg) => (
-                  <option key={bg} value={bg}>
-                    {bg}
-                  </option>
-                ))}
-              </select>
-            </div>
           </div>
 
           <div className="mb-4">
@@ -372,10 +332,55 @@ const PageTwo = () => {
         </div>
       </div>
 
+      <div className="mb-4 flex items-center gap-4">
+        <p className="font-semibold shrink-0">5. Designation:</p>
+        <div className="flex items-start border w-full">
+          <input
+            type="text"
+            value={designation}
+            onChange={(e) => setDesignation(e.target.value)}
+            className="w-full p-1.5 outline-none"
+          />
+        </div>
+        <p className="font-semibold shrink-0">6. Date of Birth:</p>
+        <div className="border">
+          <input
+            type="text"
+            placeholder="DD/MM/YYYY"
+            value={dob}
+            onChange={(e) => setDob(e.target.value)}
+            className="p-1.5 outline-none w-32"
+          />
+        </div>
+      </div>
+
+      <div className="mb-4 flex items-center gap-4">
+        <p className="font-semibold shrink-0">7. Blood Group:</p>
+        <div className="border">
+          <select
+            value={bloodGroup}
+            onChange={(e) => setBloodGroup(e.target.value)}
+            className="p-1.5 outline-none bg-white"
+          >
+            <option value="">Select</option>
+            {bloodGroups.map((bg) => (
+              <option key={bg} value={bg}>
+                {bg}
+              </option>
+            ))}
+          </select>
+        </div>
+          <p className="font-semibold shrink-0">8. Education Qualifaction:</p>
+          <input
+            type="text"
+            className="flex-1 h-10 text-center border outline-none text-sm"
+          />
+      </div>
+
       <div className="mb-4 flex flex-row justify-between w-full">
         <div className="w-[48%]">
           <p className="font-semibold mb-2">
-            5. Full Mailing Address for Correspondence:
+            9. Full Mailing Address for Correspondence:
           </p>
           <div className="w-full h-37.5 border p-3 flex flex-col justify-between">
             <textarea className="w-full flex-1 resize-none outline-none text-sm" />
@@ -406,7 +411,7 @@ const PageTwo = () => {
           </div>
         </div>
         <div className="w-[48%]">
-          <p className="font-semibold mb-2">6. Full Permanent Address:</p>
+          <p className="font-semibold mb-2">10. Full Permanent Address:</p>
           <div className="full h-37.5 border p-3 flex flex-col justify-between">
             <textarea
               value={baseAddress}
@@ -450,84 +455,14 @@ const PageTwo = () => {
 
       <div className="mb-4 w-full flex flex-row justify-between items-center">
         <div className="flex flex-row items-center gap-2.5 w-2/5">
-          <p className="font-semibold">7. State of Domicile Code:</p>
+          <p className="font-semibold">11. State of Domicile Code:</p>
           <input
             type="text"
             className="w-20 h-10 text-center border outline-none text-sm"
           />
         </div>
         <div className="flex flex-row items-center gap-2.5 w-3/5">
-          <p className="font-semibold">8. Nearest Railway Station:</p>
-          <input
-            type="text"
-            className="flex-1 h-10 text-center border outline-none text-sm"
-          />
-        </div>
-      </div>
-      <div className="mb-4 w-full flex flex-row justify-between items-center">
-        <div className="flex flex-row items-center gap-2.5 w-3/5">
-          <p className="font-semibold">9. Date of Birth:</p>
-          <div className="flex flex-row">
-            <div className="border border-r-0">
-              <p className="text-center border-b w-10 h-5">d</p>
-              <input
-                type="text"
-                className="w-10 h-7 text-center outline-none text-sm"
-              />
-            </div>
-            <div className="border border-r-0">
-              <p className="text-center border-b w-10 h-5">d</p>
-              <input
-                type="text"
-                className="w-10 h-7 text-center outline-none text-sm"
-              />
-            </div>
-            <div className="border border-r-0">
-              <p className="text-center border-b w-10 h-5">m</p>
-              <input
-                type="text"
-                className="w-10 h-7 text-center outline-none text-sm"
-              />
-            </div>
-            <div className="border border-r-0">
-              <p className="text-center border-b w-10 h-5">m</p>
-              <input
-                type="text"
-                className="w-10 h-7 text-center outline-none text-sm"
-              />
-            </div>
-            <div className="border border-r-0">
-              <p className="text-center border-b w-10 h-5">y</p>
-              <input
-                type="text"
-                className="w-10 h-7 text-center outline-none text-sm"
-              />
-            </div>
-            <div className="border border-r-0">
-              <p className="text-center border-b w-10 h-5">y</p>
-              <input
-                type="text"
-                className="w-10 h-7 text-center outline-none text-sm"
-              />
-            </div>
-            <div className="border border-r-0">
-              <p className="text-center border-b w-10 h-5">y</p>
-              <input
-                type="text"
-                className="w-10 h-7 text-center outline-none text-sm"
-              />
-            </div>
-            <div className="border">
-              <p className="text-center border-b w-10 h-5">y</p>
-              <input
-                type="text"
-                className="w-10 h-7 text-center outline-none text-sm"
-              />
-            </div>
-          </div>
-        </div>
-        <div className="flex flex-row items-center gap-2.5 w-2/5">
-          <p className="font-semibold">10. Education Qualifaction:</p>
+          <p className="font-semibold">12. Nearest Railway Station:</p>
           <input
             type="text"
             className="flex-1 h-10 text-center border outline-none text-sm"
@@ -537,7 +472,7 @@ const PageTwo = () => {
 
       <div className="flex flex-row items-center mb-4 gap-5 justify-between">
         <div className="w-3/5 flex flex-row gap-2.5 items-center">
-          <p className="font-semibold mb-1">11. Community</p>
+          <p className="font-semibold mb-1">13. Community</p>
 
           <table className="w-full border border-collapse text-xs">
             <tr>
@@ -568,7 +503,7 @@ const PageTwo = () => {
           </table>
         </div>
         <div className="flex flex-row items-center gap-2.5">
-          <p className="font-semibold w-25">12. Select if your are:</p>
+          <p className="font-semibold w-25">14. Select if your are:</p>
           <div className="w-55 border flex flex-row">
             <div className="flex items-center justify-center p-1.5 w-27.5 border-r">
               <span className="mr-2">Divorcee</span>
@@ -597,7 +532,7 @@ const PageTwo = () => {
       </div>
 
       <div className="mb-4 flex flex-row gap-2.5 items-center">
-        <p className="font-semibold mb-1">13. Religion</p>
+        <p className="font-semibold mb-1">15. Religion</p>
 
         <table className="w-4/5 border border-collapse text-xs">
           <tr>
@@ -630,7 +565,7 @@ const PageTwo = () => {
 
       <div className="mb-4">
         <p className="font-semibold mb-2 w-full">
-          14. Declaration:
+          16. Declaration:
           <span className="font-normal">
             “I hereby declare that the facts and evidences given by me in the
             Application Form and Personal Data Sheet are true, complete and
@@ -663,18 +598,18 @@ const PageTwo = () => {
       <div className="mb-4 flex flex-row items-center justify-between">
         <div>
           <div className="flex flex-row gap-1 items-end mb-1">
-            <p className="font-semibold">15. Place:</p>
+            <p className="font-semibold">17. Place:</p>
             <input type="text" className="w-1/2 p-1.5 outline-none border-b" />
           </div>
 
           <div className="flex flex-row gap-1 items-end mb-1">
-            <p className="font-semibold">16. Date:</p>
+            <p className="font-semibold">18. Date:</p>
             <input type="text" className="w-1/2 p-1.5 outline-none border-b" />
           </div>
         </div>
 
         <div className="text-center">
-          <p className="font-semibold">17. Applicant’s full signature</p>
+          <p className="font-semibold">19. Applicant’s full signature</p>
           <p className="text-sm mb-1">
             (in English or Hindi in running script)
           </p>

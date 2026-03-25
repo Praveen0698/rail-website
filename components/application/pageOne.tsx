@@ -96,15 +96,14 @@ const PageOne = () => {
       <p className="mt-3">
         <span className="font-semibold">Sub:</span>{" "}
         <span className="underline font-semibold">
-          Application for recruitment to Group-D posts in ECoR notified in
-          Employment Notice No. ECoR/RRC/D/2006/01
+          Application for Recruitment to the Post(s) under Employment
+          Notification
         </span>
       </p>
 
-      <p className="mt-3 text-justify">
-        I do hereby apply for recruitment to group-D vacancies mentioned in the
-        above notification in East Coast Railway and furnish the following
-        particulars:
+      <p className="mt-2 mb-4 text-justify">
+        I hereby apply for recruitment to the posts mentioned in the above
+        notification and furnish the following particulars:
       </p>
       <div className="mb-4">
         <p className="font-semibold mb-2">
