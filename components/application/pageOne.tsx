@@ -110,7 +110,7 @@ const PageOne = () => {
           </span>
         </p>
         {/* Changed: overflow-x-auto wrapper added for small screens */}
-        <div className="overflow-x-auto">
+        <div className="overflow-x-auto scrollbar-hide">
           <table className="border-collapse">
             <tbody>
               {[0, 1].map((row) => (
@@ -153,7 +153,7 @@ const PageOne = () => {
         {/* Q3 */}
         <div className="flex flex-col gap-1 w-full lg:w-auto">
           <div className="p-1 font-semibold">3. Priority of Category</div>
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto scrollbar-hide">
             <table className="border-collapse">
               <tbody>
                 <tr>
@@ -186,7 +186,7 @@ const PageOne = () => {
           <div className="p-1 font-semibold">
             4. Priority of Division/Workshop for appointment
           </div>
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto scrollbar-hide">
             <table className="border-collapse">
               <tbody>
                 <tr>
@@ -237,7 +237,7 @@ const PageOne = () => {
           5. Language Odia Telugu Hindi English . Medium of written examination
           question paper (select one medium):
         </p>
-        <div className="overflow-x-auto w-full">
+        <div className="overflow-x-auto scrollbar-hide w-full">
           <table className="border-collapse w-full">
             <tbody>
               <tr>
@@ -283,7 +283,7 @@ const PageOne = () => {
           6. For serving Railway employees (Certificate in proof of status to be
           furnished for availing age relaxation):
         </p>
-        <div className="overflow-x-auto">
+        <div className="overflow-x-auto scrollbar-hide">
           <table className="border-collapse w-full">
             <tbody>
               <tr>
@@ -329,7 +329,7 @@ const PageOne = () => {
           furnished for availing age relaxation & ex.servicemen quota
           vacancies):
         </p>
-        <div className="overflow-x-auto">
+        <div className="overflow-x-auto scrollbar-hide">
           <table className="border-collapse w-full">
             <tbody>
               <tr>
@@ -506,7 +506,7 @@ const PageOne = () => {
             ))}
           </div>
         </div>
-        <div className="overflow-x-auto">
+        <div className="overflow-x-auto scrollbar-hide">
           <table className="border-collapse w-full">
             <tbody>
               <tr>

@@ -171,7 +171,7 @@ const PageTwo = () => {
                 (in capital letters as it appears in school certificate):
               </span>
             </p>
-            <div className="overflow-x-auto">
+            <div className="overflow-x-auto scrollbar-hide">
               <table className="border-collapse">
                 <tbody>
                   {nameGrid.map((row, rowIdx) => (
@@ -198,7 +198,7 @@ const PageTwo = () => {
 
           <div className="mb-4">
             <p className="font-semibold mb-2">2. Father / Husband Name:</p>
-            <div className="overflow-x-auto">
+            <div className="overflow-x-auto scrollbar-hide">
               <table className="border-collapse">
                 <tbody>
                   {fatherNameGrid.map((row, rowIdx) => (
@@ -462,7 +462,7 @@ const PageTwo = () => {
       <div className="flex flex-col sm:flex-row items-start sm:items-center mb-4 gap-4 sm:gap-5 justify-between">
         <div className="w-full sm:w-3/5 flex flex-row gap-2.5 items-center">
           <p className="font-semibold mb-1">13. Community</p>
-          <div className="overflow-x-auto w-full">
+          <div className="overflow-x-auto scrollbar-hide w-full">
             <table className="w-full border border-collapse text-xs">
               <tbody>
                 <tr>
@@ -524,7 +524,7 @@ const PageTwo = () => {
 
       <div className="mb-4 flex flex-col sm:flex-row gap-2.5 items-start sm:items-center">
         <p className="font-semibold mb-1">15. Religion</p>
-        <div className="overflow-x-auto w-full sm:w-4/5">
+        <div className="overflow-x-auto scrollbar-hide w-full sm:w-4/5">
           <table className="w-full border border-collapse text-xs">
             <tbody>
               <tr>
