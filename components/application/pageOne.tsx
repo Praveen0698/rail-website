@@ -46,7 +46,7 @@ const PageOne = () => {
   return (
     <div className="bg-white w-full max-w-4xl mx-auto p-4 sm:p-8 md:p-12 lg:p-20 text-[14px] leading-relaxed">
       <h1 className="text-center font-bold text-[16px]">
-        RAILWAY RECRUITMENT CELL, EAST COAST RAILWAY
+        RAILWAY RECRUITMENT CELL, INDIAN RAILWAY
       </h1>
       <h2 className="text-center font-semibold text-[14px]">
         APPLICATION FORM
@@ -59,7 +59,7 @@ const PageOne = () => {
           <p className="font-semibold">
             Dy.Chief Personnel Officer (Recruitment),
           </p>
-          <p>Railway Recruitment Cell, East Coast Railway Headquarters,</p>
+          <p>Railway Recruitment Cell, Indian Railway Headquarters,</p>
           <p>C-57/G, Rail Vihar, Chandrasekharpur, Bhubaneswar-751023</p>
         </div>
 

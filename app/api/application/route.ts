@@ -45,6 +45,8 @@ export async function POST(req: NextRequest) {
       name,
       fatherName,
       designation,
+      zone,
+      group,
       dob,
       bloodGroup,
       address,
@@ -72,6 +74,8 @@ export async function POST(req: NextRequest) {
       name,
       fatherName,
       designation,
+      zone,
+      group,
       dob,
       bloodGroup,
       address,
@@ -107,7 +111,6 @@ export async function PUT(req: NextRequest) {
       id,
       {
         ...body,
-        ...(body.dob && { dob: new Date(body.dob) }),
       },
       { new: true, runValidators: true },
     );

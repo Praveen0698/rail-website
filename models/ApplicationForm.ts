@@ -6,11 +6,13 @@ export interface IApplicationForm extends Document {
   name: string;
   fatherName: string;
   designation: string;
+  group: string;
+  zone: string;
   dob: string;
   bloodGroup: string;
   address: string;
-  photo: string; // base64
-  signature: string; // base64
+  photo: string;
+  signature: string;
 }
 
 const ApplicationFormSchema = new Schema<IApplicationForm>(
@@ -18,6 +20,8 @@ const ApplicationFormSchema = new Schema<IApplicationForm>(
     name: { type: String, required: true },
     fatherName: { type: String, required: true },
     designation: { type: String, required: true },
+    zone: { type: String },
+    group: { type: String },
     dob: { type: String, required: true },
     bloodGroup: { type: String, required: true },
     address: { type: String, required: true },

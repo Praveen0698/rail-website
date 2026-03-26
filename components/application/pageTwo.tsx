@@ -41,6 +41,8 @@ const PageTwo = () => {
   const [topSignature, setTopSignature] = useState<string | null>(null);
   const [photo, setPhoto] = useState<string | null>(null);
   const [designation, setDesignation] = useState("");
+  const [group, setGroup] = useState("");
+  const [zone, setZone] = useState("");
   const [dob, setDob] = useState("");
   const [bloodGroup, setBloodGroup] = useState("");
   const [stateName, setStateName] = useState("");
@@ -60,6 +62,8 @@ const PageTwo = () => {
       .join("")
       .trim(),
     designation,
+    zone,
+    group,
     dob,
     bloodGroup,
     address: `${baseAddress}, State: ${stateName}, Pin: ${pin.join("")}`,
@@ -129,7 +133,7 @@ const PageTwo = () => {
   return (
     <div className="bg-white w-full max-w-4xl mx-auto p-4 sm:p-8 md:p-12 lg:p-20 text-[14px] leading-relaxed">
       <h1 className="text-center font-bold text-[16px]">
-        RAILWAY RECRUITMENT CELL, EAST COAST RAILWAY
+        RAILWAY RECRUITMENT CELL, INDIAN RAILWAY
       </h1>
       <h2 className="text-center font-semibold text-[14px]">
         PERSONAL DATA SHEET
@@ -319,8 +323,7 @@ const PageTwo = () => {
         </div>
       </div>
 
-      {/* Changed: flex items-center gap-4 → flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 */}
-      <div className="mb-4 flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4">
+      <div className="mb-4 flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 flex-wrap">
         <p className="font-semibold shrink-0">5. Designation:</p>
         <div className="flex items-start border w-full sm:flex-1">
           <input
@@ -330,8 +333,34 @@ const PageTwo = () => {
             className="w-full p-1.5 outline-none"
           />
         </div>
+
+        <div className="flex flex-row gap-2.5 items-center">
+          <p className="font-semibold shrink-0">5a. Group:</p>
+          <div className="flex items-start border w-20 sm:w-20">
+            <input
+              type="text"
+              className="w-full p-1.5 outline-none"
+              value={group}
+              onChange={(e) => setGroup(e.target.value)}
+            />
+          </div>
+
+          <p className="font-semibold shrink-0">5b. Zone:</p>
+          <div className="flex items-start border w-full sm:flex-1">
+            <input
+              type="text"
+              className="w-full p-1.5 outline-none"
+              value={zone}
+              onChange={(e) => setZone(e.target.value)}
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* Changed: flex items-center gap-4 → flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 */}
+      <div className="mb-4 flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4">
         <p className="font-semibold shrink-0">6. Date of Birth:</p>
-        <div className="border">
+        <div className="border shrink-0">
           <input
             type="text"
             placeholder="DD/MM/YYYY"
@@ -340,10 +369,6 @@ const PageTwo = () => {
             className="p-1.5 outline-none w-32"
           />
         </div>
-      </div>
-
-      {/* Changed: flex items-center gap-4 → flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 */}
-      <div className="mb-4 flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4">
         <p className="font-semibold shrink-0">7. Blood Group:</p>
         <div className="border">
           <select

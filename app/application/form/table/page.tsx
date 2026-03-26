@@ -10,11 +10,13 @@ interface Application {
   name: string;
   fatherName: string;
   designation: string;
+  zone: string;
+  group: string;
   dob: string;
   bloodGroup: string;
   address: string;
-  photo: string; // base64
-  signature: string; // base64
+  photo: string;
+  signature: string;
   createdAt: string;
 }
 
@@ -121,6 +123,8 @@ const AdmitCardPage = () => {
                         "Name",
                         "Father Name",
                         "Designation",
+                        "Zone",
+                        "Group",
                         "DOB",
                         "Blood Group",
                         "Address",
@@ -141,6 +145,8 @@ const AdmitCardPage = () => {
                         <td style={styles.td}>{item.name}</td>
                         <td style={styles.td}>{item.fatherName}</td>
                         <td style={styles.td}>{item.designation}</td>
+                        <td style={styles.td}>{item?.zone || ""}</td>
+                        <td style={styles.td}>{item?.group || ""}</td>
 
                         <td style={styles.td}>{item.dob}</td>
 
