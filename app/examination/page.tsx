@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/set-state-in-effect */
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
@@ -8,7 +9,6 @@ import Cookies from "js-cookie";
 import Header from "@/components/mcq/Header";
 import Footer from "@/components/mcq/Footer";
 
-// ─── CAPTCHA ──────────────────────────────────────────────────────────────────
 function generateCaptchaText(): string {
   const chars = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789";
   return Array.from(
@@ -20,12 +20,9 @@ function generateCaptchaText(): string {
 function drawCaptcha(canvas: HTMLCanvasElement, text: string) {
   const ctx = canvas.getContext("2d");
   if (!ctx) return;
-  const W = canvas.width,
-    H = canvas.height;
-
-  ctx.fillStyle = "#f8fafc";
+  const W = canvas.width, H = canvas.height;
+  ctx.fillStyle = "#f0f4f8";
   ctx.fillRect(0, 0, W, H);
-
   for (let i = 0; i < 5; i++) {
     ctx.strokeStyle = `rgba(${Math.random() * 150},${Math.random() * 150},${Math.random() * 200},0.3)`;
     ctx.lineWidth = 1;
@@ -40,15 +37,7 @@ function drawCaptcha(canvas: HTMLCanvasElement, text: string) {
     ctx.arc(Math.random() * W, Math.random() * H, 1, 0, Math.PI * 2);
     ctx.fill();
   }
-
-  const colors = [
-    "#0d2645",
-    "#1a56a0",
-    "#b45309",
-    "#166534",
-    "#1d4ed8",
-    "#b91c1c",
-  ];
+  const colors = ["#0d2645", "#1a56a0", "#b45309", "#166534", "#1d4ed8", "#b91c1c"];
   const charW = W / (text.length + 1);
   text.split("").forEach((char, i) => {
     ctx.save();
@@ -68,16 +57,12 @@ interface CaptchaProps {
 
 function CaptchaWidget({ onVerify, resetKey }: CaptchaProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  // Store the current captcha text in a ref so draw can always access latest
   const captchaTextRef = useRef<string>("");
   const [inputVal, setInputVal] = useState("");
   const [status, setStatus] = useState<"idle" | "success" | "error">("idle");
 
-  // Draw onto canvas whenever canvas is available and text is set
   const drawOnCanvas = useCallback((text: string) => {
-    if (canvasRef.current) {
-      drawCaptcha(canvasRef.current, text);
-    }
+    if (canvasRef.current) drawCaptcha(canvasRef.current, text);
   }, []);
 
   const regenerate = useCallback(() => {
@@ -86,26 +71,16 @@ function CaptchaWidget({ onVerify, resetKey }: CaptchaProps) {
     setInputVal("");
     setStatus("idle");
     onVerify(false);
-    // Use requestAnimationFrame to ensure canvas is painted after React renders
-    requestAnimationFrame(() => {
-      drawOnCanvas(t);
-    });
+    requestAnimationFrame(() => drawOnCanvas(t));
   }, [onVerify, drawOnCanvas]);
 
-  // On mount and on resetKey change — generate new captcha
-  useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    regenerate();
-  }, [resetKey]); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => { regenerate(); }, [resetKey]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Fallback: if canvas mounts but is still blank, draw again
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const observer = new ResizeObserver(() => {
-      if (captchaTextRef.current) {
-        drawCaptcha(canvas, captchaTextRef.current);
-      }
+      if (captchaTextRef.current) drawCaptcha(canvas, captchaTextRef.current);
     });
     observer.observe(canvas);
     return () => observer.disconnect();
@@ -124,22 +99,12 @@ function CaptchaWidget({ onVerify, resetKey }: CaptchaProps) {
     }
   };
 
-  const borderColor =
-    status === "success"
-      ? "#22c55e"
-      : status === "error"
-        ? "#ef4444"
-        : "#cbd5e1";
-  const bgColor =
-    status === "success" ? "#f0fdf4" : status === "error" ? "#fff5f5" : "#fff";
-
   return (
-    <div className="fg">
-      <label className="field-label">Security Verification</label>
-
-      {/* Single row: Input | Canvas | Refresh */}
-      <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-        {/* Text input */}
+    <div className="mb-4">
+      <label className="block text-[11px] font-bold uppercase tracking-widest text-gray-500 mb-2">
+        Security Verification
+      </label>
+      <div className="flex items-center gap-2">
         <input
           type="text"
           value={inputVal}
@@ -148,147 +113,43 @@ function CaptchaWidget({ onVerify, resetKey }: CaptchaProps) {
           autoComplete="off"
           spellCheck={false}
           placeholder="Enter characters"
-          className="field-input"
-          style={{
-            flex: 1,
-            minWidth: 0,
-            fontFamily: "'Courier New', monospace",
-            letterSpacing: "0.18em",
-            borderColor,
-            background: bgColor,
-          }}
-          onFocus={(e) => {
-            e.currentTarget.style.boxShadow = "0 0 0 3px rgba(59,130,246,0.12)";
-          }}
-          onBlur={(e) => {
-            e.currentTarget.style.boxShadow = "none";
-          }}
+          className={`flex-1 min-w-0 border px-3 py-2 text-sm outline-none font-mono tracking-widest transition-all
+            ${status === "success" ? "border-green-500 bg-green-50" : status === "error" ? "border-red-400 bg-red-50" : "border-gray-300 bg-white"}
+            focus:border-[#003580] focus:ring-2 focus:ring-[#003580]/10`}
         />
-
-        {/* CAPTCHA canvas */}
         <canvas
           ref={canvasRef}
           width={150}
           height={38}
-          aria-label="CAPTCHA security verification canvas displaying six randomly distorted alphanumeric characters in various colors with noise and lines for bot prevention"
-          style={{
-            border: "1px solid #cbd5e1",
-            borderRadius: 5,
-            flexShrink: 0,
-            userSelect: "none",
-            display: "block",
-            background: "#f8fafc",
-          }}
+          aria-label="CAPTCHA verification"
+          className="border border-gray-300 bg-[#f0f4f8] shrink-0 select-none"
         />
-
-        {/* Refresh button */}
         <button
           type="button"
           onClick={regenerate}
-          aria-label="Refresh CAPTCHA to generate new verification characters"
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            width: 34,
-            height: 34,
-            flexShrink: 0,
-            background: "#fff",
-            border: "1px solid #cbd5e1",
-            borderRadius: 5,
-            cursor: "pointer",
-            color: "#64748b",
-            transition: "all 0.15s",
-          }}
-          onMouseEnter={(e) => {
-            const b = e.currentTarget;
-            b.style.background = "#1d4ed8";
-            b.style.color = "#fff";
-            b.style.borderColor = "#1d4ed8";
-          }}
-          onMouseLeave={(e) => {
-            const b = e.currentTarget;
-            b.style.background = "#fff";
-            b.style.color = "#64748b";
-            b.style.borderColor = "#cbd5e1";
-          }}
+          aria-label="Refresh CAPTCHA"
+          className="w-9 h-9 shrink-0 flex items-center justify-center border border-gray-300 bg-white text-gray-500 hover:bg-[#003580] hover:text-white hover:border-[#003580] transition-all"
         >
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2.2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            width="14"
-            height="14"
-            aria-hidden="true"
-          >
-            <path d="M1 4v6h6" />
-            <path d="M23 20v-6h-6" />
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" width="14" height="14">
+            <path d="M1 4v6h6" /><path d="M23 20v-6h-6" />
             <path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15" />
           </svg>
         </button>
-
-        {/* Status badge */}
         {status === "success" && (
-          <span
-            style={{
-              fontSize: 10,
-              fontWeight: 700,
-              color: "#15803d",
-              background: "#dcfce7",
-              border: "1px solid #bbf7d0",
-              borderRadius: 3,
-              padding: "2px 5px",
-              flexShrink: 0,
-              whiteSpace: "nowrap",
-            }}
-            role="status"
-            aria-label="CAPTCHA verification successful"
-          >
+          <span className="text-[10px] font-bold text-green-700 bg-green-100 border border-green-300 px-1.5 py-0.5 shrink-0 whitespace-nowrap">
             ✓ OK
           </span>
         )}
         {status === "error" && (
-          <span
-            style={{
-              fontSize: 10,
-              fontWeight: 700,
-              color: "#b91c1c",
-              background: "#fee2e2",
-              border: "1px solid #fecaca",
-              borderRadius: 3,
-              padding: "2px 5px",
-              flexShrink: 0,
-              whiteSpace: "nowrap",
-            }}
-            role="status"
-            aria-label="CAPTCHA verification failed, characters do not match"
-          >
+          <span className="text-[10px] font-bold text-red-700 bg-red-100 border border-red-300 px-1.5 py-0.5 shrink-0 whitespace-nowrap">
             ✗ Wrong
           </span>
         )}
       </div>
-
       {status === "error" && (
-        <p style={{ fontSize: 10, color: "#ef4444", marginTop: 3 }}>
+        <p className="text-[10px] text-red-500 mt-1">
           Incorrect.{" "}
-          <button
-            type="button"
-            onClick={regenerate}
-            style={{
-              background: "none",
-              border: "none",
-              cursor: "pointer",
-              color: "#1d4ed8",
-              textDecoration: "underline",
-              fontSize: 10,
-              padding: 0,
-              fontWeight: 600,
-            }}
-            aria-label="Refresh CAPTCHA and try verification again"
-          >
+          <button type="button" onClick={regenerate} className="text-[#003580] underline font-semibold">
             Refresh
           </button>{" "}
           and try again.
@@ -298,7 +159,6 @@ function CaptchaWidget({ onVerify, resetKey }: CaptchaProps) {
   );
 }
 
-// ─── Main Page ────────────────────────────────────────────────────────────────
 export default function Home() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -317,21 +177,10 @@ export default function Home() {
       try {
         const token = Cookies.get("session_token");
         const userRole = Cookies.get("userRole");
-
-        console.log(token);
-        console.log(userRole);
         if (token && userRole) {
-          console.log("first");
-          if (userRole === "admin") {
-            router.replace("/examination/admin");
-            return;
-          }
-          if (userRole === "user") {
-            router.replace("/examination/instructions");
-            return;
-          }
+          if (userRole === "admin") { router.replace("/examination/admin"); return; }
+          if (userRole === "user") { router.replace("/examination/instructions"); return; }
         }
-        await axios.get("/examination/api/admin/assignments/latest");
       } catch {
         setError("Failed to load application details. Please try again later.");
       } finally {
@@ -344,32 +193,15 @@ export default function Home() {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
-    if (!username || !password) {
-      setError("Roll No and password are required.");
-      return;
-    }
-    if (!captchaVerified) {
-      setError("Please complete the CAPTCHA verification.");
-      return;
-    }
+    if (!username || !password) { setError("Roll No and password are required."); return; }
+    if (!captchaVerified) { setError("Please complete the CAPTCHA verification."); return; }
     setLoading(true);
     try {
-      const res = await axios.post("/examination/api/auth/login", {
-        username,
-        password,
-      });
+      const res = await axios.post("/examination/api/auth/login", { username, password });
       if (res.status === 200) {
         const { role, ...userData } = res.data;
-        Cookies.set("session_token", "mock-token", {
-          path: "/",
-          secure: false,
-          sameSite: "lax",
-        });
-        Cookies.set("userRole", role, {
-          path: "/",
-          secure: false,
-          sameSite: "lax",
-        });
+        Cookies.set("session_token", "mock-token", { path: "/", secure: false, sameSite: "lax" });
+        Cookies.set("userRole", role, { path: "/", secure: false, sameSite: "lax" });
         if (role === "admin") {
           router.replace("/examination/admin");
         } else if (role === "user") {
@@ -385,302 +217,109 @@ export default function Home() {
     } catch (err: any) {
       setLoading(false);
       resetCaptcha();
-      if (err.response)
-        setError(
-          err.response.data?.message ||
-            `Login failed: ${err.response.statusText}`,
-        );
-      else if (err.request)
-        setError("Network error. Could not connect to the server.");
+      if (err.response) setError(err.response.data?.message || `Login failed: ${err.response.statusText}`);
+      else if (err.request) setError("Network error. Could not connect to the server.");
       else setError("An unexpected error occurred. Please try again.");
     }
   };
 
   if (loadingPage) {
     return (
-      <>
-        <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
-        <div
-          style={{
-            minHeight: "100vh",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            background: "#eef4fb",
-          }}
-        >
-          <div
-            style={{
-              width: 40,
-              height: 40,
-              border: "3px solid #bfdbfe",
-              borderTop: "3px solid #1d4ed8",
-              borderRadius: "50%",
-              animation: "spin 0.8s linear infinite",
-            }}
-          />
+      <div className="min-h-screen bg-[#eef2f7] flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-12 h-12 border-4 border-[#003580] border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-[#003580] font-semibold text-sm tracking-wide">Loading...</p>
         </div>
-      </>
+      </div>
     );
   }
 
   return (
-    <>
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700&display=swap');
+    <div className="min-h-screen bg-[#eef2f7] flex flex-col overflow-x-hidden">
+      <Header />
 
-        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+      {/* Title bar */}
+      <div className="bg-[#003580] text-white">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
+          <h1 className="text-sm font-bold uppercase tracking-widest">Candidate Login</h1>
+          <span className="text-xs text-blue-200 bg-white/10 px-3 py-1">Secure Portal</span>
+        </div>
+      </div>
+      <div className="h-1 bg-[#f4a900]" />
 
-        .page-root {
-          display: flex;
-          flex-direction: column;
-          height: 100vh;
-          max-height: 100vh;
-          overflow: hidden;
-          background: #eef4fb;
-        }
+      <main className="flex-1 flex items-center justify-center py-10 px-4">
+        <form onSubmit={handleLogin} noValidate className="bg-white border border-gray-200 shadow-lg w-full max-w-md">
 
-        .page-body {
-          flex: 1 1 0;
-          min-height: 0;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          background: linear-gradient(150deg, #f0f7ff 0%, #e2edfb 50%, #cfe0f8 100%);
-          padding: 10px 16px;
-          overflow: hidden;
-        }
-
-        /* ── Card ── */
-        .login-card {
-          background: #ffffff;
-          border: 1px solid #dde8f5;
-          border-radius: 12px;
-          width: 100%;
-          max-width: 440px;
-          padding: 20px 28px 16px;
-          box-shadow: 0 2px 16px rgba(37,99,235,0.1), 0 1px 3px rgba(0,0,0,0.05);
-          position: relative;
-          animation: riseIn 0.4s cubic-bezier(0.22,1,0.36,1) both;
-        }
-        @keyframes riseIn {
-          from { opacity:0; transform:translateY(14px); }
-          to   { opacity:1; transform:translateY(0); }
-        }
-        .login-card::before, .login-card::after {
-          content:'❖'; position:absolute; font-size:8px; color:#93c5fd; opacity:0.55;
-        }
-        .login-card::before { top:8px; left:10px; }
-        .login-card::after  { bottom:8px; right:10px; }
-
-        /* ── Brand row: row on desktop, column on mobile ── */
-        .brand-row {
-          display: flex;
-          flex-direction: row;
-          align-items: center;
-          gap: 14px;
-          margin-bottom: 12px;
-        }
-        @media (max-width: 480px) {
-          .brand-row {
-            flex-direction: column;
-            align-items: center;
-            gap: 8px;
-            text-align: center;
-          }
-          .brand-text { align-items: center !important; }
-        }
-
-        .logo-ring {
-          width: 64px; height: 64px; flex-shrink: 0;
-          border-radius: 50%; border: 2px solid #bfdbfe;
-          box-shadow: 0 2px 8px rgba(59,130,246,0.18), 0 0 0 4px rgba(219,234,254,0.45);
-          overflow: hidden; background: #fff;
-        }
-        .logo-ring img { width:100%; height:100%; object-fit:contain; display:block; }
-
-        .brand-text { display:flex; flex-direction:column; justify-content:center; }
-        .ir-title {
-          font-family: 'Rajdhani', sans-serif; font-weight:700; font-size:1.15rem;
-          color:#1e3a5f; letter-spacing:0.18em; text-transform:uppercase; line-height:1.1;
-        }
-        .ir-sub {
-          font-size:0.6rem; color:#2563eb; letter-spacing:0.16em;
-          text-transform:uppercase; margin-top:3px; opacity:0.65;
-        }
-
-        /* ── Divider ── */
-        .divider { display:flex; align-items:center; gap:7px; margin-bottom:12px; }
-        .div-line { flex:1; height:1px; background:linear-gradient(90deg,transparent,#bfdbfe,transparent); }
-        .div-dot  { width:4px; height:4px; background:#93c5fd; border-radius:50%; }
-
-        /* ── Labels ── */
-        .field-label {
-          display:block; font-family:'Rajdhani',sans-serif; font-weight:600;
-          font-size:0.62rem; letter-spacing:0.13em; text-transform:uppercase;
-          color:#475569; margin-bottom:4px;
-        }
-
-        /* ── Inputs — plain white, gray border ── */
-        .field-input {
-          width:100%; border:1px solid #cbd5e1; border-radius:5px;
-          padding:8px 12px; font-size:0.88rem; color:#0f172a;
-          background:#fff; outline:none;
-          transition:border-color 0.15s, box-shadow 0.15s;
-        }
-        .field-input:focus { border-color:#3b82f6; box-shadow:0 0 0 3px rgba(59,130,246,0.12); }
-        .field-input::placeholder { color:#94a3b8; font-size:0.83rem; }
-
-        /* ── Password eye ── */
-        .pw-wrap { position:relative; }
-        .pw-wrap .field-input { padding-right:36px; }
-        .eye-btn {
-          position:absolute; right:9px; top:50%; transform:translateY(-50%);
-          background:none; border:none; cursor:pointer; color:#94a3b8;
-          display:flex; align-items:center; padding:2px; transition:color 0.15s;
-        }
-        .eye-btn:hover { color:#1d4ed8; }
-
-        /* ── Field spacing ── */
-        .fg { margin-bottom:10px; }
-
-        /* ── Error ── */
-        .err-box {
-          display:flex; align-items:flex-start; gap:5px;
-          background:#fef2f2; border:1px solid #fecaca;
-          border-left:3px solid #dc2626; color:#b91c1c;
-          font-size:0.7rem; line-height:1.4; padding:4px 8px;
-          border-radius:4px; margin-bottom:8px;
-        }
-        .err-icon { flex-shrink:0; margin-top:1px; }
-
-        /* ── Login button — always dark navy ── */
-        .login-btn {
-          width:100%; display:flex; align-items:center; justify-content:center; gap:8px;
-          background:linear-gradient(135deg,#1e3a5f 0%,#2d5a9e 60%,#1d4ed8 100%);
-          color:#fff; border:none; border-radius:6px; padding:10px 16px;
-          font-family:'Rajdhani',sans-serif; font-weight:700; font-size:0.9rem;
-          letter-spacing:0.25em; text-transform:uppercase; cursor:pointer;
-          position:relative; overflow:hidden;
-          box-shadow:0 3px 10px rgba(29,78,216,0.35),inset 0 1px 0 rgba(255,255,255,0.1);
-          transition:transform 0.15s,box-shadow 0.15s; margin-top:2px;
-        }
-        .login-btn::before {
-          content:''; position:absolute; top:0; left:-100%;
-          width:100%; height:100%;
-          background:linear-gradient(90deg,transparent,rgba(255,255,255,0.12),transparent);
-          transition:left 0.4s;
-        }
-        .login-btn:hover::before { left:100%; }
-        .login-btn:hover:not(:disabled) {
-          box-shadow:0 5px 18px rgba(29,78,216,0.42),inset 0 1px 0 rgba(255,255,255,0.12);
-          transform:translateY(-1px);
-        }
-        .login-btn:active:not(:disabled) { transform:translateY(0); }
-        .login-btn:disabled {
-          background:linear-gradient(135deg,#1e3a5f 0%,#2d5a9e 60%,#1d4ed8 100%) !important;
-          opacity:0.65; cursor:not-allowed; box-shadow:none;
-        }
-        .btn-arrow { display:flex; align-items:center; flex-shrink:0; }
-
-        .footer-note {
-          font-size:0.6rem; color:#94a3b8;
-          text-align:center; margin-top:8px; letter-spacing:0.03em;
-        }
-
-        @keyframes spin { to { transform: rotate(360deg); } }
-      `}</style>
-
-      <div className="page-root">
-        <Header />
-
-        <main className="page-body">
-          <form onSubmit={handleLogin} className="login-card" noValidate>
-            {/* Brand row */}
-            <div className="brand-row">
-              <div className="logo-ring">
-                <img src="/indian-railway.png" alt="IndianRailwaysLogo" />
-              </div>
-              <div className="brand-text">
-                <div className="ir-title">Indian Railways</div>
-                <div className="ir-sub">
-                  Ministry of Railways · Govt. of India
-                </div>
-              </div>
+          {/* Card header */}
+          <div className="bg-[#003580] px-6 py-5 flex items-center gap-4">
+            <div className="w-14 h-14 rounded-full border-2 border-white/30 overflow-hidden bg-white shrink-0 flex items-center justify-center">
+              <img src="/indian-railway.png" alt="Indian Railways Logo" className="w-full h-full object-contain" />
             </div>
-
-            {/* Divider */}
-            <div className="divider">
-              <div className="div-line" />
-              <div className="div-dot" />
-              <div className="div-line" />
+            <div>
+              <p className="text-white font-bold text-base uppercase tracking-wide leading-tight">
+                Indian Railways
+              </p>
+              <p className="text-blue-200 text-[11px] uppercase tracking-widest mt-0.5">
+                Ministry of Railways · Govt. of India
+              </p>
             </div>
+          </div>
+
+          {/* Amber strip */}
+          <div className="h-1 bg-[#f4a900]" />
+
+          <div className="px-6 py-6">
+            <p className="text-center text-xs text-gray-500 uppercase tracking-widest mb-5 font-semibold">
+              Online Examination System
+            </p>
 
             {/* Roll No */}
-            <div className="fg">
-              <label htmlFor="username" className="field-label">
+            <div className="mb-4">
+              <label htmlFor="username" className="block text-[11px] font-bold uppercase tracking-widest text-gray-500 mb-2">
                 Roll No.
               </label>
               <input
                 id="username"
                 type="text"
-                className="field-input"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 placeholder="Enter your roll number"
                 autoComplete="username"
                 required
+                className="w-full border border-gray-300 px-3 py-2.5 text-sm text-gray-800 outline-none bg-white transition-all focus:border-[#003580] focus:ring-2 focus:ring-[#003580]/10 placeholder:text-gray-400"
               />
             </div>
 
             {/* Password */}
-            <div className="fg">
-              <label htmlFor="password" className="field-label">
+            <div className="mb-4">
+              <label htmlFor="password" className="block text-[11px] font-bold uppercase tracking-widest text-gray-500 mb-2">
                 Password
               </label>
-              <div className="pw-wrap">
+              <div className="relative">
                 <input
                   id="password"
                   type={showPassword ? "text" : "password"}
-                  className="field-input"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Enter your password"
                   autoComplete="current-password"
                   required
+                  className="w-full border border-gray-300 px-3 py-2.5 pr-10 text-sm text-gray-800 outline-none bg-white transition-all focus:border-[#003580] focus:ring-2 focus:ring-[#003580]/10 placeholder:text-gray-400"
                 />
                 <button
                   type="button"
-                  className="eye-btn"
                   onClick={() => setShowPassword((v) => !v)}
                   aria-label={showPassword ? "Hide password" : "Show password"}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-[#003580] transition-colors"
                 >
                   {showPassword ? (
-                    <svg
-                      width="16"
-                      height="16"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                       <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94" />
                       <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19" />
                       <line x1="1" y1="1" x2="23" y2="23" />
                     </svg>
                   ) : (
-                    <svg
-                      width="16"
-                      height="16"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                       <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
                       <circle cx="12" cy="12" r="3" />
                     </svg>
@@ -690,88 +329,49 @@ export default function Home() {
             </div>
 
             {/* CAPTCHA */}
-            <CaptchaWidget
-              onVerify={setCaptchaVerified}
-              resetKey={captchaResetKey}
-            />
+            <CaptchaWidget onVerify={setCaptchaVerified} resetKey={captchaResetKey} />
 
             {/* Error */}
             {error && (
-              <div className="err-box">
-                <span className="err-icon">
-                  <svg
-                    width="11"
-                    height="11"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <circle cx="12" cy="12" r="10" />
-                    <line x1="12" y1="8" x2="12" y2="12" />
-                    <line x1="12" y1="16" x2="12.01" y2="16" />
-                  </svg>
-                </span>
-                {error}
+              <div className="flex items-start gap-2 bg-red-50 border border-red-200 border-l-4 border-l-red-600 text-red-700 text-xs px-3 py-2.5 mb-4">
+                <svg className="shrink-0 mt-0.5" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" />
+                </svg>
+                <span>{error}</span>
               </div>
             )}
 
             {/* Submit */}
             <button
               type="submit"
-              className="login-btn"
               disabled={loading}
-              title={!captchaVerified ? "Complete CAPTCHA to enable login" : ""}
+              className="w-full flex items-center justify-center gap-2 bg-[#003580] hover:bg-[#002560] disabled:opacity-60 disabled:cursor-not-allowed text-white font-bold uppercase tracking-widest text-sm px-6 py-3 transition-all"
             >
               {loading ? (
                 <>
-                  <span
-                    style={{
-                      width: 14,
-                      height: 14,
-                      borderRadius: "50%",
-                      border: "2px solid rgba(255,255,255,0.35)",
-                      borderTop: "2px solid #fff",
-                      animation: "spin 0.7s linear infinite",
-                      display: "inline-block",
-                      flexShrink: 0,
-                    }}
-                  />
+                  <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin shrink-0" />
                   Authenticating…
                 </>
               ) : (
                 <>
-                  <span className="btn-arrow">
-                    <svg
-                      width="16"
-                      height="16"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2.5"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" />
-                      <polyline points="10 17 15 12 10 7" />
-                      <line x1="15" y1="12" x2="3" y2="12" />
-                    </svg>
-                  </span>
-                  Login
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" />
+                    <polyline points="10 17 15 12 10 7" />
+                    <line x1="15" y1="12" x2="3" y2="12" />
+                  </svg>
+                  Login to Portal
                 </>
               )}
             </button>
 
-            <p className="footer-note">
+            <p className="text-center text-[10px] text-gray-400 uppercase tracking-widest mt-4">
               For authorized personnel only · Govt. of India
             </p>
-          </form>
-        </main>
+          </div>
+        </form>
+      </main>
 
-        <Footer />
-      </div>
-    </>
+      <Footer />
+    </div>
   );
 }

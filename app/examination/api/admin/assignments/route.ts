@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { connectDB } from "@/lib/db";
 import Assignment from "@/models/Assignment";
-import { UserAdmin } from "@/models/UserAdmin";
-import Question from "@/models/Question";
+import "@/models/Question";
+import mongoose from "mongoose";
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
@@ -12,53 +12,48 @@ export async function POST(req: Request) {
     const data = await req.json();
     console.log("Incoming assignment data:", data);
 
-    // ✅ Validate questions
-    if (
-      !Array.isArray(data.questions) ||
-      !data.questions.every((id: any) => typeof id === "string")
-    ) {
+    const { title, startTime, durationMinutes, questions, users, marks } = data;
+
+    // ✅ Basic validation
+    if (!title || !startTime || !durationMinutes) {
       return NextResponse.json(
-        { error: "Invalid questions format" },
-        { status: 400 }
+        { error: "Missing required fields" },
+        { status: 400 },
       );
     }
 
-    // ✅ Validate users
+    // ✅ Validate question IDs
     if (
-      !Array.isArray(data.users) ||
-      !data.users.every((email: any) => typeof email === "string")
+      !Array.isArray(questions) ||
+      !questions.every((id: any) => mongoose.Types.ObjectId.isValid(id))
+    ) {
+      return NextResponse.json(
+        { error: "Invalid questionIds format" },
+        { status: 400 },
+      );
+    }
+
+    // ✅ NEW: Validate users as OBJECTS (not IDs)
+    if (
+      !Array.isArray(users) ||
+      !users.every(
+        (u: any) => u && typeof u._id === "string" && u.name && u.rollNo,
+      )
     ) {
       return NextResponse.json(
         { error: "Invalid users format" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
-    // ✅ Fetch users
-    const userDocs = await UserAdmin.find({
-      email: { $in: data.users },
-    });
-
-    if (userDocs.length !== data.users.length) {
-      return NextResponse.json(
-        { error: "One or more user emails not found" },
-        { status: 400 }
-      );
-    }
-
-    // ✅ Create assignment
+    // ✅ Create assignment (store full user snapshot)
     const assignment = await Assignment.create({
-      title: data.title,
-      description: data.description,
-      declarationContent: data.declarationContent,
-      instructions: data.instructions,
-      startTime: data.startTime,
-      durationMinutes: data.durationMinutes,
-      questionIds: data.questions,
-      users: userDocs.map((u) => u._id),
-      logo: data.logo,
-      marks: data.marks,
-      companyName: data.companyName,
+      title,
+      startTime,
+      durationMinutes,
+      questionIds: questions,
+      users, // ✅ FULL OBJECT STORED
+      marks: marks || 1,
     });
 
     return NextResponse.json(assignment, { status: 201 });
@@ -70,7 +65,7 @@ export async function POST(req: Request) {
         error: "Failed to create assignment",
         details: err.message,
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -79,45 +74,14 @@ export async function GET() {
   try {
     await connectDB();
 
-    // ✅ get assignments (plain objects for performance)
-    const assignments = await Assignment.find().lean();
+    const assignments = await Assignment.find()
+      .populate("questionIds") // ✅ keep questions populated
+      // ❌ REMOVE THIS (users are not ObjectIds anymore)
+      // .populate("users")
+      .sort({ createdAt: -1 })
+      .lean();
 
-    // ✅ collect all ids
-    const questionIds = new Set<string>();
-    const userIds = new Set<string>();
-
-    assignments.forEach((a: any) => {
-      a.questionIds?.forEach((id: any) => questionIds.add(id.toString()));
-      a.users?.forEach((id: any) => userIds.add(id.toString()));
-    });
-
-    // ✅ fetch related data
-    const [questions, users] = await Promise.all([
-      Question.find({ _id: { $in: [...questionIds] } }).lean(),
-      UserAdmin.find({ _id: { $in: [...userIds] } }).lean(),
-    ]);
-
-    // ✅ create maps for fast lookup
-    const questionMap = new Map(
-      questions.map((q: any) => [q._id.toString(), q])
-    );
-
-    const userMap = new Map(
-      users.map((u: any) => [u._id.toString(), u])
-    );
-
-    // ✅ attach data manually
-    const result = assignments.map((assignment: any) => ({
-      ...assignment,
-      questionIds: assignment.questionIds.map((id: any) =>
-        questionMap.get(id.toString())
-      ),
-      users: assignment.users.map((id: any) =>
-        userMap.get(id.toString())
-      ),
-    }));
-
-    return NextResponse.json(result, { status: 200 });
+    return NextResponse.json(assignments, { status: 200 });
   } catch (err: any) {
     console.error("Error fetching assignments:", err);
 
@@ -126,7 +90,7 @@ export async function GET() {
         error: "Failed to fetch assignments",
         details: err.message,
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

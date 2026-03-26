@@ -7,80 +7,96 @@ import bcrypt from "bcryptjs";
 
 export async function POST(req: Request) {
   try {
-    const { username, password, accessKey } = await req.json();
+    const { username, password } = await req.json();
 
     await connectDB();
 
-    const user = await UserAdmin.findOne({ email: username });
-
+    // ✅ Find user (email OR rollNo)
+    let user = await UserAdmin.findOne({ email: username });
     if (!user) {
-      return NextResponse.json({ message: "User not found" }, { status: 404 });
-    }
-
-    // Credential check
-    if (accessKey) {
-      if (accessKey !== user.accessKey) {
+      user = await UserAdmin.findOne({ rollNo: username });
+      if (!user) {
         return NextResponse.json(
-          { message: "Invalid access key" },
-          { status: 401 },
-        );
-      }
-    } else {
-      const isPasswordValid = await bcrypt.compare(password, user.password);
-      if (!isPasswordValid) {
-        return NextResponse.json(
-          { message: "Invalid password" },
-          { status: 401 },
+          { message: "User not found" },
+          { status: 404 },
         );
       }
     }
 
-    // If user is a regular user, check assignment
+    // ✅ Validate password
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
+      return NextResponse.json(
+        { message: "Invalid password" },
+        { status: 401 },
+      );
+    }
+
+    let assignmentData = null;
+
+    // ✅ Only for exam users
     if (user.role === "user") {
-      const startOfDay = new Date();
-      startOfDay.setHours(0, 0, 0, 0);
+      const now = new Date();
 
-      const endOfDay = new Date();
-      endOfDay.setHours(23, 59, 59, 999);
-
+      // ✅ Find today's assignment assigned to this user
       const assignment = await Assignment.findOne({
-        startTime: { $gte: startOfDay, $lte: endOfDay },
-        users: user._id,
+        "users._id": String(user._id),
       }).sort({ startTime: 1 });
 
       if (!assignment) {
         return NextResponse.json(
           {
-            message: "No assignment scheduled today or you are not assigned.",
+            message: "No assignment assigned to you.",
           },
           { status: 404 },
         );
       }
 
-      const now = new Date();
+      const examStart = new Date(assignment.startTime);
+      const examEnd = new Date(
+        examStart.getTime() + assignment.durationMinutes * 60000,
+      );
 
-      if (now < assignment.startTime) {
+      // ❌ Not started
+      if (now < examStart) {
         return NextResponse.json(
           {
-            message: "Exam time has not started yet",
-            assignmentStartTime: assignment.startTime,
+            message: "Exam has not started yet",
+            startTime: examStart,
           },
           { status: 403 },
         );
       }
+
+      // ❌ Already ended
+      if (now > examEnd) {
+        return NextResponse.json(
+          {
+            message: "Exam time is over",
+          },
+          { status: 403 },
+        );
+      }
+
+      // ✅ Attach assignment info
+      assignmentData = {
+        id: assignment._id,
+        startTime: assignment.startTime,
+        durationMinutes: assignment.durationMinutes,
+        marks: assignment.marks,
+      };
     }
 
-    const res = NextResponse.json({
+    // ✅ Final response
+    return NextResponse.json({
       message: "Login successful",
       role: user.role,
       id: user._id,
       name: user.name,
       email: user.email,
+      assignment: assignmentData, // 🔥 IMPORTANT
     });
-
-    return res;
   } catch (err: any) {
-    console.log("Login error:", err);
     return NextResponse.json(
       { message: "Internal server error", error: err.message },
       { status: 500 },

@@ -60,7 +60,7 @@ const PageOne = () => {
             Dy.Chief Personnel Officer (Recruitment),
           </p>
           <p>Railway Recruitment Cell, Indian Railway Headquarters,</p>
-          <p>C-57/G, Rail Vihar, Chandrasekharpur, Bhubaneswar-751023</p>
+          <p>J68H+WXF, Baroda House, New Delhi, Delhi 110001</p>
         </div>
 
         {/* Changed: w-[35%] → w-full sm:w-[35%] */}
@@ -115,7 +115,7 @@ const PageOne = () => {
             <tbody>
               {[0, 1].map((row) => (
                 <tr key={row}>
-                  {Array.from({ length: 20 }).map((_, colIndex) => (
+                  {Array.from({ length: 18 }).map((_, colIndex) => (
                     <td key={colIndex} className="border p-0">
                       <input
                         type="text"

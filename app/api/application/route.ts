@@ -29,7 +29,6 @@ const generateUniqueRollNumber = async () => {
   return rollNumber;
 };
 
-// ================= GET =================
 export async function GET(req: NextRequest) {
   try {
     await connectDB();

@@ -1,151 +1,175 @@
-/* eslint-disable @next/next/no-img-element */
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import Head from "next/head";
-import axios from "axios";
 import Cookies from "js-cookie";
+import Header from "@/components/mcq/Header";
+import Footer from "@/components/mcq/Footer";
 
 export default function Instructions() {
-  const [companyName, setCompanyName] = useState("");
-  const [assData, setAssData] = useState<any>(null);
   const router = useRouter();
 
   useEffect(() => {
     const token = Cookies.get("session_token");
     const role = Cookies.get("userRole");
-
     if (!token || role !== "user") {
       router.replace("/examination");
     }
   }, [router]);
-
-  useEffect(() => {
-    const fetchLatestAssignment = async () => {
-      try {
-        const res = await axios.get("/examination/api/admin/assignments/latest");
-        if (res.data) {
-          setAssData(res.data);
-          setCompanyName(res.data.companyName);
-        }
-      } catch (err) {
-        console.error("Error fetching latest assignment", err);
-      }
-    };
-
-    fetchLatestAssignment();
-  }, []);
 
   const handleProceed = () => {
     router.replace("/examination/assignment");
   };
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-blue-50 via-white to-indigo-50 flex flex-col">
-      <Head>
-        <title>General Instructions - {companyName || "MCQ Portal"}</title>
-      </Head>
+    <div className="min-h-screen bg-[#eef2f7] flex flex-col">
+      <Header />
 
-      {/* HEADER */}
-      <header className="bg-white/80 backdrop-blur-md border-b shadow-sm py-3 px-4 sm:px-6">
-        <div className="mx-auto flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
-          <div className="flex items-center gap-3">
-            {assData?.logo ? (
-              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-white rounded-full shadow-md overflow-hidden border">
-                <img
-                  src={assData.logo}
-                  alt="Logo"
-                  className="w-full h-full object-cover"
-                />
-              </div>
-            ) : (
-              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-blue-100 rounded-full flex items-center justify-center shadow">
-                <span className="text-blue-700 font-bold text-lg sm:text-xl">
-                  ?
-                </span>
-              </div>
-            )}
-
-            <div>
-              <h1 className="text-base sm:text-xl font-bold text-blue-700">
-                {companyName || "Online Examination Portal"}
-              </h1>
-              <p className="text-xs sm:text-sm text-gray-500">
-                Computer Based Test (CBT) System
-              </p>
-            </div>
-          </div>
-
-          <div className="hidden sm:block text-right">
-            <p className="text-sm font-medium text-gray-600">
-              Candidate Dashboard
-            </p>
-            <p className="text-xs text-gray-400">
-              Secure Examination Environment
-            </p>
-          </div>
+      {/* Page title bar */}
+      <div className="bg-[#003580] text-white">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
+          <h1 className="text-sm font-bold uppercase tracking-widest">
+            Examination Instructions
+          </h1>
+          <span className="text-xs text-blue-200 bg-white/10 px-3 py-1">
+            Read Carefully Before Proceeding
+          </span>
         </div>
-      </header>
+      </div>
 
-      {/* MAIN */}
-      <main className="grow py-10 px-4">
-        <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-8">
-            <h2 className="text-2xl sm:text-3xl font-bold text-gray-800">
-              General Instructions
-            </h2>
-            <p className="text-gray-500 mt-2 text-sm sm:text-base">
-              Please read the instructions carefully before starting the
-              examination.
-            </p>
+      {/* Amber accent strip */}
+      <div className="h-1 bg-[#f4a900]" />
+
+      <main className="flex-1 py-8 px-4 sm:px-6">
+        <div className="max-w-3xl mx-auto">
+          {/* Exam summary cards */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
+            {[
+              { label: "Total Questions", value: "50" },
+              { label: "Marks per Question", value: "2" },
+              { label: "Maximum Marks", value: "100" },
+              { label: "Duration", value: "50 Min" },
+            ].map(({ label, value }) => (
+              <div
+                key={label}
+                className="bg-white border border-gray-200 shadow-sm text-center py-4 px-2"
+              >
+                <p className="text-xl sm:text-2xl font-bold text-[#003580]">
+                  {value}
+                </p>
+                <p className="text-[11px] text-gray-500 uppercase tracking-wide mt-1 leading-tight">
+                  {label}
+                </p>
+              </div>
+            ))}
           </div>
 
-          <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-5 sm:p-8 relative">
-            <div className="absolute top-4 right-6 text-xs text-gray-400 hidden sm:block">
-              Scroll to read completely
+          {/* Declaration box */}
+          <div className="bg-white border border-gray-200 shadow-sm mb-6">
+            <div className="bg-[#003580] text-white px-5 py-3 flex items-center gap-2">
+              <svg
+                className="w-4 h-4 shrink-0"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                />
+              </svg>
+              <span className="text-sm font-bold uppercase tracking-wide">
+                Exam Declaration
+              </span>
             </div>
 
-            {/* Scroll Container */}
-            <div className="max-h-87.5 sm:max-h-105 overflow-y-auto pr-2 text-gray-700 leading-relaxed text-sm sm:text-base space-y-4 scroll-smooth">
-              {assData?.declarationContent ? (
-                <p className="whitespace-pre-line">
-                  {assData.declarationContent}
-                </p>
-              ) : (
-                <div className="flex justify-center items-center py-10">
-                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-                </div>
-              )}
-            </div>
-
-            {/* Warning Box */}
-            <div className="mt-6 bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-md">
-              <p className="text-sm text-yellow-800">
-                ⚠️ Once you click <strong>“I Accept & Start Test”</strong>, the
-                timer will begin immediately. Do not refresh, switch tabs, or
-                navigate back. Any such action may auto-submit your test.
+            <div className="p-5 sm:p-6 text-sm text-gray-700 leading-7 text-justify space-y-4">
+              <p>
+                I hereby solemnly declare that this examination consists of a
+                total of 50 multiple-choice questions, with each question
+                carrying 2 marks, making the maximum total score 100 marks. I
+                also acknowledge that the total duration allotted for completing
+                this examination is strictly limited to 50 minutes, and I am
+                responsible for managing my time effectively within this period.
+              </p>
+              <p>
+                I fully understand and accept that this examination is conducted
+                under strict guidelines to ensure fairness, transparency, and
+                academic integrity. I am aware that any form of cheating,
+                malpractice, or use of unfair means is strictly prohibited.
+              </p>
+              <p>
+                I further acknowledge that the use of electronic devices such as
+                mobile phones, smartwatches, secondary screens, or any
+                communication tools during the examination is strictly forbidden
+                unless explicitly permitted.
+              </p>
+              <p>
+                I understand that this assessment is designed to evaluate my
+                individual knowledge and I commit to completing the examination
+                independently without any external help.
+              </p>
+              <p>
+                I am aware that any violation of the examination rules may
+                result in immediate disqualification and disciplinary action.
               </p>
             </div>
+          </div>
 
-            {/* Button */}
-            <div className="flex justify-center mt-8">
-              <button
-                onClick={handleProceed}
-                className="w-full cursor-pointer sm:w-auto bg-linear-to-r from-blue-600 to-indigo-600 text-white font-semibold text-base sm:text-lg px-8 sm:px-10 py-3 rounded-xl shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl hover:from-blue-700 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          {/* Important notes */}
+          <div className="bg-yellow-50 border border-yellow-300 shadow-sm mb-8">
+            <div className="bg-[#f4a900] px-5 py-2.5 flex items-center gap-2">
+              <svg
+                className="w-4 h-4 text-[#003580] shrink-0"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
               >
-                I Accept & Start Test
-              </button>
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"
+                />
+              </svg>
+              <span className="text-[#003580] text-sm font-bold uppercase tracking-wide">
+                Important Instructions
+              </span>
             </div>
+            <ul className="p-5 space-y-2 text-sm text-gray-700">
+              {[
+                "Camera access is mandatory throughout the examination for proctoring.",
+                "Do not refresh or close the browser tab during the exam.",
+                "Navigating away from the exam page may result in auto-submission.",
+                "Each question has only one correct answer. Choose carefully.",
+                "You may mark questions for review and return to them before submission.",
+                "By proceeding, you confirm that you have read and agreed to all rules.",
+              ].map((note, i) => (
+                <li key={i} className="flex items-start gap-2.5">
+                  <span className="mt-1 w-4 h-4 bg-[#003580] text-white rounded-full text-[10px] flex items-center justify-center shrink-0 font-bold">
+                    {i + 1}
+                  </span>
+                  <span>{note}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Proceed button */}
+          <div className="flex justify-center">
+            <button
+              onClick={handleProceed}
+              className="bg-[#003580] hover:bg-[#002560] text-white font-bold px-10 py-3 uppercase tracking-widest text-sm transition shadow-md"
+            >
+              I Agree — Proceed to Examination
+            </button>
           </div>
         </div>
       </main>
 
-      {/* FOOTER */}
-      <footer className="bg-white border-t border-gray-200 py-4 text-center text-xs text-gray-500">
-        © 2026 {companyName || "MCQ Portal"} | All Rights Reserved
-      </footer>
+      <Footer />
     </div>
   );
 }

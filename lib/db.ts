@@ -30,10 +30,7 @@ export async function connectDB(): Promise<Mongoose> {
   if (cached!.conn) return cached!.conn;
 
   if (!cached!.promise) {
-    cached!.promise = mongoose.connect(MONGODB_URI, {
-      bufferCommands: false,
-      dbName: "maq",
-    });
+    cached!.promise = mongoose.connect(MONGODB_URI);
   }
 
   cached!.conn = await cached!.promise;

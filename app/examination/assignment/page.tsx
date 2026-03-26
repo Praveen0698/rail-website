@@ -7,6 +7,8 @@ import { useEffect, useState, useRef } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
+import Header from "@/components/mcq/Header";
+import Footer from "@/components/mcq/Footer";
 
 type ResponseStatus =
   | "answered"
@@ -41,7 +43,7 @@ const shuffleArray = (array: Question[]) => {
 export default function MCQPage() {
   const [currentQuestion, setCurrentQuestion] = useState<number>(1);
   const [responses, setResponses] = useState<Responses>({});
-  const [timeLeft, setTimeLeft] = useState<number>(120 * 60); // 120 minutes
+  const [timeLeft, setTimeLeft] = useState<number>(120 * 60);
   const [questions, setQuestions] = useState<Question[]>([]);
   const [assData, setAssData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -51,13 +53,12 @@ export default function MCQPage() {
   const [isSubmitModalOpen, setIsSubmitModalOpen] = useState(false);
   const [isTimeUp, setIsTimeUp] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
-  const [cameraAllowed, setCameraAllowed] = useState<boolean | null>(null);
   const [cameraStream, setCameraStream] = useState<MediaStream | null>(null);
   const [examStarted, setExamStarted] = useState(false);
+
   useEffect(() => {
     const token = Cookies.get("session_token");
     const role = Cookies.get("userRole");
-
     if (!token || role !== "user") {
       router.replace("/examination");
     }
@@ -86,19 +87,15 @@ export default function MCQPage() {
         alert("Camera requires HTTPS connection.");
         return false;
       }
-
       const stream = await navigator.mediaDevices.getUserMedia({
         video: { facingMode: "user" },
         audio: false,
       });
-
       setCameraStream(stream);
-      setCameraAllowed(true);
       return true;
     } catch (error) {
       console.error(error);
       alert("Please allow camera permission.");
-      setCameraAllowed(false);
       return false;
     }
   };
@@ -107,15 +104,11 @@ export default function MCQPage() {
     const handleBackButton = () => {
       handleSubmit();
     };
-
     window.history.pushState(null, "", window.location.href);
-
     const onPopState = () => {
       handleBackButton();
     };
-
     window.addEventListener("popstate", onPopState);
-
     return () => {
       window.removeEventListener("popstate", onPopState);
     };
@@ -126,9 +119,7 @@ export default function MCQPage() {
       event.preventDefault();
       event.returnValue = "";
     };
-
     window.addEventListener("beforeunload", handleBeforeUnload);
-
     return () => {
       window.removeEventListener("beforeunload", handleBeforeUnload);
     };
@@ -137,7 +128,6 @@ export default function MCQPage() {
   useEffect(() => {
     if (videoRef.current && cameraStream) {
       videoRef.current.srcObject = cameraStream;
-
       videoRef.current.onloadedmetadata = async () => {
         try {
           videoRef?.current?.setAttribute("playsinline", "true");
@@ -152,16 +142,15 @@ export default function MCQPage() {
   useEffect(() => {
     const fetchAssignmentAndQuestions = async () => {
       try {
-        const assignmentRes = await axios.get("/examination/api/admin/assignments/latest");
-
+        const assignmentRes = await axios.get(
+          "/examination/api/admin/assignments/latest",
+        );
         setAssData(assignmentRes.data);
         const questionIds = assignmentRes.data.questionIds;
-
         const questionsRes = await axios.post(
           "/examination/api/admin/questions/ass-questions",
           { ids: questionIds },
         );
-
         const fetchedQuestions: Question[] = questionsRes.data.map(
           (q: any) => ({
             id: q._id,
@@ -173,27 +162,23 @@ export default function MCQPage() {
             })),
           }),
         );
-
         if (!fetchedQuestions.length) {
           router.push("/examination");
           return;
         }
-
         let finalQuestions: Question[] = [];
         const storageKey = `selectedQuestions_${assignmentRes.data._id}`;
-
-        if (fetchedQuestions.length <= 100) {
+        if (fetchedQuestions.length <= 50) {
           finalQuestions = fetchedQuestions;
         } else {
           const stored = sessionStorage.getItem(storageKey);
-
           if (stored) {
             const parsed = JSON.parse(stored);
             if (parsed.length === 100) {
               finalQuestions = parsed;
             } else {
               const shuffled = shuffleArray(fetchedQuestions);
-              finalQuestions = shuffled.slice(0, 100);
+              finalQuestions = shuffled.slice(0, 50);
               sessionStorage.setItem(
                 storageKey,
                 JSON.stringify(finalQuestions),
@@ -201,11 +186,10 @@ export default function MCQPage() {
             }
           } else {
             const shuffled = shuffleArray(fetchedQuestions);
-            finalQuestions = shuffled.slice(0, 100);
+            finalQuestions = shuffled.slice(0, 50);
             sessionStorage.setItem(storageKey, JSON.stringify(finalQuestions));
           }
         }
-
         setQuestions(finalQuestions);
         setCurrentQuestion(1);
       } catch (error) {
@@ -214,41 +198,32 @@ export default function MCQPage() {
         setLoading(false);
       }
     };
-
     fetchAssignmentAndQuestions();
   }, [router]);
 
   useEffect(() => {
     if (!assData?.durationMinutes) return;
-
     const now = Date.now();
     const durationInMs = assData.durationMinutes * 60 * 1000;
-
     let storedEndTime = sessionStorage.getItem("examEndTime");
-
     if (!storedEndTime) {
       const newEndTime = now + durationInMs;
       sessionStorage.setItem("examEndTime", newEndTime.toString());
       storedEndTime = newEndTime.toString();
     }
-
     const endTime = parseInt(storedEndTime, 10);
-
     const interval = setInterval(() => {
       const currentTime = Date.now();
       const timeRemaining = Math.max(
         0,
         Math.floor((endTime - currentTime) / 1000),
       );
-
       setTimeLeft(timeRemaining);
-
       if (timeRemaining <= 0) {
         clearInterval(interval);
         setIsTimeUp(true);
       }
     }, 1000);
-
     return () => clearInterval(interval);
   }, [assData]);
 
@@ -256,7 +231,6 @@ export default function MCQPage() {
     if (isTimeUp) {
       Cookies.remove("session_token");
       Cookies.remove("userRole");
-
       setTimeout(() => {
         router.replace("/examination/submitted");
       }, 3000);
@@ -269,6 +243,8 @@ export default function MCQPage() {
     const seconds = String(timeLeft % 60).padStart(2, "0");
     return `${hours}:${minutes}:${seconds}`;
   };
+
+  const isWarning = timeLeft <= 300;
 
   const updateResponse = (type: ResponseStatus) => {
     setResponses((prev) => ({
@@ -283,10 +259,7 @@ export default function MCQPage() {
   const handleOptionChange = (value: number) => {
     setResponses((prev) => ({
       ...prev,
-      [currentQuestion]: {
-        selected: value,
-        status: "answered",
-      },
+      [currentQuestion]: { selected: value, status: "answered" },
     }));
   };
 
@@ -297,108 +270,106 @@ export default function MCQPage() {
 
   const renderStatusColor = (q: number): string => {
     const status = responses[q]?.status;
-    if (!responses[q]) return "bg-gray-300";
-    if (status === "answered") return "bg-green-500";
-    if (status === "review") return "bg-purple-500";
-    if (status === "review-answered") return "bg-indigo-600";
-    if (status === "skipped") return "bg-red-500";
-    return "bg-gray-300";
+    if (!responses[q]) return "bg-gray-200 text-gray-700 border-gray-300";
+    if (status === "answered")
+      return "bg-green-600 text-white border-green-700";
+    if (status === "review")
+      return "bg-purple-600 text-white border-purple-700";
+    if (status === "review-answered")
+      return "bg-indigo-600 text-white border-indigo-700";
+    if (status === "skipped") return "bg-red-500 text-white border-red-600";
+    return "bg-gray-200 text-gray-700 border-gray-300";
   };
 
-  const openSubmitModal = () => {
-    setIsSubmitModalOpen(true);
-  };
+  const answeredCount = Object.values(responses).filter(
+    (r) => r.status === "answered" || r.status === "review-answered",
+  ).length;
+  const notAnsweredCount = Object.values(responses).filter(
+    (r) => r.status === "skipped",
+  ).length;
+  const markedCount = Object.values(responses).filter(
+    (r) => r.status === "review" || r.status === "review-answered",
+  ).length;
 
-  const closeSubmitModal = () => {
-    setIsSubmitModalOpen(false);
-  };
+  const openSubmitModal = () => setIsSubmitModalOpen(true);
+  const closeSubmitModal = () => setIsSubmitModalOpen(false);
 
   const handleSubmit = () => {
     if (submitting) return;
-
     setSubmitting(true);
-
     sessionStorage.removeItem("examEndTime");
-
-    if (assData?._id) {
+    if (assData?._id)
       sessionStorage.removeItem(`selectedQuestions_${assData._id}`);
-    }
-
-    if (cameraStream) {
-      cameraStream.getTracks().forEach((track) => track.stop());
-    }
-
+    if (cameraStream) cameraStream.getTracks().forEach((track) => track.stop());
     Cookies.remove("session_token");
     Cookies.remove("userRole");
-
     router.replace("/examination/submitted");
   };
 
   const current = questions[currentQuestion - 1];
 
-  if (loading) return <div className="p-6 text-center">Loading...</div>;
+  if (loading)
+    return (
+      <div className="min-h-screen bg-[#f0f4f8] flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-12 h-12 border-4 border-[#003580] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-[#003580] font-semibold text-sm tracking-wide">
+            Loading Examination...
+          </p>
+        </div>
+      </div>
+    );
 
   return (
-    <div className="min-h-screen bg-gray-100 font-sans text-gray-800 flex flex-col">
+    <div className="min-h-screen bg-[#eef2f7] font-sans text-gray-800 flex flex-col">
+      {/* Camera Permission Modal */}
       {!examStarted && (
-        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50">
-          <div className="bg-white rounded-xl shadow-2xl p-8 w-[90%] max-w-md text-center">
-            <h2 className="text-xl font-bold mb-4 text-gray-800">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50">
+          <div className="bg-white rounded-none border-t-4 border-[#003580] shadow-2xl p-8 w-[90%] max-w-md text-center">
+            <div className="w-16 h-16 bg-[#003580] rounded-full flex items-center justify-center mx-auto mb-4">
+              <svg
+                className="w-8 h-8 text-white"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M15 10l4.553-2.069A1 1 0 0121 8.868v6.264a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"
+                />
+              </svg>
+            </div>
+            <h2 className="text-lg font-bold mb-2 text-[#003580] uppercase tracking-wide">
               Camera Permission Required
             </h2>
-
-            <p className="text-sm text-gray-600 mb-6">
-              To continue this assessment, camera access is mandatory.
+            <div className="w-12 h-0.5 bg-[#f4a900] mx-auto mb-4"></div>
+            <p className="text-sm text-gray-600 mb-6 leading-relaxed">
+              To maintain examination integrity, camera access is mandatory
+              throughout the assessment.
             </p>
-
             <button
               onClick={async () => {
                 const allowed = await requestCameraAccess();
-                if (allowed) {
-                  setExamStarted(true);
-                }
+                if (allowed) setExamStarted(true);
               }}
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-semibold transition"
+              className="w-full bg-[#003580] hover:bg-[#002560] text-white py-3 rounded-none font-semibold transition tracking-wide text-sm uppercase"
             >
-              Allow Camera & Start Exam
+              Allow Camera & Start Examination
             </button>
           </div>
         </div>
       )}
-      <header className="bg-white/70 backdrop-blur-md shadow-sm py-3 px-4 sm:px-6">
-        <div className="mx-auto flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
-          {/* LEFT SECTION */}
+
+      <Header />
+
+      {/* Exam Info Bar */}
+      <div className="bg-[#003580] text-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-2 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
           <div className="flex items-center gap-3">
-            {assData?.logo ? (
-              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-white rounded-full shadow-md overflow-hidden flex items-center justify-center border">
-                <img
-                  src={assData.logo}
-                  alt="Logo"
-                  className="w-full h-full object-cover"
-                />
-              </div>
-            ) : (
-              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-blue-100 rounded-full flex items-center justify-center shadow">
-                <span className="text-blue-700 font-bold text-lg sm:text-xl">
-                  ?
-                </span>
-              </div>
-            )}
-
-            <div className="leading-tight">
-              <h1 className="text-base sm:text-xl font-bold text-blue-700">
-                {assData?.companyName || "Online Examination Portal"}
-              </h1>
-              <p className="text-xs sm:text-sm text-gray-500">
-                Computer Based Test (CBT) System
-              </p>
-            </div>
-          </div>
-
-          {/* RIGHT SECTION */}
-          <div className="flex items-center justify-between sm:justify-end gap-3">
-            {/* Camera */}
-            <div className="w-12.5 sm:w-20 aspect-4/3 bg-black rounded-md overflow-hidden border border-white shrink-0">
+            {/* Camera feed */}
+            <div className="w-10 h-8 sm:w-14 sm:h-10 bg-black rounded overflow-hidden border border-white/30 shrink-0">
               <video
                 ref={videoRef}
                 className="w-full h-full object-cover scale-x-[-1]"
@@ -407,213 +378,372 @@ export default function MCQPage() {
                 playsInline
               />
             </div>
+            <div>
+              <p className="text-[10px] text-blue-200 uppercase tracking-widest">
+                Candidate
+              </p>
+              <p className="text-sm font-bold leading-tight">
+                {user?.name || "[Your Name]"}
+              </p>
+            </div>
+          </div>
 
-            {/* Candidate + Timer */}
-            <div className="text-right">
-              <div className="text-xs sm:text-sm">
-                Candidate:
-                <span className="font-semibold ml-1">
-                  {user?.name || "[Your Name]"}
-                </span>
-              </div>
-
-              <div className="text-sm sm:text-base font-bold text-red-600">
+          <div className="flex items-center gap-6">
+            <div className="text-center">
+              <p className="text-[10px] text-blue-200 uppercase tracking-widest">
+                Answered
+              </p>
+              <p className="text-sm font-bold text-green-300">
+                {answeredCount}
+              </p>
+            </div>
+            <div className="text-center">
+              <p className="text-[10px] text-blue-200 uppercase tracking-widest">
+                Marked
+              </p>
+              <p className="text-sm font-bold text-yellow-300">{markedCount}</p>
+            </div>
+            <div className="text-center">
+              <p className="text-[10px] text-blue-200 uppercase tracking-widest">
+                Total
+              </p>
+              <p className="text-sm font-bold">{questions.length}</p>
+            </div>
+            <div
+              className={`text-center px-3 py-1 rounded ${isWarning ? "bg-red-600 animate-pulse" : "bg-white/10"}`}
+            >
+              <p className="text-[10px] text-blue-200 uppercase tracking-widest">
+                Time Left
+              </p>
+              <p
+                className={`text-base font-bold font-mono ${isWarning ? "text-white" : "text-yellow-300"}`}
+              >
                 {formatTime()}
-              </div>
+              </p>
             </div>
           </div>
         </div>
-      </header>
+      </div>
+
+      {/* Section bar */}
+      <div className="bg-[#f4a900] border-b border-[#d4900a]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-1.5 flex items-center justify-between">
+          <p className="text-[#003580] text-xs font-bold uppercase tracking-widest">
+            General Examination
+          </p>
+          <p className="text-[#003580] text-xs font-semibold">
+            Question {currentQuestion} of {questions.length}
+          </p>
+        </div>
+      </div>
 
       {/* Main Content */}
-      <main className="grow overflow-y-auto py-6 px-4 sm:px-6 md:px-8">
-        <div className="container mx-auto lg:grid grid-cols-3 gap-6">
-          {/* Question Area */}
-          <div className="col-span-2 bg-white rounded-md shadow-md p-4 sm:p-6">
-            <div className="text-lg font-semibold mb-4">
-              Question {currentQuestion}:
-            </div>
-            <div className="mb-4">
-              {current?.question}
-              {current?.image && (
-                <img
-                  src={current.image}
-                  alt="question"
-                  style={{ maxHeight: "120px" }}
-                  className="max-w-full h-auto mt-2 rounded-md"
-                />
-              )}
-            </div>
-            <div className="space-y-3 mb-6">
-              {current?.options?.map((option, idx) => (
-                <label key={idx} className="flex items-start space-x-2">
-                  <input
-                    type="radio"
-                    name="option"
-                    value={idx}
-                    checked={responses[currentQuestion]?.selected === idx}
-                    onChange={() => handleOptionChange(idx)}
-                    className="mt-1"
-                  />
-                  <span>
-                    {`${String.fromCharCode(65 + idx)}) ${option.text}`}
-                    {option.image && (
-                      <img
-                        src={option.image}
-                        alt={`option-${String.fromCharCode(65 + idx)}`}
-                        className="max-w-full h-auto ml-4 rounded-md"
-                        style={{ maxHeight: "60px" }}
-                      />
-                    )}
-                  </span>
-                </label>
-              ))}
-            </div>
-            <div className="flex flex-wrap gap-3 mb-4">
-              <button
-                onClick={() => {
-                  updateResponse("answered");
-                  nextQuestion();
-                }}
-                className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-400 text-sm sm:text-base"
-              >
-                Save & Next
-              </button>
-              <button
-                onClick={() => {
-                  updateResponse("review-answered");
-                  nextQuestion();
-                }}
-                className="bg-yellow-400 text-gray-800 px-4 py-2 rounded-md hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-yellow-300 text-sm sm:text-base"
-              >
-                Save & Mark for Review
-              </button>
-              <button
-                onClick={() =>
-                  setResponses((prev) => ({
-                    ...prev,
-                    [currentQuestion]: { selected: null, status: "" },
-                  }))
-                }
-                className="border border-gray-400 px-4 py-2 rounded-md hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-300 text-sm sm:text-base"
-              >
-                Clear Response
-              </button>
-              <button
-                onClick={() => {
-                  updateResponse("review");
-                  nextQuestion();
-                }}
-                className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 text-sm sm:text-base"
-              >
-                Mark for Review & Next
-              </button>
-            </div>
-            <div className="flex justify-between">
-              <button
-                onClick={prevQuestion}
-                className="border border-gray-400 px-4 py-2 rounded-md hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-300 text-sm sm:text-base"
-              >
-                &lt;&lt; Back
-              </button>
-              <button
-                onClick={nextQuestion}
-                className="border border-gray-400 px-4 py-2 rounded-md hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-300 text-sm sm:text-base"
-              >
-                Next &gt;&gt;
-              </button>
+      <main className="flex-1 overflow-y-auto py-4 px-3 sm:px-6">
+        <div className="max-w-7xl mx-auto lg:grid grid-cols-3 gap-5">
+          {/* Question Panel */}
+          <div className="col-span-2 mb-4 lg:mb-0">
+            <div className="bg-white border border-gray-200 shadow-sm">
+              {/* Question header */}
+              <div className="bg-[#003580] text-white px-5 py-3 flex items-center justify-between">
+                <span className="text-sm font-bold tracking-wide">
+                  Question No. {String(currentQuestion).padStart(2, "0")}
+                </span>
+                <span className="text-xs text-blue-200 bg-white/10 px-2 py-0.5 rounded">
+                  1 Mark
+                </span>
+              </div>
+
+              <div className="p-5">
+                {/* Question text */}
+                <div className="mb-5 pb-4 border-b border-gray-100">
+                  <p className="text-sm sm:text-base leading-relaxed text-gray-800">
+                    {current?.question}
+                  </p>
+                  {current?.image && (
+                    <img
+                      src={current.image}
+                      alt="question"
+                      style={{ maxHeight: "140px" }}
+                      className="max-w-full h-auto mt-3 border border-gray-200"
+                    />
+                  )}
+                </div>
+
+                {/* Options */}
+                <div className="space-y-2 mb-6">
+                  {current?.options?.map((option, idx) => {
+                    const isSelected =
+                      responses[currentQuestion]?.selected === idx;
+                    const label = String.fromCharCode(65 + idx);
+                    return (
+                      <label
+                        key={idx}
+                        className={`flex items-start gap-3 p-3 border cursor-pointer transition-all ${
+                          isSelected
+                            ? "border-[#003580] bg-[#eef2ff]"
+                            : "border-gray-200 hover:border-[#003580]/40 hover:bg-gray-50"
+                        }`}
+                      >
+                        <div
+                          className={`w-6 h-6 rounded-full border-2 flex items-center justify-center shrink-0 mt-0.5 text-xs font-bold ${
+                            isSelected
+                              ? "border-[#003580] bg-[#003580] text-white"
+                              : "border-gray-400 text-gray-500"
+                          }`}
+                        >
+                          {label}
+                        </div>
+                        <div className="flex-1">
+                          <input
+                            type="radio"
+                            name="option"
+                            value={idx}
+                            checked={isSelected}
+                            onChange={() => handleOptionChange(idx)}
+                            className="hidden"
+                          />
+                          <span className="text-sm leading-relaxed">
+                            {option.text}
+                          </span>
+                          {option.image && (
+                            <img
+                              src={option.image}
+                              alt={`option-${label}`}
+                              className="max-w-full h-auto mt-2"
+                              style={{ maxHeight: "60px" }}
+                            />
+                          )}
+                        </div>
+                      </label>
+                    );
+                  })}
+                </div>
+
+                {/* Action buttons */}
+                <div className="border-t border-gray-100 pt-4">
+                  <div className="flex flex-wrap gap-2 mb-4">
+                    <button
+                      onClick={() => {
+                        updateResponse("answered");
+                        nextQuestion();
+                      }}
+                      className="bg-[#2e7d32] hover:bg-[#1b5e20] text-white px-4 py-2 text-xs sm:text-sm font-semibold uppercase tracking-wide transition"
+                    >
+                      Save & Next
+                    </button>
+                    <button
+                      onClick={() => {
+                        updateResponse("review-answered");
+                        nextQuestion();
+                      }}
+                      className="bg-[#f4a900] hover:bg-[#d4900a] text-[#003580] px-4 py-2 text-xs sm:text-sm font-semibold uppercase tracking-wide transition"
+                    >
+                      Save & Mark for Review
+                    </button>
+                    <button
+                      onClick={() =>
+                        setResponses((prev) => ({
+                          ...prev,
+                          [currentQuestion]: { selected: null, status: "" },
+                        }))
+                      }
+                      className="border border-gray-400 hover:bg-gray-100 text-gray-700 px-4 py-2 text-xs sm:text-sm font-semibold uppercase tracking-wide transition"
+                    >
+                      Clear Response
+                    </button>
+                    <button
+                      onClick={() => {
+                        updateResponse("review");
+                        nextQuestion();
+                      }}
+                      className="bg-[#6a1b9a] hover:bg-[#4a148c] text-white px-4 py-2 text-xs sm:text-sm font-semibold uppercase tracking-wide transition"
+                    >
+                      Mark for Review & Next
+                    </button>
+                  </div>
+
+                  <div className="flex justify-between">
+                    <button
+                      onClick={prevQuestion}
+                      className="border-2 border-[#003580] text-[#003580] hover:bg-[#003580] hover:text-white px-5 py-2 text-xs sm:text-sm font-bold uppercase tracking-wide transition"
+                    >
+                      ← Back
+                    </button>
+                    <button
+                      onClick={nextQuestion}
+                      className="border-2 border-[#003580] text-[#003580] hover:bg-[#003580] hover:text-white px-5 py-2 text-xs sm:text-sm font-bold uppercase tracking-wide transition"
+                    >
+                      Next →
+                    </button>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
 
-          {/* Palette */}
-          <div className="bg-white rounded-md shadow-md p-4 sm:p-6">
-            <h3 className="font-semibold mb-3">Question Palette</h3>
-            <div className="space-y-2 text-sm mb-4">
-              <div className="flex items-center gap-2">
-                <span className="w-5 h-5 bg-gray-300 inline-block"></span> Not
-                Visited
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="w-5 h-5 bg-red-500 inline-block"></span> Not
-                Answered
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="w-5 h-5 bg-green-500 inline-block"></span>{" "}
-                Answered
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="w-5 h-5 bg-purple-500 inline-block"></span>{" "}
-                Marked for Review
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="w-5 h-5 bg-indigo-600 inline-block"></span>{" "}
-                Answered & Marked
-              </div>
+          {/* Palette Panel */}
+          <div className="bg-white border border-gray-200 shadow-sm h-fit">
+            <div className="bg-[#003580] text-white px-4 py-3">
+              <h3 className="text-sm font-bold uppercase tracking-wide">
+                Question Palette
+              </h3>
             </div>
-            <div className="grid grid-cols-6 sm:grid-cols-8 md:grid-cols-6 lg:grid-cols-8 gap-2 mt-2">
-              {questions.map((_, i) => (
-                <button
-                  key={i + 1}
-                  onClick={() => goToQuestion(i + 1)}
-                  className={`text-sm cursor-pointer w-8 h-8 sm:w-10 sm:h-10 border text-white rounded-sm flex items-center justify-center ${renderStatusColor(
-                    i + 1,
-                  )}`}
-                >
-                  {String(i + 1).padStart(2, "0")}
-                </button>
+
+            {/* Legend */}
+            <div className="p-4 border-b border-gray-100 grid grid-cols-2 gap-x-4 gap-y-2 text-xs">
+              {[
+                { color: "bg-gray-200 border-gray-300", label: "Not Visited" },
+                { color: "bg-red-500 border-red-600", label: "Not Answered" },
+                { color: "bg-green-600 border-green-700", label: "Answered" },
+                {
+                  color: "bg-purple-600 border-purple-700",
+                  label: "Marked for Review",
+                },
+                {
+                  color: "bg-indigo-600 border-indigo-700",
+                  label: "Answered & Marked",
+                },
+              ].map(({ color, label }) => (
+                <div key={label} className="flex items-center gap-2">
+                  <span className={`w-4 h-4 border shrink-0 ${color}`}></span>
+                  <span className="text-gray-600 leading-tight">{label}</span>
+                </div>
               ))}
             </div>
-            <button
-              onClick={openSubmitModal}
-              className="w-full cursor-pointer mt-4 bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 text-sm sm:text-base"
-            >
-              Submit
-            </button>
+
+            {/* Grid */}
+            <div className="p-4">
+              <div className="grid grid-cols-6 sm:grid-cols-8 md:grid-cols-6 lg:grid-cols-6 gap-1.5">
+                {questions.map((_, i) => (
+                  <button
+                    key={i + 1}
+                    onClick={() => goToQuestion(i + 1)}
+                    className={`text-xs w-8 h-8 border font-semibold flex items-center justify-center transition-all
+                      ${currentQuestion === i + 1 ? "ring-2 ring-[#f4a900] ring-offset-1" : ""}
+                      ${renderStatusColor(i + 1)}`}
+                  >
+                    {String(i + 1).padStart(2, "0")}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Summary */}
+            <div className="px-4 pb-2 grid grid-cols-3 gap-2 text-center text-xs border-t border-gray-100 pt-3">
+              <div>
+                <p className="text-lg font-bold text-green-600">
+                  {answeredCount}
+                </p>
+                <p className="text-gray-500 leading-tight">Answered</p>
+              </div>
+              <div>
+                <p className="text-lg font-bold text-red-500">
+                  {notAnsweredCount}
+                </p>
+                <p className="text-gray-500 leading-tight">Not Answered</p>
+              </div>
+              <div>
+                <p className="text-lg font-bold text-purple-600">
+                  {markedCount}
+                </p>
+                <p className="text-gray-500 leading-tight">Marked</p>
+              </div>
+            </div>
+
+            <div className="p-4 pt-2">
+              <button
+                onClick={openSubmitModal}
+                className="w-full bg-[#003580] hover:bg-[#002560] text-white px-4 py-2.5 font-bold uppercase tracking-widest text-sm transition"
+              >
+                Submit Examination
+              </button>
+            </div>
           </div>
         </div>
       </main>
 
-      {/* Footer */}
-      <footer className="bg-white shadow-sm py-4 px-4 sm:px-6 md:px-8 text-center text-xs text-gray-500">
-        <div className="container mx-auto">© 2026 {assData?.companyName}</div>
-      </footer>
+      <Footer />
 
-      {/* Submit Confirmation Modal */}
+      {/* Submit Modal */}
       {isSubmitModalOpen && (
-        <div className="fixed inset-0 bg-black/50 flex justify-center items-center">
-          <div className="bg-white rounded-md shadow-lg p-6">
-            <h2 className="text-lg font-semibold mb-4">Confirm Submission</h2>
-            <p className="mb-4">
-              Are you sure you want to submit your assessment?
-            </p>
-            <div className="flex justify-end gap-4">
-              <button
-                onClick={closeSubmitModal}
-                className="bg-gray-300 cursor-pointer hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleSubmit}
-                className="bg-blue-600 cursor-pointer hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-              >
-                {submitting ? (
-                  <span className="animate-spin">Submitting...</span>
-                ) : (
-                  "Submit"
-                )}
-              </button>
+        <div className="fixed inset-0 bg-black/60 flex justify-center items-center z-50">
+          <div className="bg-white border-t-4 border-[#003580] shadow-2xl w-[90%] max-w-md">
+            <div className="bg-[#003580] text-white px-6 py-4">
+              <h2 className="text-base font-bold uppercase tracking-wide">
+                Confirm Submission
+              </h2>
+            </div>
+            <div className="p-6">
+              <p className="text-sm text-gray-700 mb-3 leading-relaxed">
+                Are you sure you want to submit your examination?
+              </p>
+              <div className="bg-yellow-50 border border-yellow-300 p-3 mb-5 text-xs text-yellow-800">
+                ⚠ Once submitted, you will not be able to change your answers.
+              </div>
+              <div className="grid grid-cols-3 gap-3 text-center text-xs mb-5">
+                <div className="bg-green-50 border border-green-200 p-2">
+                  <p className="text-lg font-bold text-green-600">
+                    {answeredCount}
+                  </p>
+                  <p className="text-gray-600">Answered</p>
+                </div>
+                <div className="bg-red-50 border border-red-200 p-2">
+                  <p className="text-lg font-bold text-red-500">
+                    {notAnsweredCount}
+                  </p>
+                  <p className="text-gray-600">Not Answered</p>
+                </div>
+                <div className="bg-purple-50 border border-purple-200 p-2">
+                  <p className="text-lg font-bold text-purple-600">
+                    {markedCount}
+                  </p>
+                  <p className="text-gray-600">Marked</p>
+                </div>
+              </div>
+              <div className="flex gap-3">
+                <button
+                  onClick={closeSubmitModal}
+                  className="flex-1 border-2 border-gray-400 text-gray-700 hover:bg-gray-100 font-semibold py-2.5 text-sm uppercase tracking-wide transition"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleSubmit}
+                  className="flex-1 bg-[#003580] hover:bg-[#002560] text-white font-bold py-2.5 text-sm uppercase tracking-wide transition"
+                >
+                  {submitting ? "Submitting..." : "Submit"}
+                </button>
+              </div>
             </div>
           </div>
         </div>
       )}
 
+      {/* Time Up Modal */}
       {isTimeUp && (
-        <div className="fixed inset-0 bg-black/60  flex justify-center items-center">
-          <div className="bg-white rounded-md shadow-lg p-6">
-            <h2 className="text-lg font-semibold mb-4">Time&apos;s Up!</h2>
-            <p className="mb-4">
-              The assessment time has expired. Your test is being submitted
+        <div className="fixed inset-0 bg-black/70 flex justify-center items-center z-50">
+          <div className="bg-white border-t-4 border-red-600 shadow-2xl p-8 w-[90%] max-w-md text-center">
+            <div className="w-16 h-16 bg-red-600 rounded-full flex items-center justify-center mx-auto mb-4">
+              <svg
+                className="w-8 h-8 text-white"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+            </div>
+            <h2 className="text-xl font-bold text-red-600 uppercase tracking-wide mb-2">
+              Time&apos;s Up!
+            </h2>
+            <div className="w-12 h-0.5 bg-red-600 mx-auto mb-4"></div>
+            <p className="text-sm text-gray-600 leading-relaxed">
+              The examination time has expired. Your test is being submitted
               automatically.
             </p>
           </div>

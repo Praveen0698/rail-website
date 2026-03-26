@@ -70,7 +70,6 @@ export default function AssessmentReviewPage() {
   const [assessment, setAssessment] = useState<any>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState<any>({});
-  const [logoPreview, setLogoPreview] = useState<string | null>(null);
   const [allUsers, setAllUsers] = useState<any[]>([]);
   const [allQuestions, setAllQuestions] = useState<Question[]>([]);
   const [selectAllQuestions, setSelectAllQuestions] = useState(false);
@@ -108,17 +107,33 @@ export default function AssessmentReviewPage() {
       setFormData({
         ...assignmentData,
         startTime: toLocalDateTimeString(new Date(assignmentData.startTime)),
-        users: assignmentData?.users?.map((u: any) =>
-          typeof u === "string" ? u : u?.email,
-        ),
+        users: assignmentData?.users || [],
         questions: assignmentData.questionIds?.map((q: any) => q._id),
         companyName: assignmentData.companyName || "",
       });
-      setAllUsers(usersData);
+      setAllUsers(
+        usersData.map((u: any) => ({
+          value: u._id,
+          label: `${u.name} (${u.rollNo}) - ${u.designation}`,
+          _id: u._id,
+          name: u.name,
+          rollNo: u.rollNo,
+          designation: u.designation,
+        })),
+      );
       setAllQuestions(questionsData);
     };
     fetchData();
   }, [id]);
+
+  useEffect(() => {
+    if (allUsers.length && assessment?.users) {
+      setFormData((prev: any) => ({
+        ...prev,
+        users: assessment.users,
+      }));
+    }
+  }, [allUsers, assessment]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -152,27 +167,6 @@ export default function AssessmentReviewPage() {
       console.log("Error updating assignment:", err);
     } finally {
       setSaving(false);
-    }
-  };
-
-  const handleLogoChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    const logoformData = new FormData();
-    logoformData.append("file", file);
-    if (formData.logo) logoformData.append("previousLogoUrl", formData.logo);
-    try {
-      const uploadRes = await fetch("/api/updateLogo", {
-        method: "POST",
-        body: logoformData,
-      });
-      const result = await uploadRes.json();
-      if (uploadRes.ok && result.url) {
-        setFormData((prev: any) => ({ ...prev, logo: result.url }));
-        setLogoPreview(result.url);
-      }
-    } catch (err) {
-      console.log("Upload error:", err);
     }
   };
 
@@ -361,9 +355,7 @@ export default function AssessmentReviewPage() {
                     startTime: toLocalDateTimeString(
                       new Date(assessment.startTime),
                     ),
-                    users: assessment.users.map((u: any) =>
-                      typeof u === "string" ? u : u.email,
-                    ),
+                    users: assessment.users || [],
                     questions: assessment.questionIds?.map((q: any) => q._id),
                     companyName: assessment.companyName || "",
                   });
@@ -379,115 +371,6 @@ export default function AssessmentReviewPage() {
       </div>
 
       <div className="max-w-4xl space-y-5">
-        {/* Basic Info */}
-        <SectionCard
-          title="Basic Information"
-          icon={
-            <svg
-              className="w-3.5 h-3.5 text-violet-600"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-              />
-            </svg>
-          }
-        >
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className={labelClass}>Description</label>
-              {isEditing ? (
-                <textarea
-                  name="description"
-                  value={formData.description || ""}
-                  onChange={handleChange}
-                  rows={3}
-                  className={`${inputClass} resize-none`}
-                />
-              ) : (
-                <Field label="Description">
-                  <p className="text-gray-700 leading-relaxed">
-                    {assessment.description || "—"}
-                  </p>
-                </Field>
-              )}
-            </div>
-            <div>
-              <label className={labelClass}>Company Name</label>
-              {isEditing ? (
-                <input
-                  type="text"
-                  name="companyName"
-                  value={formData.companyName || ""}
-                  onChange={handleChange}
-                  className={inputClass}
-                />
-              ) : (
-                <Field label="Company">
-                  <p className="text-gray-700">
-                    {assessment.companyName || "—"}
-                  </p>
-                </Field>
-              )}
-            </div>
-          </div>
-
-          {/* Logo */}
-          <div>
-            <label className={labelClass}>Logo</label>
-            {isEditing ? (
-              <div className="flex items-center gap-4">
-                {(logoPreview || formData.logo) && (
-                  <img
-                    src={logoPreview || formData.logo}
-                    alt="Logo"
-                    className="h-16 w-16 object-contain rounded-lg border border-gray-100"
-                  />
-                )}
-                <label className="flex items-center gap-2.5 cursor-pointer border border-dashed border-gray-200 bg-gray-50 hover:bg-gray-100 rounded-lg px-3.5 py-2.5 transition-colors">
-                  <svg
-                    className="w-4 h-4 text-gray-400"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
-                    />
-                  </svg>
-                  <span className="text-xs text-gray-400">
-                    {logoPreview || formData.logo
-                      ? "Change logo"
-                      : "Upload logo"}
-                  </span>
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={handleLogoChange}
-                    className="hidden"
-                  />
-                </label>
-              </div>
-            ) : assessment.logo ? (
-              <img
-                src={assessment.logo}
-                alt="Assessment Logo"
-                className="h-16 object-contain rounded-lg border border-gray-100"
-              />
-            ) : (
-              <p className="text-sm text-gray-400">No logo provided</p>
-            )}
-          </div>
-        </SectionCard>
-
         {/* Scheduling */}
         <SectionCard
           title="Scheduling"
@@ -563,77 +446,6 @@ export default function AssessmentReviewPage() {
           </div>
         </SectionCard>
 
-        {/* Content */}
-        <SectionCard
-          title="Content"
-          icon={
-            <svg
-              className="w-3.5 h-3.5 text-violet-600"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-              />
-            </svg>
-          }
-        >
-          <div>
-            {isEditing ? (
-              <>
-                <label className={labelClass}>
-                  Declaration{" "}
-                  <span className="text-gray-300 font-normal">
-                    (shown before starting)
-                  </span>
-                </label>
-                <textarea
-                  name="declarationContent"
-                  value={formData.declarationContent || ""}
-                  onChange={handleChange}
-                  rows={5}
-                  className={`${inputClass} resize-none`}
-                />
-              </>
-            ) : (
-              <Field label="Declaration">
-                <p className="text-gray-700 leading-relaxed whitespace-pre-wrap">
-                  {assessment.declarationContent || "—"}
-                </p>
-              </Field>
-            )}
-          </div>
-          <div>
-            {isEditing ? (
-              <>
-                <label className={labelClass}>
-                  Instructions{" "}
-                  <span className="text-gray-300 font-normal">
-                    (shown alongside questions)
-                  </span>
-                </label>
-                <textarea
-                  name="instructions"
-                  value={formData.instructions || ""}
-                  onChange={handleChange}
-                  rows={5}
-                  className={`${inputClass} resize-none`}
-                />
-              </>
-            ) : (
-              <Field label="Instructions">
-                <p className="text-gray-700 leading-relaxed whitespace-pre-wrap">
-                  {assessment.instructions || "—"}
-                </p>
-              </Field>
-            )}
-          </div>
-        </SectionCard>
-
         {/* Users */}
         <SectionCard
           title="Assigned Users"
@@ -665,22 +477,37 @@ export default function AssessmentReviewPage() {
               </div>
               <ClientSelect
                 isMulti
-                value={formData.users?.map((email: string) => ({
-                  value: email,
-                  label: email,
-                }))}
-                options={allUsers.map((u: any) => ({
-                  value: u.email,
-                  label: u.email,
-                }))}
-                onChange={(selected: any) =>
-                  handleSelectChange(
-                    "users",
-                    selected.map((s: any) => s.value),
-                  )
+                options={allUsers}
+                value={
+                  allUsers.length > 0
+                    ? allUsers.filter((opt) =>
+                        formData.users?.some(
+                          (u: any) => String(u._id) === String(opt.value),
+                        ),
+                      )
+                    : []
                 }
-                className="text-sm text-black"
+                onChange={(selected: any) =>
+                  setFormData((prev: any) => ({
+                    ...prev,
+                    users: selected
+                      ? selected.map((s: any) => ({
+                          _id: s._id,
+                          name: s.name,
+                          rollNo: s.rollNo,
+                          designation: s.designation,
+                        }))
+                      : [],
+                  }))
+                }
                 placeholder="Search and select users..."
+                className="text-sm text-black"
+                menuPortalTarget={
+                  typeof window !== "undefined" ? document.body : null
+                }
+                styles={{
+                  menuPortal: (base: any) => ({ ...base, zIndex: 9999 }),
+                }}
               />
             </div>
           ) : (
@@ -689,16 +516,17 @@ export default function AssessmentReviewPage() {
                 <p className="text-sm text-gray-400">No users assigned.</p>
               ) : (
                 assessment.users?.map((user: any, idx: number) => {
-                  const email = typeof user === "string" ? user : user?.email;
+                  const name = user?.name;
+                  const rollNo = user?.rollNo;
                   return (
                     <span
                       key={idx}
                       className="inline-flex items-center gap-1.5 text-xs font-medium bg-gray-50 border border-gray-100 text-gray-600 px-2.5 py-1.5 rounded-full"
                     >
                       <span className="w-4 h-4 rounded-full bg-violet-100 text-violet-600 text-[9px] font-bold flex items-center justify-center">
-                        {email?.[0]?.toUpperCase()}
+                        {name?.[0]?.toUpperCase()}
                       </span>
-                      {email}
+                      {name} ({rollNo})
                     </span>
                   );
                 })

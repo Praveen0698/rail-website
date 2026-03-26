@@ -7,7 +7,6 @@ const UserAdminSchema = new Schema({
   name: String,
   email: String,
   password: String,
-  accessKey: String,
   role: { type: String, enum: ["user", "admin"], default: "user" },
   registeredAssignments: [{ type: mongoose.Types.ObjectId, ref: "Assignment" }],
   assignmentConsents: [{ type: mongoose.Types.ObjectId, ref: "Assignment" }],

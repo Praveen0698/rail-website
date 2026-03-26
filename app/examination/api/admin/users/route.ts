@@ -4,14 +4,14 @@ import { connectDB } from "@/lib/db";
 import { UserAdmin } from "@/models/UserAdmin";
 import bcrypt from "bcryptjs";
 
+// ✅ GET USERS
 export async function GET() {
   await connectDB();
 
   try {
     const users = await UserAdmin.find(
       { role: { $ne: "admin" } },
-      // ✅ Fix: explicitly include rollNo and designation in projection
-      "_id rollNo designation role createdAt password",
+      "_id name rollNo designation role createdAt",
     ).sort({ createdAt: -1 });
 
     return NextResponse.json(users);
@@ -24,21 +24,24 @@ export async function GET() {
   }
 }
 
+// ✅ CREATE USER
 export async function POST(req: Request) {
   await connectDB();
 
   try {
     const body = await req.json();
-    const { rollNo, designation, password } = body;
+    const { name, rollNo, designation, password } = body;
 
-    if (!rollNo || !password) {
+    if (!name || !rollNo || !password) {
       return NextResponse.json(
-        { message: "Roll No and password are required" },
+        { message: "Name, Roll No and password are required" },
         { status: 400 },
       );
     }
 
-    const existingUser = await UserAdmin.findOne({ rollNo: rollNo.trim() });
+    const existingUser = await UserAdmin.findOne({
+      rollNo: rollNo.trim(),
+    });
 
     if (existingUser) {
       return NextResponse.json(
@@ -50,15 +53,16 @@ export async function POST(req: Request) {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const newUser = await UserAdmin.create({
+      name: name.trim(), // ✅ SAVE NAME
       rollNo: rollNo.trim(),
       designation: designation || "",
       password: hashedPassword,
     });
 
-    // ✅ Fix: explicitly return rollNo and designation so frontend alert works
     return NextResponse.json(
       {
         id: newUser._id,
+        name: newUser.name, // ✅ RETURN NAME
         rollNo: newUser.rollNo,
         designation: newUser.designation,
         role: newUser.role,
@@ -75,6 +79,7 @@ export async function POST(req: Request) {
   }
 }
 
+// ✅ DELETE USER
 export async function DELETE(req: Request) {
   await connectDB();
 
@@ -108,12 +113,13 @@ export async function DELETE(req: Request) {
   }
 }
 
+// ✅ UPDATE USER
 export async function PUT(req: Request) {
   await connectDB();
 
   try {
     const body = await req.json();
-    const { _id, rollNo, designation, password } = body;
+    const { _id, name, rollNo, designation, password } = body;
 
     if (!_id) {
       return NextResponse.json(
@@ -123,6 +129,8 @@ export async function PUT(req: Request) {
     }
 
     const updateData: any = {};
+
+    if (name) updateData.name = name.trim(); // ✅ UPDATE NAME
     if (rollNo) updateData.rollNo = rollNo.trim();
     if (designation !== undefined) updateData.designation = designation;
     if (password) updateData.password = await bcrypt.hash(password, 10);
@@ -138,6 +146,7 @@ export async function PUT(req: Request) {
     return NextResponse.json(
       {
         id: updatedUser._id,
+        name: updatedUser.name, // ✅ RETURN NAME
         rollNo: updatedUser.rollNo,
         designation: updatedUser.designation,
         role: updatedUser.role,

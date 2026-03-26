@@ -16,7 +16,7 @@ const UserResultSchema: Schema = new Schema(
     {
         userId: {
             type: Schema.Types.ObjectId,
-            ref: 'User',
+            ref: 'UserAdmin',
             required: true,
         },
         attemptedQuestions: {

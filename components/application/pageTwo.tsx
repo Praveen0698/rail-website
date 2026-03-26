@@ -147,9 +147,7 @@ const PageTwo = () => {
             <input className="w-full p-2 h-full outline-none" />
           </div>
         </div>
-        <p className="font-semibold text-center underline mb-1">
-          Employment Notice No. ECoR /RRC /D /2006/01
-        </p>
+        <p className="font-semibold text-center underline mb-1"></p>
         <div className="w-full sm:w-3/10">
           <p className="text-center">Control number (for office use only)</p>
           <div className="flex items-start border">

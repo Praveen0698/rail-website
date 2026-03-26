@@ -1,8 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { connectDB } from "@/lib/db";
 import Assignment from "@/models/Assignment";
-import Question from "@/models/Question";
-import { UserAdmin } from "@/models/UserAdmin";
+import "@/models/Question";
 import { NextResponse } from "next/server";
 import { Types } from "mongoose";
 import { NextRequest } from "next/server";
@@ -23,7 +22,10 @@ export async function GET(
       );
     }
 
-    const assignment = await Assignment.findById(id).lean();
+    const assignment = await Assignment.findById(id)
+      .populate("questionIds") // ✅ only questions
+      // ❌ REMOVE users populate
+      .lean();
 
     if (!assignment) {
       return NextResponse.json(
@@ -32,31 +34,7 @@ export async function GET(
       );
     }
 
-    // ✅ Fetch related data manually
-    const [questions, users] = await Promise.all([
-      Question.find({ _id: { $in: assignment.questionIds } }).lean(),
-      UserAdmin.find({ _id: { $in: assignment.users } })
-        .select("email name")
-        .lean(),
-    ]);
-
-    // ✅ Create maps
-    const questionMap = new Map(
-      questions.map((q: any) => [q._id.toString(), q]),
-    );
-
-    const userMap = new Map(users.map((u: any) => [u._id.toString(), u]));
-
-    // ✅ Attach populated data
-    const result = {
-      ...assignment,
-      questionIds: assignment.questionIds.map((id: any) =>
-        questionMap.get(id.toString()),
-      ),
-      users: assignment.users.map((id: any) => userMap.get(id.toString())),
-    };
-
-    return NextResponse.json(result);
+    return NextResponse.json(assignment);
   } catch (err: any) {
     console.error("Error fetching assignment:", err);
     return NextResponse.json(
@@ -85,40 +63,28 @@ export async function PUT(
     const data = await req.json();
     console.log("Incoming update data:", data);
 
-    // ✅ Validate questions
+    const { title, startTime, durationMinutes, questions, users, marks } = data;
+
+    // ✅ Validate question IDs
     if (
-      !Array.isArray(data.questions) ||
-      !data.questions.every((qId: any) => Types.ObjectId.isValid(qId))
+      !Array.isArray(questions) ||
+      !questions.every((qId: any) => Types.ObjectId.isValid(qId))
     ) {
       return NextResponse.json(
-        {
-          error:
-            "Invalid questions format. Must be an array of valid ObjectIds.",
-        },
+        { error: "Invalid questions format" },
         { status: 400 },
       );
     }
 
-    // ✅ Validate users
+    // ✅ NEW: Validate users as OBJECTS
     if (
-      !Array.isArray(data.users) ||
-      !data.users.every((email: any) => typeof email === "string")
+      !Array.isArray(users) ||
+      !users.every(
+        (u: any) => u && typeof u._id === "string" && u.name && u.rollNo,
+      )
     ) {
       return NextResponse.json(
-        {
-          error: "Invalid users format. Must be an array of strings (emails).",
-        },
-        { status: 400 },
-      );
-    }
-
-    const userDocs = await UserAdmin.find({
-      email: { $in: data.users },
-    });
-
-    if (userDocs.length !== data.users.length) {
-      return NextResponse.json(
-        { error: "One or more user emails not found" },
+        { error: "Invalid users format" },
         { status: 400 },
       );
     }
@@ -126,20 +92,17 @@ export async function PUT(
     const updated = await Assignment.findByIdAndUpdate(
       id,
       {
-        title: data.title,
-        description: data.description,
-        declarationContent: data.declarationContent,
-        instructions: data.instructions,
-        startTime: data.startTime,
-        durationMinutes: data.durationMinutes,
-        questionIds: data.questions,
-        users: userDocs.map((u) => u._id),
-        logo: data.logo,
-        companyName: data.companyName,
-        marks: data.marks,
+        title,
+        startTime,
+        durationMinutes,
+        questionIds: questions,
+        users, // ✅ FULL OBJECT STORED
+        marks,
       },
       { new: true },
-    ).lean();
+    )
+      .populate("questionIds") // ✅ only questions
+      .lean();
 
     if (!updated) {
       return NextResponse.json(
@@ -148,29 +111,7 @@ export async function PUT(
       );
     }
 
-    // ✅ Manual population after update
-    const [questions, users] = await Promise.all([
-      Question.find({ _id: { $in: updated.questionIds } }).lean(),
-      UserAdmin.find({ _id: { $in: updated.users } })
-        .select("email name")
-        .lean(),
-    ]);
-
-    const questionMap = new Map(
-      questions.map((q: any) => [q._id.toString(), q]),
-    );
-
-    const userMap = new Map(users.map((u: any) => [u._id.toString(), u]));
-
-    const result = {
-      ...updated,
-      questionIds: updated.questionIds.map((id: any) =>
-        questionMap.get(id.toString()),
-      ),
-      users: updated.users.map((id: any) => userMap.get(id.toString())),
-    };
-
-    return NextResponse.json(result);
+    return NextResponse.json(updated);
   } catch (err: any) {
     console.error("Error updating assignment:", err);
     return NextResponse.json(
