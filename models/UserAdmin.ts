@@ -2,6 +2,8 @@ import mongoose, { Schema, model, models } from "mongoose";
 
 const UserAdminSchema = new Schema({
   userId: String,
+  rollNo:String,
+  designation:String,
   name: String,
   email: String,
   password: String,

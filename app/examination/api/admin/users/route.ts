@@ -9,8 +9,9 @@ export async function GET() {
 
   try {
     const users = await UserAdmin.find(
-      { role: { $ne: "admin" } }, // Exclude users with role 'admin'
-      "email name role createdAt password",
+      { role: { $ne: "admin" } },
+      // ✅ Fix: explicitly include rollNo and designation in projection
+      "_id rollNo designation role createdAt password",
     ).sort({ createdAt: -1 });
 
     return NextResponse.json(users);
@@ -28,22 +29,20 @@ export async function POST(req: Request) {
 
   try {
     const body = await req.json();
-    const { email, name, password } = body;
+    const { rollNo, designation, password } = body;
 
-    if (!email || !password) {
+    if (!rollNo || !password) {
       return NextResponse.json(
-        { message: "Email and password are required" },
+        { message: "Roll No and password are required" },
         { status: 400 },
       );
     }
 
-    const existingUser = await UserAdmin.findOne({
-      email: email.toLowerCase(),
-    });
+    const existingUser = await UserAdmin.findOne({ rollNo: rollNo.trim() });
 
     if (existingUser) {
       return NextResponse.json(
-        { message: "User already exists with this email" },
+        { message: "User already exists with this Roll No" },
         { status: 409 },
       );
     }
@@ -51,16 +50,17 @@ export async function POST(req: Request) {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const newUser = await UserAdmin.create({
-      email: email.toLowerCase(),
-      name,
+      rollNo: rollNo.trim(),
+      designation: designation || "",
       password: hashedPassword,
     });
 
+    // ✅ Fix: explicitly return rollNo and designation so frontend alert works
     return NextResponse.json(
       {
         id: newUser._id,
-        email: newUser.email,
-        name: newUser.name,
+        rollNo: newUser.rollNo,
+        designation: newUser.designation,
         role: newUser.role,
         createdAt: newUser.createdAt,
       },
@@ -113,7 +113,7 @@ export async function PUT(req: Request) {
 
   try {
     const body = await req.json();
-    const { _id, email, name, password } = body;
+    const { _id, rollNo, designation, password } = body;
 
     if (!_id) {
       return NextResponse.json(
@@ -123,15 +123,13 @@ export async function PUT(req: Request) {
     }
 
     const updateData: any = {};
-    if (email) updateData.email = email.toLowerCase();
-    if (name) updateData.name = name;
+    if (rollNo) updateData.rollNo = rollNo.trim();
+    if (designation !== undefined) updateData.designation = designation;
     if (password) updateData.password = await bcrypt.hash(password, 10);
-    console.log("Updating User payload:", updateData);
 
     const updatedUser = await UserAdmin.findByIdAndUpdate(_id, updateData, {
       new: true,
     });
-    console.log("Updated User:", updatedUser);
 
     if (!updatedUser) {
       return NextResponse.json({ message: "User not found" }, { status: 404 });
@@ -140,8 +138,8 @@ export async function PUT(req: Request) {
     return NextResponse.json(
       {
         id: updatedUser._id,
-        email: updatedUser.email,
-        name: updatedUser.name,
+        rollNo: updatedUser.rollNo,
+        designation: updatedUser.designation,
         role: updatedUser.role,
         createdAt: updatedUser.createdAt,
       },
