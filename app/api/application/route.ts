@@ -5,6 +5,30 @@ import { NextRequest, NextResponse } from "next/server";
 import { connectDB } from "@/lib/mongodb";
 import ApplicationForm from "@/models/ApplicationForm";
 
+const generateRollNumber = () => {
+  const length = Math.floor(Math.random() * 3) + 10; // 10–12 digits
+  let roll = "";
+
+  for (let i = 0; i < length; i++) {
+    roll += Math.floor(Math.random() * 10);
+  }
+
+  return roll;
+};
+
+const generateUniqueRollNumber = async () => {
+  let rollNumber;
+  let exists = true;
+
+  while (exists) {
+    rollNumber = generateRollNumber();
+    const existing = await ApplicationForm.findOne({ rollNumber });
+    if (!existing) exists = false;
+  }
+
+  return rollNumber;
+};
+
 // ================= GET =================
 export async function GET(req: NextRequest) {
   try {
@@ -70,6 +94,9 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    // ✅ Generate roll number
+    const rollNumber = await generateUniqueRollNumber();
+
     const newForm = await ApplicationForm.create({
       name,
       fatherName,
@@ -81,6 +108,7 @@ export async function POST(req: NextRequest) {
       address,
       photo,
       signature,
+      rollNumber, // ✅ added
     });
 
     return NextResponse.json({ success: true, data: newForm }, { status: 201 });

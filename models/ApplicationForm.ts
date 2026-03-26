@@ -3,6 +3,7 @@
 import mongoose, { Schema, Document } from "mongoose";
 
 export interface IApplicationForm extends Document {
+  rollNumber: string;
   name: string;
   fatherName: string;
   designation: string;
@@ -17,6 +18,7 @@ export interface IApplicationForm extends Document {
 
 const ApplicationFormSchema = new Schema<IApplicationForm>(
   {
+    rollNumber: { type: String, required: true },
     name: { type: String, required: true },
     fatherName: { type: String, required: true },
     designation: { type: String, required: true },

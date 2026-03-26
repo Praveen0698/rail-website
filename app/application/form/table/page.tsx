@@ -7,6 +7,7 @@ import React, { useCallback, useEffect, useState } from "react";
 
 interface Application {
   _id: string;
+  rollNumber: string;
   name: string;
   fatherName: string;
   designation: string;
@@ -120,6 +121,7 @@ const AdmitCardPage = () => {
                   <thead>
                     <tr>
                       {[
+                        "Roll Number",
                         "Name",
                         "Father Name",
                         "Designation",
@@ -142,6 +144,7 @@ const AdmitCardPage = () => {
                   <tbody>
                     {applications.map((item) => (
                       <tr key={item._id} className="trow">
+                        <td style={styles.td}>{item.rollNumber}</td>
                         <td style={styles.td}>{item.name}</td>
                         <td style={styles.td}>{item.fatherName}</td>
                         <td style={styles.td}>{item.designation}</td>
