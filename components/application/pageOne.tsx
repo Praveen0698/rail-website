@@ -13,7 +13,6 @@ const PageOne = () => {
   const handleUploadSign = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-
     const imageUrl = URL.createObjectURL(file);
     setSignature(imageUrl);
   };
@@ -24,9 +23,7 @@ const PageOne = () => {
   ) => {
     const file = e.target.files?.[0];
     if (!file) return;
-
     const imageUrl = URL.createObjectURL(file);
-
     const updated = [...thumbs];
     updated[index] = imageUrl;
     setThumbs(updated);
@@ -38,17 +35,16 @@ const PageOne = () => {
   ) => {
     const file = e.target.files?.[0];
     if (!file) return;
-
     const imageUrl = URL.createObjectURL(file);
-
     if (type === "one") setSign1(imageUrl);
     else setSign2(imageUrl);
   };
 
   const languages = ["Odia", "Telugu", "Hindi", "English"];
   const options = ["DD", "Pay order", "IPO"];
+
   return (
-    <div className="bg-white w-3/5 p-20 text-[14px] leading-relaxed">
+    <div className="bg-white w-full max-w-4xl mx-auto p-4 sm:p-8 md:p-12 lg:p-20 text-[14px] leading-relaxed">
       <h1 className="text-center font-bold text-[16px]">
         RAILWAY RECRUITMENT CELL, EAST COAST RAILWAY
       </h1>
@@ -56,8 +52,9 @@ const PageOne = () => {
         APPLICATION FORM
       </h2>
 
-      <div className="flex justify-between">
-        <div className="w-[60%]">
+      {/* Changed: flex justify-between → flex flex-col sm:flex-row justify-between gap-4 */}
+      <div className="flex flex-col sm:flex-row justify-between gap-4">
+        <div className="w-full sm:w-[60%]">
           <p>To</p>
           <p className="font-semibold">
             Dy.Chief Personnel Officer (Recruitment),
@@ -66,16 +63,15 @@ const PageOne = () => {
           <p>C-57/G, Rail Vihar, Chandrasekharpur, Bhubaneswar-751023</p>
         </div>
 
-        <div className="w-[35%] border">
+        {/* Changed: w-[35%] → w-full sm:w-[35%] */}
+        <div className="w-full sm:w-[35%] border">
           <div className="text-center font-semibold border-b py-1">
             For office use only
           </div>
-
           <div className="flex border-b">
             <div className="w-1/2 border-r p-1">Control Number</div>
             <input type="text" className="w-1/2 p-1.5 outline-none" />
           </div>
-
           <div className="flex">
             <div className="w-1/2 border-r p-1">Roll Number</div>
             <input type="text" className="w-1/2 p-1.5 outline-none" />
@@ -105,6 +101,7 @@ const PageOne = () => {
         I hereby apply for recruitment to the posts mentioned in the above
         notification and furnish the following particulars:
       </p>
+
       <div className="mb-4">
         <p className="font-semibold mb-2">
           1. Full Name of the Candidate{" "}
@@ -112,36 +109,38 @@ const PageOne = () => {
             (in capital letters as it appears in school certificate):
           </span>
         </p>
-
-        <table className="border-collapse">
-          <tbody>
-            {[0, 1].map((row) => (
-              <tr key={row}>
-                {Array.from({ length: 20 }).map((_, colIndex) => (
-                  <td key={colIndex} className="border p-0">
-                    <input
-                      type="text"
-                      maxLength={1}
-                      className="w-9 h-8 text-center outline-none"
-                    />
-                  </td>
-                ))}
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        {/* Changed: overflow-x-auto wrapper added for small screens */}
+        <div className="overflow-x-auto">
+          <table className="border-collapse">
+            <tbody>
+              {[0, 1].map((row) => (
+                <tr key={row}>
+                  {Array.from({ length: 20 }).map((_, colIndex) => (
+                    <td key={colIndex} className="border p-0">
+                      <input
+                        type="text"
+                        maxLength={1}
+                        className="w-9 h-8 text-center outline-none"
+                      />
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
-      <div className="mb-4 flex items-center gap-4">
-        <p className="font-semibold w-62.5">
+
+      {/* Changed: flex items-center gap-4 → flex flex-col sm:flex-row items-start sm:items-center gap-4 */}
+      <div className="mb-4 flex flex-col sm:flex-row items-start sm:items-center gap-4">
+        <p className="font-semibold sm:w-62.5">
           2. Two marks of physical identification:
         </p>
-
         <div className="flex w-full">
           <div className="flex items-start border w-1/2">
             <span className="px-2">(i)</span>
             <input className="w-full p-1.5 outline-none" />
           </div>
-
           <div className="flex items-start border border-l-0 w-1/2">
             <span className="px-2">(ii)</span>
             <input className="w-full p-1.5 outline-none" />
@@ -149,151 +148,180 @@ const PageOne = () => {
         </div>
       </div>
 
-      <div className="flex justify-between items-start gap-10 mb-4">
-        <div className="flex flex-row gap-1 w-[1/3]">
+      {/* Changed: flex flex-row justify-between gap-10 → flex flex-col md:flex-row justify-between gap-4 md:gap-10 */}
+      <div className="flex flex-col lg:flex-row justify-between items-start gap-4 lg:gap-10 mb-4">
+        {/* Q3 */}
+        <div className="flex flex-col gap-1 w-full lg:w-auto">
           <div className="p-1 font-semibold">3. Priority of Category</div>
-          <table className="border-collapse">
-            <tbody>
-              <tr>
-                <td className="border p-1 text-xs">Category Code</td>
-                <td className="border p-1">
-                  <input
-                    type="text"
-                    className="w-15 h-5 text-center outline-none"
-                  />
-                </td>
-                <td className="border p-1">
-                  <input
-                    type="text"
-                    className="w-15 h-5 text-center outline-none"
-                  />
-                </td>
-              </tr>
-              <tr>
-                <td className="border p-1 text-xs">Priority</td>
-                <td className="border p-1">1st</td>
-                <td className="border p-1">2nd</td>
-              </tr>
-            </tbody>
-          </table>
+          <div className="overflow-x-auto">
+            <table className="border-collapse">
+              <tbody>
+                <tr>
+                  <td className="border p-1 text-xs">Category Code</td>
+                  <td className="border p-1">
+                    <input
+                      type="text"
+                      className="w-15 h-5 text-center outline-none"
+                    />
+                  </td>
+                  <td className="border p-1">
+                    <input
+                      type="text"
+                      className="w-15 h-5 text-center outline-none"
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <td className="border p-1 text-xs">Priority</td>
+                  <td className="border p-1">1st</td>
+                  <td className="border p-1">2nd</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
 
-        <div className="flex flex-row w-[2/3] gap-1">
-          <div className="p-2 font-semibold">
+        {/* Q4 */}
+        <div className="flex flex-col gap-1 w-full lg:w-auto">
+          <div className="p-1 font-semibold">
             4. Priority of Division/Workshop for appointment
           </div>
-          <table className="border-collapse">
-            <tbody>
-              <tr>
-                <td className="border p-1 text-xs">Recruitemnt Unit Code</td>
-                <td className="border p-1">
-                  <input
-                    type="text"
-                    className="w-15 h-5 text-center outline-none"
-                  />
-                </td>
-                <td className="border p-1">
-                  <input
-                    type="text"
-                    className="w-15 h-5 text-center outline-none"
-                  />
-                </td>
-                <td className="border p-1">
-                  <input
-                    type="text"
-                    className="w-15 h-5 text-center outline-none"
-                  />
-                </td>
-                <td className="border p-1">
-                  <input
-                    type="text"
-                    className="w-15 h-5 text-center outline-none"
-                  />
-                </td>
-              </tr>
-              <tr>
-                <td className="border p-1 text-xs">Priority</td>
-                <td className="border p-1">1st</td>
-                <td className="border p-1">2nd</td>
-                <td className="border p-1">3rd</td>
-                <td className="border p-1">4th</td>
-              </tr>
-            </tbody>
-          </table>
+          <div className="overflow-x-auto">
+            <table className="border-collapse">
+              <tbody>
+                <tr>
+                  <td className="border p-1 text-xs whitespace-nowrap">
+                    Recruitemnt Unit Code
+                  </td>
+                  <td className="border p-1">
+                    <input
+                      type="text"
+                      className="w-15 h-5 text-center outline-none"
+                    />
+                  </td>
+                  <td className="border p-1">
+                    <input
+                      type="text"
+                      className="w-15 h-5 text-center outline-none"
+                    />
+                  </td>
+                  <td className="border p-1">
+                    <input
+                      type="text"
+                      className="w-15 h-5 text-center outline-none"
+                    />
+                  </td>
+                  <td className="border p-1">
+                    <input
+                      type="text"
+                      className="w-15 h-5 text-center outline-none"
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <td className="border p-1 text-xs">Priority</td>
+                  <td className="border p-1">1st</td>
+                  <td className="border p-1">2nd</td>
+                  <td className="border p-1">3rd</td>
+                  <td className="border p-1">4th</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
-      <div className="mb-4 flex flex-row justify-between gap-10">
+
+      {/* Changed: flex flex-row justify-between gap-10 → flex flex-col md:flex-row justify-between gap-4 md:gap-10 */}
+      <div className="mb-4 flex flex-col md:flex-row justify-between gap-4 md:gap-10">
         <p className="font-semibold">
           5. Language Odia Telugu Hindi English . Medium of written examination
           question paper (select one medium):
         </p>
-
-        <table className="border-collapse w-full">
-          <tbody>
-            <tr>
-              <td className="border p-1 text-center text-xs w-1/5">language</td>
-              {languages.map((lang) => (
-                <td key={lang} className="border text-center p-1 text-xs">
-                  {lang}
+        <div className="overflow-x-auto w-full">
+          <table className="border-collapse w-full">
+            <tbody>
+              <tr>
+                <td className="border p-1 text-center text-xs w-1/5">
+                  language
                 </td>
-              ))}
-            </tr>
-
-            <tr>
-              <td className="border p-1 text-center text-xs">Select option</td>
-
-              {languages.map((lang) => (
-                <td key={lang} className="border p-1 text-center align-middle">
-                  <label className="flex items-center justify-center gap-1 cursor-pointer">
-                    <input
-                      type="radio"
-                      name="language"
-                      value={lang}
-                      checked={selectedLang === lang}
-                      onChange={() => setSelectedLang(lang)}
-                      className="w-4 h-4 accent-black"
-                    />
-                    <span className="text-xs">Select</span>
-                  </label>
+                {languages.map((lang) => (
+                  <td key={lang} className="border text-center p-1 text-xs">
+                    {lang}
+                  </td>
+                ))}
+              </tr>
+              <tr>
+                <td className="border p-1 text-center text-xs">
+                  Select option
                 </td>
-              ))}
-            </tr>
-          </tbody>
-        </table>
+                {languages.map((lang) => (
+                  <td
+                    key={lang}
+                    className="border p-1 text-center align-middle"
+                  >
+                    <label className="flex items-center justify-center gap-1 cursor-pointer">
+                      <input
+                        type="radio"
+                        name="language"
+                        value={lang}
+                        checked={selectedLang === lang}
+                        onChange={() => setSelectedLang(lang)}
+                        className="w-4 h-4 accent-black"
+                      />
+                      <span className="text-xs">Select</span>
+                    </label>
+                  </td>
+                ))}
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
+
       <div className="mb-4">
         <p className="font-semibold">
           6. For serving Railway employees (Certificate in proof of status to be
           furnished for availing age relaxation):
         </p>
-
-        <table className="border-collapse w-full">
-          <tbody>
-            <tr>
-              <td className="border p-1 text-center text-xs w-1/5">
-                Designation
-              </td>
-              <td className="border text-center p-1 text-xs">
-                Department / Railway office with address
-              </td>
-              <td className="border text-center p-1 text-xs">
-                Number of years of service
-              </td>
-            </tr>
-            <tr>
-              <td className="border p-1 text-xs">
-                <input type="text" className="h-5 text-center outline-none" />
-              </td>
-              <td className="border p-1">
-                <input type="text" className="h-5 text-center outline-none" />
-              </td>
-              <td className="border p-1">
-                <input type="text" className="h-5 text-center outline-none" />
-              </td>
-            </tr>
-          </tbody>
-        </table>
+        <div className="overflow-x-auto">
+          <table className="border-collapse w-full">
+            <tbody>
+              <tr>
+                <td className="border p-1 text-center text-xs w-1/5">
+                  Designation
+                </td>
+                <td className="border text-center p-1 text-xs">
+                  Department / Railway office with address
+                </td>
+                <td className="border text-center p-1 text-xs">
+                  Number of years of service
+                </td>
+              </tr>
+              <tr>
+                <td className="border p-1 text-xs">
+                  <input
+                    type="text"
+                    className="h-5 text-center outline-none w-full"
+                  />
+                </td>
+                <td className="border p-1">
+                  <input
+                    type="text"
+                    className="h-5 text-center outline-none w-full"
+                  />
+                </td>
+                <td className="border p-1">
+                  <input
+                    type="text"
+                    className="h-5 text-center outline-none w-full"
+                  />
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
+
       <div className="mb-4">
         <p className="font-semibold">
           7. For Ex-Servicemen [ONLY those who did not yet avail government
@@ -301,56 +329,73 @@ const PageOne = () => {
           furnished for availing age relaxation & ex.servicemen quota
           vacancies):
         </p>
-
-        <table className="border-collapse w-full">
-          <tbody>
-            <tr>
-              <td className="border p-1 text-center text-xs">Enrolment date</td>
-              <td className="border text-center p-1 text-xs">
-                Attestation date
-              </td>
-              <td className="border text-center p-1 text-xs">
-                State unit with address
-              </td>
-              <td className="border text-center p-1 text-xs">
-                Discharge / Retirement date
-              </td>
-              <td className="border text-center p-1 text-xs">
-                Length of Service (Years, Months)
-              </td>
-            </tr>
-            <tr>
-              <td className="border p-1 text-xs">
-                <input type="text" className="h-5 text-center outline-none" />
-              </td>
-              <td className="border p-1">
-                <input type="text" className="h-5 text-center outline-none" />
-              </td>
-              <td className="border p-1">
-                <input type="text" className="h-5 text-center outline-none" />
-              </td>
-              <td className="border p-1">
-                <input type="text" className="h-5 text-center outline-none" />
-              </td>
-              <td className="border p-1">
-                <input type="text" className="h-5 text-center outline-none" />
-              </td>
-            </tr>
-          </tbody>
-        </table>
+        <div className="overflow-x-auto">
+          <table className="border-collapse w-full">
+            <tbody>
+              <tr>
+                <td className="border p-1 text-center text-xs">
+                  Enrolment date
+                </td>
+                <td className="border text-center p-1 text-xs">
+                  Attestation date
+                </td>
+                <td className="border text-center p-1 text-xs">
+                  State unit with address
+                </td>
+                <td className="border text-center p-1 text-xs">
+                  Discharge / Retirement date
+                </td>
+                <td className="border text-center p-1 text-xs">
+                  Length of Service (Years, Months)
+                </td>
+              </tr>
+              <tr>
+                <td className="border p-1 text-xs">
+                  <input
+                    type="text"
+                    className="h-5 text-center outline-none w-full"
+                  />
+                </td>
+                <td className="border p-1">
+                  <input
+                    type="text"
+                    className="h-5 text-center outline-none w-full"
+                  />
+                </td>
+                <td className="border p-1">
+                  <input
+                    type="text"
+                    className="h-5 text-center outline-none w-full"
+                  />
+                </td>
+                <td className="border p-1">
+                  <input
+                    type="text"
+                    className="h-5 text-center outline-none w-full"
+                  />
+                </td>
+                <td className="border p-1">
+                  <input
+                    type="text"
+                    className="h-5 text-center outline-none w-full"
+                  />
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
+
       <div className="mb-4">
         <p className="font-semibold">
           8. List of Enclosures (as applicable and explained in the
           instructions):
         </p>
-
         <div className="flex w-full">
           <div className="flex items-start border w-1/2">
             <span className="px-2">a.</span>
             <input className="w-full p-1.5 outline-none" />
           </div>
-
           <div className="flex items-start border border-l-0 w-1/2">
             <span className="px-2">b.</span>
             <input className="w-full p-1.5 outline-none" />
@@ -365,7 +410,6 @@ const PageOne = () => {
             <span className="px-2">d.</span>
             <input className="w-full p-1.5 outline-none" />
           </div>
-
           <div className="flex items-start border border-t-0 border-l-0 w-1/2">
             <span className="px-2">e.</span>
             <input className="w-full p-1.5 outline-none" />
@@ -376,15 +420,15 @@ const PageOne = () => {
           </div>
         </div>
       </div>
+
       <div className="mb-4 flex flex-col">
         <p className="font-semibold">
           9. Full Sample signatures in running script in English or Hindi:
         </p>
-
-        <div className="flex w-4/5 gap-5 mt-2">
+        {/* Changed: w-4/5 → w-full sm:w-4/5 */}
+        <div className="flex w-full sm:w-4/5 gap-5 mt-2">
           <div className="flex flex-row gap-1 w-1/2 items-end">
             <span className="px-2">(i)</span>
-
             <label
               className={`relative ${!sign1 && "border-b"} w-full h-12 cursor-pointer flex items-end`}
             >
@@ -394,7 +438,6 @@ const PageOne = () => {
                 onChange={(e) => handleUpload(e, "one")}
                 className="hidden"
               />
-
               {sign1 ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
@@ -409,10 +452,8 @@ const PageOne = () => {
               )}
             </label>
           </div>
-
           <div className="flex flex-row gap-1 w-1/2 items-end">
             <span className="px-2">(ii)</span>
-
             <label
               className={`relative ${!sign2 && "border-b"} w-full h-12 cursor-pointer flex items-end`}
             >
@@ -422,7 +463,6 @@ const PageOne = () => {
                 onChange={(e) => handleUpload(e, "two")}
                 className="hidden"
               />
-
               {sign2 ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
@@ -439,18 +479,19 @@ const PageOne = () => {
           </div>
         </div>
       </div>
-      <div className="mb-4">
-        <div className="flex justify-between items-end mb-1.5">
-          <p className="font-semibold">10. Examination Fees Paid through:</p>
 
-          <div className="flex justify-between gap-5 w-3/5 mr-10">
+      <div className="mb-4">
+        {/* Changed: flex justify-between items-end mb-1.5 → flex flex-col sm:flex-row justify-between items-start sm:items-end gap-3 mb-1.5 */}
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-3 mb-1.5">
+          <p className="font-semibold">10. Examination Fees Paid through:</p>
+          {/* Changed: w-3/5 mr-10 → w-full sm:w-3/5 sm:mr-10 */}
+          <div className="flex justify-between gap-2 sm:gap-5 w-full sm:w-3/5 sm:mr-10">
             {options.map((option) => (
               <div key={option} className="flex flex-row w-full">
-                <div className="flex items-center border border-r-0 w-1/2 p-1.5">
-                  <span>{option}</span>
+                <div className="flex items-center border border-r-0 w-1/2 p-1 sm:p-1.5">
+                  <span className="text-xs sm:text-sm">{option}</span>
                 </div>
-
-                <div className="flex items-center justify-center p-1.5 border w-1/2">
+                <div className="flex items-center justify-center p-1 sm:p-1.5 border w-1/2">
                   <input
                     type="radio"
                     name="paymentMode"
@@ -459,41 +500,56 @@ const PageOne = () => {
                     onChange={() => setSelected(option)}
                     className="w-4 h-4 mr-1 accent-black"
                   />
-                  <span>Select</span>
+                  <span className="text-xs sm:text-sm">Select</span>
                 </div>
               </div>
             ))}
           </div>
         </div>
-        <table className="border-collapse w-full">
-          <tbody>
-            <tr>
-              <td className="border p-1 text-center text-xs">
-                Bank / P.O name/ location
-              </td>
-              <td className="border text-center p-1 text-xs">
-                DD / Pay Order / IPO No.
-              </td>
-              <td className="border text-center p-1 text-xs">Date</td>
-              <td className="border text-center p-1 text-xs">Amount (Rs.)</td>
-            </tr>
-            <tr>
-              <td className="border p-1 w-5/12">
-                <input type="text" className="h-5 text-center outline-none" />
-              </td>
-              <td className="border p-1 w-5/12">
-                <input type="text" className="h-5 text-center outline-none" />
-              </td>
-              <td className="border p-1">
-                <input type="text" className="h-5 text-center outline-none" />
-              </td>
-              <td className="border p-1">
-                <input type="text" className="h-5 text-center outline-none" />
-              </td>
-            </tr>
-          </tbody>
-        </table>
+        <div className="overflow-x-auto">
+          <table className="border-collapse w-full">
+            <tbody>
+              <tr>
+                <td className="border p-1 text-center text-xs">
+                  Bank / P.O name/ location
+                </td>
+                <td className="border text-center p-1 text-xs">
+                  DD / Pay Order / IPO No.
+                </td>
+                <td className="border text-center p-1 text-xs">Date</td>
+                <td className="border text-center p-1 text-xs">Amount (Rs.)</td>
+              </tr>
+              <tr>
+                <td className="border p-1 w-5/12">
+                  <input
+                    type="text"
+                    className="h-5 text-center outline-none w-full"
+                  />
+                </td>
+                <td className="border p-1 w-5/12">
+                  <input
+                    type="text"
+                    className="h-5 text-center outline-none w-full"
+                  />
+                </td>
+                <td className="border p-1">
+                  <input
+                    type="text"
+                    className="h-5 text-center outline-none w-full"
+                  />
+                </td>
+                <td className="border p-1">
+                  <input
+                    type="text"
+                    className="h-5 text-center outline-none w-full"
+                  />
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
+
       <div className="mb-4">
         <p className="font-semibold">
           11. Left thumb impression of the candidate (After applying ink on the
@@ -501,8 +557,8 @@ const PageOne = () => {
           in the three boxes without applying ink once again. Impressions should
           not be smudged.)
         </p>
-
-        <div className="flex flex-row w-3/5 mt-2">
+        {/* Changed: w-3/5 → w-full sm:w-3/5 */}
+        <div className="flex flex-row w-full sm:w-3/5 mt-2">
           {thumbs.map((thumb, index) => (
             <label
               key={index}
@@ -516,7 +572,6 @@ const PageOne = () => {
                 onChange={(e) => handleUploadThumb(e, index)}
                 className="hidden"
               />
-
               {thumb ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
@@ -531,13 +586,14 @@ const PageOne = () => {
           ))}
         </div>
       </div>
-      <div className="mb-4 flex flex-row items-center justify-between">
+
+      {/* Changed: flex flex-row items-center justify-between → flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 */}
+      <div className="mb-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
           <div className="flex flex-row gap-1 items-end mb-1">
             <p className="font-semibold">12. Place:</p>
             <input type="text" className="w-1/2 p-1.5 outline-none border-b" />
           </div>
-
           <div className="flex flex-row gap-1 items-end mb-1">
             <p className="font-semibold">13. Date:</p>
             <input type="text" className="w-1/2 p-1.5 outline-none border-b" />
@@ -545,13 +601,13 @@ const PageOne = () => {
         </div>
 
         <div className="text-center">
-          <p className="font-semibold">14. Applicant’s full signature</p>
+          <p className="font-semibold">14. Applicant&apos;s full signature</p>
           <p className="text-sm mb-1">
             (in English or Hindi in running script)
           </p>
-
+          {/* Changed: w-64 → w-48 sm:w-64 */}
           <label
-            className={`relative w-64 h-12 ${!signature && "border-b"} flex items-center justify-center overflow-hidden cursor-pointer`}
+            className={`relative w-48 sm:w-64 h-12 ${!signature && "border-b"} flex items-center justify-center overflow-hidden cursor-pointer`}
           >
             <input
               type="file"
@@ -559,7 +615,6 @@ const PageOne = () => {
               onChange={handleUploadSign}
               className="hidden"
             />
-
             {signature ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img

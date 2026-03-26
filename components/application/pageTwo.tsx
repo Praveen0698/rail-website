@@ -26,7 +26,6 @@ const toBase64 = (file: File): Promise<string> =>
 const PageTwo = () => {
   const [selectedGender, setSelectedGender] = useState("");
   const [selectedWidow, setSelectedWidow] = useState("");
-
   const [selectedReligion, setSelectedReligion] = useState("");
   const [selectedCommunity, setSelectedCommunity] = useState("");
   const [signature, setSignature] = useState<string | null>(null);
@@ -73,42 +72,25 @@ const PageTwo = () => {
       alert("Please fill all required fields");
       return;
     }
-
     setSubmitting(true);
-
     try {
       const res = await fetch("/api/application", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
-
       const data = await res.json();
-
       if (!data.success) {
         alert(data.error || "Submission failed");
         return;
       }
-
       alert("Application submitted successfully ✅");
-
-      // Optional reset
       window.location.reload();
-    } catch (error) {
+    } catch {
       alert("Something went wrong");
     }
-
     setSubmitting(false);
   };
-
-  console.log(
-    fatherNameGrid
-      .map((r) => r.join(""))
-      .join("")
-      .trim(),
-  );
 
   const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -141,13 +123,11 @@ const PageTwo = () => {
   const handleUploadSign = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-
-    const imageUrl = URL.createObjectURL(file);
-    setSignature(imageUrl);
+    setSignature(URL.createObjectURL(file));
   };
 
   return (
-    <div className="bg-white w-3/5 p-20 text-[14px] leading-relaxed">
+    <div className="bg-white w-full max-w-4xl mx-auto p-4 sm:p-8 md:p-12 lg:p-20 text-[14px] leading-relaxed">
       <h1 className="text-center font-bold text-[16px]">
         RAILWAY RECRUITMENT CELL, EAST COAST RAILWAY
       </h1>
@@ -155,18 +135,18 @@ const PageTwo = () => {
         PERSONAL DATA SHEET
       </h2>
 
-      <div className="flex items-end justify-between gap-2.5">
-        <div className="w-3/10">
+      {/* Changed: flex items-end justify-between → flex flex-col sm:flex-row items-start sm:items-end justify-between gap-3 */}
+      <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between gap-3">
+        <div className="w-full sm:w-3/10">
           <p className="text-center">Roll Number (for office use only)</p>
           <div className="flex items-start border">
             <input className="w-full p-2 h-full outline-none" />
           </div>
         </div>
-
         <p className="font-semibold text-center underline mb-1">
           Employment Notice No. ECoR /RRC /D /2006/01
         </p>
-        <div className="w-3/10">
+        <div className="w-full sm:w-3/10">
           <p className="text-center">Control number (for office use only)</p>
           <div className="flex items-start border">
             <input className="w-full p-2 h-full outline-none" />
@@ -182,8 +162,8 @@ const PageTwo = () => {
         except column 14 by relevant candidates only.]
       </p>
 
-      <div className="flex flex-row justify-between mb-4">
-        <div>
+      <div className="flex flex-col lg:flex-row justify-between gap-4 mb-4">
+        <div className="w-full lg:w-auto">
           <div className="mb-4">
             <p className="font-semibold mb-2">
               1. Full Name of the Candidate{" "}
@@ -191,55 +171,62 @@ const PageTwo = () => {
                 (in capital letters as it appears in school certificate):
               </span>
             </p>
-
-            <table className="border-collapse">
-              <tbody>
-                {nameGrid.map((row, rowIdx) => (
-                  <tr key={rowIdx}>
-                    {Array.from({ length: 16 }).map((_, colIdx) => (
-                      <td key={colIdx} className="border p-0">
-                        <input
-                          type="text"
-                          maxLength={1}
-                          value={row[colIdx]}
-                          onChange={(e) =>
-                            handleNameCell(rowIdx, colIdx, e.target.value)
-                          }
-                          className="w-9 h-8 text-center outline-none"
-                        />
-                      </td>
-                    ))}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+            <div className="overflow-x-auto">
+              <table className="border-collapse">
+                <tbody>
+                  {nameGrid.map((row, rowIdx) => (
+                    <tr key={rowIdx}>
+                      {Array.from({ length: 16 }).map((_, colIdx) => (
+                        <td key={colIdx} className="border p-0">
+                          <input
+                            type="text"
+                            maxLength={1}
+                            value={row[colIdx]}
+                            onChange={(e) =>
+                              handleNameCell(rowIdx, colIdx, e.target.value)
+                            }
+                            className="w-9 h-8 text-center outline-none"
+                          />
+                        </td>
+                      ))}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
 
           <div className="mb-4">
             <p className="font-semibold mb-2">2. Father / Husband Name:</p>
-
-            <table className="border-collapse">
-              <tbody>
-                {fatherNameGrid.map((row, rowIdx) => (
-                  <tr key={rowIdx}>
-                    {Array.from({ length: 14 }).map((_, colIdx) => (
-                      <td key={colIdx} className="border p-0">
-                        <input
-                          type="text"
-                          maxLength={1}
-                          value={row[colIdx]}
-                          onChange={(e) =>
-                            handleFatherNameCell(rowIdx, colIdx, e.target.value)
-                          }
-                          className="w-9 h-8 text-center outline-none"
-                        />
-                      </td>
-                    ))}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+            <div className="overflow-x-auto">
+              <table className="border-collapse">
+                <tbody>
+                  {fatherNameGrid.map((row, rowIdx) => (
+                    <tr key={rowIdx}>
+                      {Array.from({ length: 14 }).map((_, colIdx) => (
+                        <td key={colIdx} className="border p-0">
+                          <input
+                            type="text"
+                            maxLength={1}
+                            value={row[colIdx]}
+                            onChange={(e) =>
+                              handleFatherNameCell(
+                                rowIdx,
+                                colIdx,
+                                e.target.value,
+                              )
+                            }
+                            className="w-9 h-8 text-center outline-none"
+                          />
+                        </td>
+                      ))}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
+
           <div className="flex flex-col items-start w-full">
             <div className="flex flex-row gap-5">
               <p className="font-semibold w-25">3. Sex:</p>
@@ -276,15 +263,16 @@ const PageTwo = () => {
             </div>
           </div>
         </div>
-        <div className="flex flex-col justify-between items-center">
-          <label className="relative w-[4cm] h-[5cm] border p-2.5 flex items-center justify-center cursor-pointer overflow-hidden">
+
+        {/* Photo & signature — stacks below until lg */}
+        <div className="flex flex-row lg:flex-col justify-start lg:justify-between items-start lg:items-center gap-4 lg:gap-0">
+          <label className="relative w-[4cm] h-[5cm] border p-2.5 flex items-center justify-center cursor-pointer overflow-hidden shrink-0">
             <input
               type="file"
               accept="image/*"
               onChange={handlePhotoUpload}
               className="hidden"
             />
-
             {photo ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img
@@ -310,7 +298,6 @@ const PageTwo = () => {
                 onChange={handleTopSignatureUpload}
                 className="hidden"
               />
-
               {topSignature ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
@@ -325,16 +312,17 @@ const PageTwo = () => {
               )}
             </label>
             <p className="text-[10px] w-[5cm] text-center">
-              Applicant’s full signature in English or Hindi in running script
-              in the above box
+              Applicant&apos;s full signature in English or Hindi in running
+              script in the above box
             </p>
           </div>
         </div>
       </div>
 
-      <div className="mb-4 flex items-center gap-4">
+      {/* Changed: flex items-center gap-4 → flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 */}
+      <div className="mb-4 flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4">
         <p className="font-semibold shrink-0">5. Designation:</p>
-        <div className="flex items-start border w-full">
+        <div className="flex items-start border w-full sm:flex-1">
           <input
             type="text"
             value={designation}
@@ -354,7 +342,8 @@ const PageTwo = () => {
         </div>
       </div>
 
-      <div className="mb-4 flex items-center gap-4">
+      {/* Changed: flex items-center gap-4 → flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 */}
+      <div className="mb-4 flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4">
         <p className="font-semibold shrink-0">7. Blood Group:</p>
         <div className="border">
           <select
@@ -370,21 +359,21 @@ const PageTwo = () => {
             ))}
           </select>
         </div>
-          <p className="font-semibold shrink-0">8. Education Qualifaction:</p>
-          <input
-            type="text"
-            className="flex-1 h-10 text-center border outline-none text-sm"
-          />
+        <p className="font-semibold shrink-0">8. Education Qualifaction:</p>
+        <input
+          type="text"
+          className="w-full sm:flex-1 h-10 text-center border outline-none text-sm"
+        />
       </div>
 
-      <div className="mb-4 flex flex-row justify-between w-full">
-        <div className="w-[48%]">
+      {/* Changed: flex flex-row justify-between → flex flex-col sm:flex-row justify-between gap-4 */}
+      <div className="mb-4 flex flex-col sm:flex-row justify-between w-full gap-4">
+        <div className="w-full sm:w-[48%]">
           <p className="font-semibold mb-2">
             9. Full Mailing Address for Correspondence:
           </p>
           <div className="w-full h-37.5 border p-3 flex flex-col justify-between">
             <textarea className="w-full flex-1 resize-none outline-none text-sm" />
-
             <div className="mt-2">
               <div className="flex items-center gap-2 mb-2">
                 <p className="font-semibold text-sm">State:</p>
@@ -393,7 +382,6 @@ const PageTwo = () => {
                   className="flex-1 p-1 border-b outline-none text-sm"
                 />
               </div>
-
               <div className="flex items-center gap-2">
                 <p className="font-semibold text-sm">Pin:</p>
                 <div className="flex gap-1.5">
@@ -410,9 +398,9 @@ const PageTwo = () => {
             </div>
           </div>
         </div>
-        <div className="w-[48%]">
+        <div className="w-full sm:w-[48%]">
           <p className="font-semibold mb-2">10. Full Permanent Address:</p>
-          <div className="full h-37.5 border p-3 flex flex-col justify-between">
+          <div className="w-full h-37.5 border p-3 flex flex-col justify-between">
             <textarea
               value={baseAddress}
               onChange={(e) => setBaseAddress(e.target.value)}
@@ -428,7 +416,6 @@ const PageTwo = () => {
                   className="flex-1 p-1 border-b outline-none text-sm"
                 />
               </div>
-
               <div className="flex items-center gap-2">
                 <p className="font-semibold text-sm">Pin:</p>
                 <div className="flex gap-1.5">
@@ -453,15 +440,16 @@ const PageTwo = () => {
         </div>
       </div>
 
-      <div className="mb-4 w-full flex flex-row justify-between items-center">
-        <div className="flex flex-row items-center gap-2.5 w-2/5">
+      {/* Changed: flex flex-row → flex flex-col sm:flex-row */}
+      <div className="mb-4 w-full flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+        <div className="flex flex-row items-center gap-2.5 w-full sm:w-2/5">
           <p className="font-semibold">11. State of Domicile Code:</p>
           <input
             type="text"
             className="w-20 h-10 text-center border outline-none text-sm"
           />
         </div>
-        <div className="flex flex-row items-center gap-2.5 w-3/5">
+        <div className="flex flex-row items-center gap-2.5 w-full sm:w-3/5">
           <p className="font-semibold">12. Nearest Railway Station:</p>
           <input
             type="text"
@@ -470,37 +458,40 @@ const PageTwo = () => {
         </div>
       </div>
 
-      <div className="flex flex-row items-center mb-4 gap-5 justify-between">
-        <div className="w-3/5 flex flex-row gap-2.5 items-center">
+      {/* Changed: flex flex-row → flex flex-col sm:flex-row */}
+      <div className="flex flex-col sm:flex-row items-start sm:items-center mb-4 gap-4 sm:gap-5 justify-between">
+        <div className="w-full sm:w-3/5 flex flex-row gap-2.5 items-center">
           <p className="font-semibold mb-1">13. Community</p>
-
-          <table className="w-full border border-collapse text-xs">
-            <tr>
-              {community.map((com) => (
-                <td key={com} className="border text-center p-2">
-                  {com}
-                </td>
-              ))}
-            </tr>
-
-            <tr>
-              {community.map((com) => (
-                <td key={com} className="border text-center p-2">
-                  <label className="flex flex-col items-center justify-center cursor-pointer">
-                    <input
-                      type="radio"
-                      name="religion"
-                      value={com}
-                      checked={selectedCommunity === com}
-                      onChange={() => setSelectedCommunity(com)}
-                      className="w-4 h-4 accent-black"
-                    />
-                    <span className="text-[10px] mt-1">Select</span>
-                  </label>
-                </td>
-              ))}
-            </tr>
-          </table>
+          <div className="overflow-x-auto w-full">
+            <table className="w-full border border-collapse text-xs">
+              <tbody>
+                <tr>
+                  {community.map((com) => (
+                    <td key={com} className="border text-center p-2">
+                      {com}
+                    </td>
+                  ))}
+                </tr>
+                <tr>
+                  {community.map((com) => (
+                    <td key={com} className="border text-center p-2">
+                      <label className="flex flex-col items-center justify-center cursor-pointer">
+                        <input
+                          type="radio"
+                          name="community"
+                          value={com}
+                          checked={selectedCommunity === com}
+                          onChange={() => setSelectedCommunity(com)}
+                          className="w-4 h-4 accent-black"
+                        />
+                        <span className="text-[10px] mt-1">Select</span>
+                      </label>
+                    </td>
+                  ))}
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
         <div className="flex flex-row items-center gap-2.5">
           <p className="font-semibold w-25">14. Select if your are:</p>
@@ -509,7 +500,7 @@ const PageTwo = () => {
               <span className="mr-2">Divorcee</span>
               <input
                 type="radio"
-                name="gender"
+                name="widow"
                 value="Divorcee"
                 checked={selectedWidow === "Divorcee"}
                 onChange={() => setSelectedWidow("Divorcee")}
@@ -520,7 +511,7 @@ const PageTwo = () => {
               <span className="mr-2">Widow</span>
               <input
                 type="radio"
-                name="gender"
+                name="widow"
                 value="Widow"
                 checked={selectedWidow === "Widow"}
                 onChange={() => setSelectedWidow("Widow")}
@@ -531,49 +522,51 @@ const PageTwo = () => {
         </div>
       </div>
 
-      <div className="mb-4 flex flex-row gap-2.5 items-center">
+      <div className="mb-4 flex flex-col sm:flex-row gap-2.5 items-start sm:items-center">
         <p className="font-semibold mb-1">15. Religion</p>
-
-        <table className="w-4/5 border border-collapse text-xs">
-          <tr>
-            {religions.map((religion) => (
-              <td key={religion} className="border text-center p-2">
-                {religion}
-              </td>
-            ))}
-          </tr>
-
-          <tr>
-            {religions.map((religion) => (
-              <td key={religion} className="border text-center p-2">
-                <label className="flex flex-col items-center justify-center cursor-pointer">
-                  <input
-                    type="radio"
-                    name="religion"
-                    value={religion}
-                    checked={selectedReligion === religion}
-                    onChange={() => setSelectedReligion(religion)}
-                    className="w-4 h-4 accent-black"
-                  />
-                  <span className="text-[10px] mt-1">Select</span>
-                </label>
-              </td>
-            ))}
-          </tr>
-        </table>
+        <div className="overflow-x-auto w-full sm:w-4/5">
+          <table className="w-full border border-collapse text-xs">
+            <tbody>
+              <tr>
+                {religions.map((religion) => (
+                  <td key={religion} className="border text-center p-2">
+                    {religion}
+                  </td>
+                ))}
+              </tr>
+              <tr>
+                {religions.map((religion) => (
+                  <td key={religion} className="border text-center p-2">
+                    <label className="flex flex-col items-center justify-center cursor-pointer">
+                      <input
+                        type="radio"
+                        name="religion"
+                        value={religion}
+                        checked={selectedReligion === religion}
+                        onChange={() => setSelectedReligion(religion)}
+                        className="w-4 h-4 accent-black"
+                      />
+                      <span className="text-[10px] mt-1">Select</span>
+                    </label>
+                  </td>
+                ))}
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
 
       <div className="mb-4">
         <p className="font-semibold mb-2 w-full">
           16. Declaration:
           <span className="font-normal">
-            “I hereby declare that the facts and evidences given by me in the
-            Application Form and Personal Data Sheet are true, complete and
+            &quot;I hereby declare that the facts and evidences given by me in
+            the Application Form and Personal Data Sheet are true, complete and
             correct to the best of my knowledge and belief. In the event of any
             discrepancy in the particulars or any statement being found false at
             any stage, my candidature / service would be cancelled / terminated
-            without any notice.” (Above declaration is to be written below in
-            the applicant’s own running script in English):{" "}
+            without any notice.&quot; (Above declaration is to be written below
+            in the applicant&apos;s own running script in English):{" "}
           </span>
         </p>
         <div className="w-full">
@@ -595,13 +588,14 @@ const PageTwo = () => {
           />
         </div>
       </div>
-      <div className="mb-4 flex flex-row items-center justify-between">
+
+      {/* Changed: flex flex-row items-center justify-between → flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 */}
+      <div className="mb-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
           <div className="flex flex-row gap-1 items-end mb-1">
             <p className="font-semibold">17. Place:</p>
             <input type="text" className="w-1/2 p-1.5 outline-none border-b" />
           </div>
-
           <div className="flex flex-row gap-1 items-end mb-1">
             <p className="font-semibold">18. Date:</p>
             <input type="text" className="w-1/2 p-1.5 outline-none border-b" />
@@ -609,13 +603,13 @@ const PageTwo = () => {
         </div>
 
         <div className="text-center">
-          <p className="font-semibold">19. Applicant’s full signature</p>
+          <p className="font-semibold">19. Applicant&apos;s full signature</p>
           <p className="text-sm mb-1">
             (in English or Hindi in running script)
           </p>
-
+          {/* Changed: w-64 → w-48 sm:w-64 */}
           <label
-            className={`relative w-64 h-12 ${!signature && "border-b"} flex items-center justify-center overflow-hidden cursor-pointer`}
+            className={`relative w-48 sm:w-64 h-12 ${!signature && "border-b"} flex items-center justify-center overflow-hidden cursor-pointer`}
           >
             <input
               type="file"
@@ -623,7 +617,6 @@ const PageTwo = () => {
               onChange={handleUploadSign}
               className="hidden"
             />
-
             {signature ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img
@@ -639,13 +632,14 @@ const PageTwo = () => {
           </label>
         </div>
       </div>
+
       <div className="mt-6 flex justify-center">
         <button
           onClick={handleSubmit}
           disabled={submitting}
           className={`px-10 py-2.5 border border-black font-semibold tracking-wide 
-    ${submitting ? "bg-gray-300" : "bg-white hover:bg-gray-100"} 
-    transition-all`}
+            ${submitting ? "bg-gray-300" : "bg-white hover:bg-gray-100"} 
+            transition-all`}
         >
           {submitting ? "Submitting..." : "SUBMIT APPLICATION"}
         </button>
