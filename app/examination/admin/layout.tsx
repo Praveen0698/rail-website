@@ -17,7 +17,7 @@ type IconName =
 const navOptions: { name: string; href: string; icon: IconName }[] = [
   { name: "Dashboard", href: "/examination/admin", icon: "AiOutlineDashboard" },
   {
-    name: "MCQs",
+    name: "Questions",
     href: "/examination/admin/questions",
     icon: "LiaQuestionSolid",
   },

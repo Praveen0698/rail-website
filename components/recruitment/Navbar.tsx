@@ -43,6 +43,11 @@ const menuItems: MenuItem[] = [
         label: "Vacancy Circulars",
         href: "#",
         children: [
+           {
+            label: "CBT Examination",
+            href: "/examination",
+          },
+          { label: "Application Form", href: "/application/form" },
           { label: "Vacancy_Circular_2026", href: "#" },
           { label: "Vacancy_Circular_2025", href: "#" },
           { label: "E(O)III_Vacancy_Circulars", href: "#" },
@@ -54,19 +59,17 @@ const menuItems: MenuItem[] = [
           { label: "VC for Non-Gaz Emp.", href: "#" },
           { label: "VC for RB Posting- Ex Cadre Post", href: "#" },
           { label: "VC_RCT", href: "#" },
+         
         ],
       },
-      {
-        label: "CBT Examination",
-        href: "/examination",
-      },
-      { label: "Application Form", href: "/application/form" },
-      { label: "Admit Card", href: "#" },
+
       { label: "Empanelments (Beta Version)", href: "#" },
       {
         label: "Promotion/Posting/Other Orders",
         href: "#",
         children: [
+                    { label: "Admit Card", href: "#" },
+
           {
             label: "E(O)-II's Orders",
             href: "#",
@@ -313,7 +316,11 @@ function DropdownMenu({
       }}
     >
       {items.map((item, i) => (
-        <DropdownItem key={i} item={item} setShowAdmitModal={setShowAdmitModal} />
+        <DropdownItem
+          key={i}
+          item={item}
+          setShowAdmitModal={setShowAdmitModal}
+        />
       ))}
     </ul>
   );
@@ -369,7 +376,10 @@ function DropdownItem({
       </a>
       {item.children && item.children.length > 0 && hovered && (
         <div style={{ position: "absolute", left: "100%", top: 0 }}>
-          <DropdownMenu items={item.children} setShowAdmitModal={setShowAdmitModal} />
+          <DropdownMenu
+            items={item.children}
+            setShowAdmitModal={setShowAdmitModal}
+          />
         </div>
       )}
     </li>
@@ -411,7 +421,8 @@ function MobileMenuItem({
             }
           }}
           target={
-            item.label === "CBT Examination" || item.label === "Application Form"
+            item.label === "CBT Examination" ||
+            item.label === "Application Form"
               ? "_blank"
               : "_self"
           }
@@ -479,7 +490,9 @@ function AdmitCardModal({ onClose }: { onClose: () => void }) {
     setLoading(true);
 
     try {
-      const res = await fetch(`/api/admitcard?roll_no=${encodeURIComponent(rollNo.trim())}`);
+      const res = await fetch(
+        `/api/admitcard?roll_no=${encodeURIComponent(rollNo.trim())}`,
+      );
       const data = await res.json();
 
       if (!data.success) {
@@ -526,8 +539,10 @@ function AdmitCardModal({ onClose }: { onClose: () => void }) {
       onClick={onClose}
       style={{
         position: "fixed",
-        top: 0, left: 0,
-        width: "100%", height: "100%",
+        top: 0,
+        left: 0,
+        width: "100%",
+        height: "100%",
         backgroundColor: "rgba(0,0,0,0.5)",
         display: "flex",
         alignItems: "center",
@@ -565,7 +580,6 @@ function AdmitCardModal({ onClose }: { onClose: () => void }) {
         {/* Body */}
         <div style={{ padding: "20px" }}>
           <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-            
             {/* Roll */}
             <div>
               <label style={labelStyle}>Roll Number</label>
@@ -599,20 +613,20 @@ function AdmitCardModal({ onClose }: { onClose: () => void }) {
 
             {/* ✅ ONLY DOWNLOAD BUTTON */}
             <button
-  onClick={handleDownload}
-  disabled={loading}
-  style={{
-    padding: "12px 0",
-    backgroundColor: loading ? "#93c5fd" : "#3E70CB",
-    color: "white",
-    border: "none",
-    borderRadius: 6,
-    cursor: loading ? "not-allowed" : "pointer",
-    fontWeight: "bold",
-  }}
->
-  {loading ? "Processing..." : "Download"}
-</button>
+              onClick={handleDownload}
+              disabled={loading}
+              style={{
+                padding: "12px 0",
+                backgroundColor: loading ? "#93c5fd" : "#3E70CB",
+                color: "white",
+                border: "none",
+                borderRadius: 6,
+                cursor: loading ? "not-allowed" : "pointer",
+                fontWeight: "bold",
+              }}
+            >
+              {loading ? "Processing..." : "Download"}
+            </button>
           </div>
         </div>
       </div>
@@ -715,7 +729,13 @@ export default function Navbar() {
               flexShrink: 0,
             }}
           >
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="white">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="white"
+            >
               <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
             </svg>
           </Link>
@@ -740,7 +760,8 @@ export default function Navbar() {
                   }
                 }}
                 target={
-                  item.label === "CBT Examination" || item.label === "Application Form"
+                  item.label === "CBT Examination" ||
+                  item.label === "Application Form"
                     ? "_blank"
                     : "_self"
                 }
@@ -749,8 +770,18 @@ export default function Navbar() {
                 {item.label}
               </a>
               {item.children && activeMenu === index && (
-                <div style={{ position: "absolute", top: "100%", left: 0, zIndex: 9999 }}>
-                  <DropdownMenu items={item.children} setShowAdmitModal={setShowAdmitModal} />
+                <div
+                  style={{
+                    position: "absolute",
+                    top: "100%",
+                    left: 0,
+                    zIndex: 9999,
+                  }}
+                >
+                  <DropdownMenu
+                    items={item.children}
+                    setShowAdmitModal={setShowAdmitModal}
+                  />
                 </div>
               )}
             </div>
@@ -778,7 +809,13 @@ export default function Navbar() {
               textDecoration: "none",
             }}
           >
-            <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" viewBox="0 0 24 24" fill="white">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="21"
+              height="21"
+              viewBox="0 0 24 24"
+              fill="white"
+            >
               <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
             </svg>
           </Link>
@@ -795,12 +832,31 @@ export default function Navbar() {
             aria-label="Toggle navigation"
           >
             {mobileOpen ? (
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2">
-                <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="white"
+                strokeWidth="2"
+              >
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
               </svg>
             ) : (
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2">
-                <line x1="3" y1="6" x2="21" y2="6" /><line x1="3" y1="12" x2="21" y2="12" /><line x1="3" y1="18" x2="21" y2="18" />
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="white"
+                strokeWidth="2"
+              >
+                <line x1="3" y1="6" x2="21" y2="6" />
+                <line x1="3" y1="12" x2="21" y2="12" />
+                <line x1="3" y1="18" x2="21" y2="18" />
               </svg>
             )}
           </button>

@@ -48,11 +48,13 @@ export default function AdminQuestions() {
     try {
       await axios.post("/examination/api/admin/questions", {
         text: question,
-        image: questionImageBase64,
+        // Send the full base64 string (or null) — NOT empty string
+        image: questionImageBase64 || "",
         options: options.map((opt) => ({
           text: opt.text,
           isCorrect: opt.isCorrect,
-          image: opt.image || undefined,
+          // Send the full base64 string (or null) — NOT empty string
+          image: opt.image || "",
         })),
       });
       setQuestion("");
