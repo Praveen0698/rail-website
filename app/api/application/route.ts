@@ -5,30 +5,6 @@ import { NextRequest, NextResponse } from "next/server";
 import { connectDB } from "@/lib/mongodb";
 import ApplicationForm from "@/models/ApplicationForm";
 
-const generateRollNumber = () => {
-  const length = Math.floor(Math.random() * 3) + 10; // 10–12 digits
-  let roll = "";
-
-  for (let i = 0; i < length; i++) {
-    roll += Math.floor(Math.random() * 10);
-  }
-
-  return roll;
-};
-
-const generateUniqueRollNumber = async () => {
-  let rollNumber;
-  let exists = true;
-
-  while (exists) {
-    rollNumber = generateRollNumber();
-    const existing = await ApplicationForm.findOne({ rollNumber });
-    if (!existing) exists = false;
-  }
-
-  return rollNumber;
-};
-
 export async function GET(req: NextRequest) {
   try {
     await connectDB();
@@ -75,6 +51,7 @@ export async function POST(req: NextRequest) {
       address,
       photo,
       signature,
+      rollNumber, // ✅ received from frontend
     } = body;
 
     if (
@@ -85,7 +62,8 @@ export async function POST(req: NextRequest) {
       !bloodGroup ||
       !address ||
       !photo ||
-      !signature
+      !signature ||
+      !rollNumber
     ) {
       return NextResponse.json(
         { success: false, error: "All fields are required" },
@@ -93,8 +71,14 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // ✅ Generate roll number
-    const rollNumber = await generateUniqueRollNumber();
+    // ✅ Ensure roll number is unique (safety check)
+    const existing = await ApplicationForm.findOne({ rollNumber });
+    if (existing) {
+      return NextResponse.json(
+        { success: false, error: "Roll number conflict. Please try again." },
+        { status: 409 },
+      );
+    }
 
     const newForm = await ApplicationForm.create({
       name,
@@ -107,7 +91,7 @@ export async function POST(req: NextRequest) {
       address,
       photo,
       signature,
-      rollNumber, // ✅ added
+      rollNumber,
     });
 
     return NextResponse.json({ success: true, data: newForm }, { status: 201 });
