@@ -85,8 +85,11 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
 
           <nav className="space-y-1">
             {navOptions.map((option) => {
-              const isActive = pathname === option.href;
-              return (
+const isActive =
+  option.href === "/examination/admin"
+    ? pathname === option.href
+    : pathname.startsWith(option.href + "/") || pathname === option.href;
+                  return (
                 <Link
                   key={option.name}
                   href={option.href}

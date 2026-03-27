@@ -221,13 +221,13 @@ export default function AssignmentsPage() {
               <div
                 key={assignment._id}
                 onClick={() => {
-                  if (status !== "ended")
+                  // if (status !== "ended")
                     router.push(
                       `/examination/admin/assignments/${assignment._id}`,
                     );
                 }}
                 className={`bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden transition-all
-                  ${status === "ended" ? "opacity-60 cursor-not-allowed" : "hover:shadow-md cursor-pointer"}`}
+                  ${status === "ended" ? "hover:shadow-md cursor-pointer" : "hover:shadow-md cursor-pointer"}`}
               >
                 {/* Top accent line */}
                 <div

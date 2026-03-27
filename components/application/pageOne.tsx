@@ -234,7 +234,7 @@ const PageOne = () => {
       {/* Changed: flex flex-row justify-between gap-10 → flex flex-col md:flex-row justify-between gap-4 md:gap-10 */}
       <div className="mb-4 flex flex-col md:flex-row justify-between gap-4 md:gap-10">
         <p className="font-semibold">
-          5. Language Odia Telugu Hindi English . Medium of written examination
+          5. Language Odia Telugu Hindi English . Medium of online CBT examination
           question paper (select one medium):
         </p>
         <div className="overflow-x-auto scrollbar-hide w-full">

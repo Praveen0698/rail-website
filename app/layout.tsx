@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Ministry of Railways (Railway Board)",
+  title: "Indian Railway",
 };
 
 export default function RootLayout({
