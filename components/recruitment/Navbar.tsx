@@ -61,8 +61,8 @@ const menuItems: MenuItem[] = [
         href: "/examination",
       },
       { label: "Application Form", href: "/application/form" },
-      { label: "Admit Card", href: "#" },
       { label: "Empanelments (Beta Version)", href: "#" },
+      { label: "HRMS APAR login", href: "/apar" },
       {
         label: "Promotion/Posting/Other Orders",
         href: "#",
