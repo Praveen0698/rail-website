@@ -1,10 +1,11 @@
+// app/examination/api/admin/questions/route.ts
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { connectDB } from "@/lib/db";
 import Question from "@/models/Question";
 import { NextResponse } from "next/server";
 import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { v4 as uuidv4 } from "uuid";
-import { lookup } from "mime-types"; // For guessing content type
+import { extension } from "mime-types"; // ← use extension(), not lookup()
 import { Buffer } from "buffer";
 
 export async function GET() {
@@ -13,119 +14,90 @@ export async function GET() {
   return NextResponse.json(questions);
 }
 
-const uploadImage = async (
-  base64String: string | null,
-): Promise<string | null> => {
-  if (!base64String) {
-    return null;
-  }
-  const base64Data = base64String.split(";base64,").pop();
-  if (!base64Data) {
-    console.error("Invalid base64 string format");
-    return null;
-  }
+// const uploadImage = async (
+//   base64String: string | null | undefined,
+// ): Promise<string | null> => {
+//   if (!base64String || !base64String.startsWith("data:image")) {
+//     return null;
+//   }
 
-  try {
-    const buffer = Buffer.from(base64Data, "base64");
+//   // Extract mime type from "data:image/png;base64,..."
+//   const mimeMatch = base64String.match(/^data:(image\/[a-zA-Z+]+);base64,/);
+//   if (!mimeMatch) {
+//     console.error("Could not parse mime type from base64 string");
+//     return null;
+//   }
 
-    // Try to guess the content type from the base64 data URL prefix
-    let contentType: string | false = false;
-    if (base64String.startsWith("data:image/")) {
-      contentType = base64String.substring(
-        "data:image/".length,
-        base64String.indexOf(";base64"),
-      );
-    }
+//   const mimeType = mimeMatch[1]; // e.g. "image/png"
+//   const base64Data = base64String.split(";base64,").pop();
 
-    // Generate a unique filename with a guessed extension (default to png)
-    let fileExtension = "png";
-    if (contentType) {
-      const guessedExtension = lookup(contentType);
-      if (guessedExtension) {
-        fileExtension = guessedExtension;
-      }
-    }
-    const filename = `logos/${uuidv4()}.${fileExtension}`;
+//   if (!base64Data) {
+//     console.error("Invalid base64 string format");
+//     return null;
+//   }
 
-    const s3 = new S3Client({
-      region: process.env.AWS_REGION,
-      credentials: {
-        accessKeyId: process.env.AWS_ACCESS_KEY_ID!,
-        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
-      },
-    });
+//   try {
+//     const buffer = Buffer.from(base64Data, "base64");
 
-    await s3.send(
-      new PutObjectCommand({
-        Bucket: process.env.AWS_BUCKET_NAME!,
-        Key: filename,
-        Body: buffer,
-        ContentType: contentType || "image/png", // Default to png if not guessed
-      }),
-    );
+//     // Get file extension from mime type — extension() returns "png", "jpeg", etc.
+//     const ext = extension(mimeType) || "png";
+//     const filename = `logos/${uuidv4()}.${ext}`;
 
-    return `https://${process.env.AWS_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/${filename}`;
-  } catch (error) {
-    console.error("Error uploading base64 image to S3:", error);
-    return null;
-  }
-};
+//     const s3 = new S3Client({
+//       region: process.env.AWS_REGION,
+//       credentials: {
+//         accessKeyId: process.env.AWS_ACCESS_KEY_ID!,
+//         secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
+//       },
+//     });
+
+//     await s3.send(
+//       new PutObjectCommand({
+//         Bucket: process.env.AWS_BUCKET_NAME!,
+//         Key: filename,
+//         Body: buffer,
+//         ContentType: mimeType,
+//       }),
+//     );
+
+//     return `https://${process.env.AWS_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/${filename}`;
+//   } catch (error) {
+//     console.error("Error uploading base64 image to S3:", error);
+//     return null;
+//   }
+// };
 
 export async function POST(req: Request) {
   await connectDB();
 
   try {
-    const { text, image: imageBase64, options: optionsData } = await req.json();
+    const { text, image, options } = await req.json();
 
-    let imageUrl = "";
-    if (imageBase64) {
-      imageUrl = (await uploadImage(imageBase64)) || "";
-    }
-
-    let processedOptions = [];
-    console.log(optionsData);
-    if (optionsData) {
-      try {
-        if (!Array.isArray(optionsData)) {
-          return NextResponse.json(
-            { error: "Invalid options format" },
-            { status: 400 },
-          );
-        }
-        processedOptions = await Promise.all(
-          optionsData.map(async (option) => {
-            const newOption = { ...option };
-            if (option.image) {
-              console.log(option.image);
-              newOption.image = (await uploadImage(option.image)) || "";
-            } else {
-              newOption.image = "";
-            }
-            return newOption;
-          }),
-        );
-      } catch (error: any) {
-        return NextResponse.json(
-          { error: "Error processing options: " + error.message },
-          { status: 400 },
-        );
-      }
-    }
-
+    // Directly store base64 (NO S3)
     const newQuestionData = {
       text: text || "",
-      image: imageUrl,
-      options: processedOptions,
+      image: image || "", // store base64 directly
+      options: (options || []).map((opt: any) => ({
+        text: opt.text,
+        isCorrect: opt.isCorrect,
+        image: opt.image || "", // store base64 directly
+      })),
     };
 
-    console.log("Structured Data:", newQuestionData);
+    console.log("Saving BASE64 data:", {
+      image: newQuestionData.image?.slice(0, 50),
+      optionImages: newQuestionData.options.map((o:any) =>
+        o.image?.slice(0, 50),
+      ),
+    });
 
     const question = await Question.create(newQuestionData);
+
     return NextResponse.json(question, { status: 201 });
   } catch (error: any) {
-    console.error("Error creating question:", error);
+    console.error("Error:", error);
     return NextResponse.json(
-      { error: "Failed to create question: " + error.message },
+      { error: error.message },
       { status: 500 },
     );
   }
