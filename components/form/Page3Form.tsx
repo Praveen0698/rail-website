@@ -52,9 +52,18 @@ export default function Page3Form({
   const thCell =
     "border border-black px-1.5 py-1 text-[12.5px] font-serif font-normal align-top bg-white";
 
+  const educationFields: { label: string; key: keyof EducationRow }[] = [
+    { label: "Course Title", key: "courseTitle" },
+    { label: "Subject", key: "subject" },
+    { label: "University/Board", key: "universityBoard" },
+    { label: "Institution Studied", key: "institutionStudied" },
+    { label: "Class/Percentage", key: "classPercentage" },
+    { label: "Reg No. & Year", key: "regNoYear" },
+  ];
+
   return (
-    <div className="min-h-screen bg-white p-5 font-serif text-black text-[13px]">
-      <div className="relative max-w-3xl mx-auto border border-gray-400 px-8 py-6 bg-white">
+    <div className="min-h-screen bg-white p-3 lg:p-5 font-serif text-black text-[13px]">
+      <div className="relative max-w-3xl mx-auto border border-gray-400 px-3 py-4 lg:px-8 lg:py-6 bg-white">
         {/* Page number */}
         <span className="absolute top-4 right-5 text-[13px]">3</span>
 
@@ -63,96 +72,131 @@ export default function Page3Form({
           PART-F: EDUCATIONAL QUALIFICATIONS
         </p>
 
-        <table className="w-full border-collapse">
-          <thead>
-            <tr>
-              <th className={`${thCell} w-[14%]`}>Course Title</th>
-              <th className={`${thCell} w-[18%]`}>Subject</th>
-              <th className={`${thCell} w-[20%]`}>University/Board</th>
-              <th className={`${thCell} w-[20%]`}>Institution studied</th>
-              <th className={`${thCell} w-[14%]`}>Class/ Percentage</th>
-              <th className={`${thCell} w-[14%]`}>Reg No. & Year</th>
-            </tr>
-          </thead>
-          <tbody>
-            {formData.education.map((row: EducationRow, i: number) => (
-              <tr key={i}>
-                <td className={cellInput} style={{ height: "48px" }}>
-                  <input
-                    type="text"
-                    value={row.courseTitle}
-                    onChange={(e) =>
-                      handleEducationChange(i, "courseTitle", e.target.value)
-                    }
-                    className={bareInput}
-                  />
-                </td>
-                <td className={cellInput}>
-                  <input
-                    type="text"
-                    value={row.subject}
-                    onChange={(e) =>
-                      handleEducationChange(i, "subject", e.target.value)
-                    }
-                    className={bareInput}
-                  />
-                </td>
-                <td className={cellInput}>
-                  <input
-                    type="text"
-                    value={row.universityBoard}
-                    onChange={(e) =>
-                      handleEducationChange(
-                        i,
-                        "universityBoard",
-                        e.target.value,
-                      )
-                    }
-                    className={bareInput}
-                  />
-                </td>
-                <td className={cellInput}>
-                  <input
-                    type="text"
-                    value={row.institutionStudied}
-                    onChange={(e) =>
-                      handleEducationChange(
-                        i,
-                        "institutionStudied",
-                        e.target.value,
-                      )
-                    }
-                    className={bareInput}
-                  />
-                </td>
-                <td className={cellInput}>
-                  <input
-                    type="text"
-                    value={row.classPercentage}
-                    onChange={(e) =>
-                      handleEducationChange(
-                        i,
-                        "classPercentage",
-                        e.target.value,
-                      )
-                    }
-                    className={bareInput}
-                  />
-                </td>
-                <td className={cellInput}>
-                  <input
-                    type="text"
-                    value={row.regNoYear}
-                    onChange={(e) =>
-                      handleEducationChange(i, "regNoYear", e.target.value)
-                    }
-                    className={bareInput}
-                  />
-                </td>
+        {/* ── Mobile: one card per education row ── */}
+        <div className="block lg:hidden space-y-3 mb-2">
+          {formData.education.map((row: EducationRow, i: number) => (
+            <div key={i} className="border border-black">
+              <div className="border-b border-black px-2 py-1 bg-gray-50 text-[12px] font-bold font-serif">
+                Entry {i + 1}
+              </div>
+              <table className="w-full border-collapse">
+                <tbody>
+                  {educationFields.map(({ label, key }) => (
+                    <tr key={key}>
+                      <td className="border border-black px-1.5 py-1 text-[12px] font-serif bg-gray-50 w-2/5">
+                        {label}
+                      </td>
+                      <td className="border border-black px-1.5 py-1 text-[12.5px] font-serif w-3/5">
+                        <input
+                          type="text"
+                          value={row[key]}
+                          onChange={(e) =>
+                            handleEducationChange(i, key, e.target.value)
+                          }
+                          className={bareInput}
+                        />
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ))}
+        </div>
+
+        {/* ── Desktop: original 6-column table ── */}
+        <div className="hidden lg:block overflow-x-auto">
+          <table className="w-full border-collapse">
+            <thead>
+              <tr>
+                <th className={`${thCell} w-[14%]`}>Course Title</th>
+                <th className={`${thCell} w-[18%]`}>Subject</th>
+                <th className={`${thCell} w-[20%]`}>University/Board</th>
+                <th className={`${thCell} w-[20%]`}>Institution studied</th>
+                <th className={`${thCell} w-[14%]`}>Class/ Percentage</th>
+                <th className={`${thCell} w-[14%]`}>Reg No. & Year</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {formData.education.map((row: EducationRow, i: number) => (
+                <tr key={i}>
+                  <td className={cellInput} style={{ height: "48px" }}>
+                    <input
+                      type="text"
+                      value={row.courseTitle}
+                      onChange={(e) =>
+                        handleEducationChange(i, "courseTitle", e.target.value)
+                      }
+                      className={bareInput}
+                    />
+                  </td>
+                  <td className={cellInput}>
+                    <input
+                      type="text"
+                      value={row.subject}
+                      onChange={(e) =>
+                        handleEducationChange(i, "subject", e.target.value)
+                      }
+                      className={bareInput}
+                    />
+                  </td>
+                  <td className={cellInput}>
+                    <input
+                      type="text"
+                      value={row.universityBoard}
+                      onChange={(e) =>
+                        handleEducationChange(
+                          i,
+                          "universityBoard",
+                          e.target.value,
+                        )
+                      }
+                      className={bareInput}
+                    />
+                  </td>
+                  <td className={cellInput}>
+                    <input
+                      type="text"
+                      value={row.institutionStudied}
+                      onChange={(e) =>
+                        handleEducationChange(
+                          i,
+                          "institutionStudied",
+                          e.target.value,
+                        )
+                      }
+                      className={bareInput}
+                    />
+                  </td>
+                  <td className={cellInput}>
+                    <input
+                      type="text"
+                      value={row.classPercentage}
+                      onChange={(e) =>
+                        handleEducationChange(
+                          i,
+                          "classPercentage",
+                          e.target.value,
+                        )
+                      }
+                      className={bareInput}
+                    />
+                  </td>
+                  <td className={cellInput}>
+                    <input
+                      type="text"
+                      value={row.regNoYear}
+                      onChange={(e) =>
+                        handleEducationChange(i, "regNoYear", e.target.value)
+                      }
+                      className={bareInput}
+                    />
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
 
         {/* ══ PART-G: DECLARATION ══ */}
         <p className="text-[13px] font-bold font-serif mt-6 mb-1">
@@ -170,8 +214,8 @@ export default function Page3Form({
           me if any of the information provided by me is found fraudulent.
         </p>
 
-        {/* Station / Date / Name / Signature */}
-        <div className="grid grid-cols-2 gap-x-16 gap-y-4 mt-4">
+        {/* Station / Date / Name / Signature — 2-col on sm+, 1-col on mobile */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-16 gap-y-4 mt-4">
           <div className="flex items-end gap-2">
             <span className="text-[12.5px] font-serif whitespace-nowrap">
               Station:
@@ -251,7 +295,7 @@ export default function Page3Form({
           <span className="font-normal">(For office use)</span>
         </p>
 
-        <p className="text-[12.5px] font-serif mb-12 ml-16">
+        <p className="text-[12.5px] font-serif mb-12 ml-4 lg:ml-16">
           Verified the original documents and found eligible for admission to
           duty.
         </p>
@@ -263,10 +307,10 @@ export default function Page3Form({
           <p className="text-[12.5px] font-bold font-serif">
             Reporting Officer
           </p>
-          <div className="border-b border-black w-48 ml-auto mt-6" />
+          <div className="border-b border-black w-40 lg:w-48 ml-auto mt-6" />
         </div>
 
-        <p className="text-[12.5px] font-serif mb-12 ml-16">
+        <p className="text-[12.5px] font-serif mb-12 ml-4 lg:ml-16">
           Admitted to duty. Employee details may be furnished into SPARK and PEN
           obtained.
         </p>
@@ -278,7 +322,7 @@ export default function Page3Form({
           <p className="text-[12.5px] font-bold font-serif">
             Appointing Authority
           </p>
-          <div className="border-b border-black w-48 ml-auto mt-6" />
+          <div className="border-b border-black w-40 lg:w-48 ml-auto mt-6" />
         </div>
 
         {/* ── Submit button ── */}
@@ -287,7 +331,7 @@ export default function Page3Form({
             type="button"
             onClick={handleSubmitClick}
             disabled={isSubmitting}
-            className="px-8 py-2 border border-black text-[13px] font-serif bg-white hover:bg-gray-50 cursor-pointer tracking-wide disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-6 lg:px-8 py-2 border border-black text-[13px] font-serif bg-white hover:bg-gray-50 cursor-pointer tracking-wide disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isSubmitting ? (
               <span className="flex items-center gap-2 justify-center">
@@ -319,10 +363,10 @@ export default function Page3Form({
         </div>
       </div>
 
-      {/* ── Confirmation Modal — outside the padded container so overlay covers full screen ── */}
+      {/* ── Confirmation Modal ── */}
       {showConfirmModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-          <div className="bg-white border border-black w-80 p-6 font-serif">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
+          <div className="bg-white border border-black w-full max-w-sm p-5 lg:p-6 font-serif">
             <h2 className="text-[14px] font-bold font-serif mb-3 text-center">
               Confirm Submission
             </h2>

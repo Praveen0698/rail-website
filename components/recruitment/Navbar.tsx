@@ -43,13 +43,14 @@ const menuItems: MenuItem[] = [
         label: "Vacancy Circulars",
         href: "#",
         children: [
-           {
+          {
             label: "CBT Examination",
             href: "/examination",
           },
           { label: "Application Form", href: "/application/form" },
           { label: "Vacancy_Circular_2026", href: "#" },
           { label: "Vacancy_Circular_2025", href: "#" },
+          { label: "HRMS APAR login", href: "/apar" },
           { label: "E(O)III_Vacancy_Circulars", href: "#" },
           { label: "VC for RB Posting for Executive Directors", href: "#" },
           { label: "VC for RB Posting for Directors", href: "#" },
@@ -59,22 +60,14 @@ const menuItems: MenuItem[] = [
           { label: "VC for Non-Gaz Emp.", href: "#" },
           { label: "VC for RB Posting- Ex Cadre Post", href: "#" },
           { label: "VC_RCT", href: "#" },
-         
         ],
       },
-      {
-        label: "CBT Examination",
-        href: "/examination",
-      },
-      { label: "Application Form", href: "/application/form" },
-      { label: "Admit Card", href: "#" },
       { label: "Empanelments (Beta Version)", href: "#" },
-      { label: "HRMS APAR login", href: "/apar" },
       {
         label: "Promotion/Posting/Other Orders",
         href: "#",
         children: [
-                    { label: "Admit Card", href: "#" },
+          { label: "Admit Card", href: "#" },
 
           {
             label: "E(O)-II's Orders",
